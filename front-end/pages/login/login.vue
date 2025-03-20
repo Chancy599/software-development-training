@@ -37,7 +37,7 @@
 	export default {
 		data() {
 			return {
-				title: '登录页面',
+				title: '欢迎登录',
 				loginMode: 'admin', // 默认登录模式为管理员
 				username: '', // 账号
 				password: ''  // 密码
@@ -68,8 +68,8 @@
 			// 处理注册链接点击
 			handleRegister() {
 				console.log('跳转到注册页面');
-				// 这里可以添加跳转到注册页面的逻辑
-				// 例如：uni.navigateTo({ url: '/pages/register/register' });
+				// 这里添加跳转到注册页面的逻辑
+				uni.navigateTo({ url: '/pages/register/register' });
 				uni.showToast({
 					title: '跳转到注册页面（模拟）',
 					icon: 'none'

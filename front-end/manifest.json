@@ -1,5 +1,5 @@
 {
-    "name" : "test",
+    "name" : "front-end",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -53,16 +53,11 @@
         "appid" : "wx2492d91b878e5ccc",
         "setting" : {
             "urlCheck" : false,
+            "es6" : true,
             "postcss" : true,
-            "minified" : true,
-            "es6" : true
+            "minified" : true
         },
-        "usingComponents" : true,
-        "permission" : {
-            "scope.userLocation" : {
-                "desc" : ""
-            }
-        }
+        "usingComponents" : true
     },
     "mp-alipay" : {
         "usingComponents" : true
