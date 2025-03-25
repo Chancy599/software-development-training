@@ -1,17 +1,19 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/main/main",
+    "pages/startSign/startSign",
+    "pages/joinSign/joinSign",
+    "pages/signRecord/signRecord",
+    "pages/mySettings/mySettings"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
-  },
-  "permission": {
-    "scope.userLocation": {
-      "desc": ""
-    }
   },
   "usingComponents": {}
 }

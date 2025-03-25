@@ -17,6 +17,37 @@
 			"style": {
 				"navigationBarTitleText": "注册页面"
 			}
+		},
+		{
+			"path": "pages/main/main",
+			"style": {
+				"navigationBarTitleText": "我的菜单"
+			}
+		},
+		{
+			"path" : "pages/startSign/startSign",
+			"style" : 
+			{
+				"navigationBarTitleText" : "发起签到"
+			}
+		},
+		{
+			"path": "pages/joinSign/joinSign",
+			"style": {
+				"navigationBarTitleText": "我要签到"
+			}
+		},
+		{
+			"path": "pages/signRecord/signRecord",
+			"style": {
+				"navigationBarTitleText": "签到记录"
+			}
+		},
+		{
+			"path": "pages/mySettings/mySettings",
+			"style": {
+				"navigationBarTitleText": "我的设置"
+			}
 		}
 	],
 	"globalStyle": {

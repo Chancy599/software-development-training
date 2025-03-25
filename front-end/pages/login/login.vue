@@ -8,16 +8,6 @@
 		<!-- Logo -->
 		<image class="logo" src="/static/logo.png"></image>
 
-		<!-- 登录模式选择 -->
-		<radio-group class="login-mode" @change="handleModeChange">
-			<label>
-				<radio value="admin" :checked="loginMode === 'admin'" /> 管理员
-			</label>
-			<label>
-				<radio value="employee" :checked="loginMode === 'employee'" /> 员工
-			</label>
-		</radio-group>
-
 		<!-- 登录表单 -->
 		<view class="login-form">
 			<input class="input" type="text" v-model="username" placeholder="请输入账号" />
@@ -38,7 +28,6 @@
 		data() {
 			return {
 				title: '欢迎登录',
-				loginMode: 'admin', // 默认登录模式为管理员
 				username: '', // 账号
 				password: ''  // 密码
 			}
@@ -47,23 +36,15 @@
 
 		},
 		methods: {
-			// 处理登录模式切换
-			handleModeChange(e) {
-				this.loginMode = e.detail.value;
-			},
 			// 处理登录按钮点击
 			handleLogin() {
-				const { loginMode, username, password } = this;
-				console.log(`登录模式: ${loginMode}, 账号: ${username}, 密码: ${password}`);
+				const { username, password } = this;
+				console.log(`账号: ${username}, 密码: ${password}`);
 
 				// 这里可以添加账号和密码的验证逻辑
 				// 例如：调用API进行验证
 
-				// 暂时只打印登录信息
-				uni.showToast({
-					title: '登录成功（模拟）',
-					icon: 'none'
-				});
+                uni.navigateTo({ url: '/pages/main/main' });
 			},
 			// 处理注册链接点击
 			handleRegister() {
@@ -107,11 +88,6 @@
 		margin-top: 50rpx;
 		margin-left: auto;
 		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.login-mode {
-		margin-top: 50rpx;
 		margin-bottom: 50rpx;
 	}
 
