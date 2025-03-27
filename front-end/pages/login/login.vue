@@ -38,23 +38,63 @@
 		methods: {
 			// 处理登录按钮点击
 			handleLogin() {
-				const { username, password } = this;
-				console.log(`账号: ${username}, 密码: ${password}`);
-
-				// 这里可以添加账号和密码的验证逻辑
-				// 例如：调用API进行验证
-
-                uni.navigateTo({ url: '/pages/main/main' });
+			    const { username, password } = this;
+			
+			    if (!username || !password) {
+			        uni.showToast({
+			            title: '请输入账号和密码',
+			            icon: 'none'
+			        });
+			        return;
+			    }
+			
+			    // 你的云托管环境 ID
+			    const envId = 'prod-7glwxii4e6eb93d8';
+			
+			    // 你的后端登录接口地址
+			    const apiUrl = `https://${envId}.service.tcloudbase.com/login`;
+			
+			    // 发送请求到微信云托管后端
+			    uni.request({
+			        url: apiUrl, 
+			        method: 'POST',
+			        header: {
+			            'content-type': 'application/json'
+			        },
+			        data: {
+			            username,
+			            password
+			        },
+			        success: (res) => {
+			            console.log('后端返回数据:', res);
+			            if (res.data.success) {
+			                uni.showToast({
+			                    title: '登录成功',
+			                    icon: 'success'
+			                });
+			
+			                // 登录成功，跳转到主页面
+			                uni.navigateTo({ url: '/pages/main/main' });
+			            } else {
+			                uni.showToast({
+			                    title: '账号或密码错误，请重试',
+			                    icon: 'none'
+			                });
+			            }
+			        },
+			        fail: (err) => {
+			            console.error('请求失败:', err);
+			            uni.showToast({
+			                title: '请求失败，请检查网络',
+			                icon: 'none'
+			            });
+			        }
+			    });
 			},
-			// 处理注册链接点击
+			
+			// 处理跳转到注册页面
 			handleRegister() {
-				console.log('跳转到注册页面');
-				// 这里添加跳转到注册页面的逻辑
 				uni.navigateTo({ url: '/pages/register/register' });
-				uni.showToast({
-					title: '跳转到注册页面（模拟）',
-					icon: 'none'
-				});
 			}
 		}
 	}

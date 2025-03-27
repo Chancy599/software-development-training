@@ -17,17 +17,52 @@ const _sfc_main = {
     // 处理登录按钮点击
     handleLogin() {
       const { username, password } = this;
-      common_vendor.index.__f__("log", "at pages/login/login.vue:42", `账号: ${username}, 密码: ${password}`);
-      common_vendor.index.navigateTo({ url: "/pages/main/main" });
-    },
-    // 处理注册链接点击
-    handleRegister() {
-      common_vendor.index.__f__("log", "at pages/login/login.vue:51", "跳转到注册页面");
-      common_vendor.index.navigateTo({ url: "/pages/register/register" });
-      common_vendor.index.showToast({
-        title: "跳转到注册页面（模拟）",
-        icon: "none"
+      if (!username || !password) {
+        common_vendor.index.showToast({
+          title: "请输入账号和密码",
+          icon: "none"
+        });
+        return;
+      }
+      const envId = "prod-7glwxii4e6eb93d8";
+      const apiUrl = `https://${envId}.service.tcloudbase.com/login`;
+      common_vendor.index.request({
+        url: apiUrl,
+        method: "POST",
+        header: {
+          "content-type": "application/json"
+        },
+        data: {
+          username,
+          password
+        },
+        success: (res) => {
+          common_vendor.index.__f__("log", "at pages/login/login.vue:69", "后端返回数据:", res);
+          if (res.data.success) {
+            common_vendor.index.showToast({
+              title: "登录成功",
+              icon: "success"
+            });
+            common_vendor.index.navigateTo({ url: "/pages/main/main" });
+          } else {
+            common_vendor.index.showToast({
+              title: "账号或密码错误，请重试",
+              icon: "none"
+            });
+          }
+        },
+        fail: (err) => {
+          common_vendor.index.__f__("error", "at pages/login/login.vue:86", "请求失败:", err);
+          common_vendor.index.showToast({
+            title: "请求失败，请检查网络",
+            icon: "none"
+          });
+        }
       });
+    },
+    // 处理跳转到注册页面
+    handleRegister() {
+      common_vendor.index.navigateTo({ url: "/pages/register/register" });
     }
   }
 };

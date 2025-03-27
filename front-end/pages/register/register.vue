@@ -2,7 +2,7 @@
 	<view class="content">
 		<!-- 顶部标题 -->
 		<view class="header">
-			<text class="header-title">{{title}}</text>
+			<text class="header-title">{{ title }}</text>
 		</view>
 
 		<!-- Logo -->
@@ -12,12 +12,21 @@
 		<view class="register-form">
 			<input class="input" type="text" v-model="username" placeholder="请输入账号" />
 			<input class="input" type="password" v-model="password" placeholder="请输入密码" />
+			<view class="row">
+				<input class="input half" type="text" v-model="realName" placeholder="请输入姓名" />
+				<picker @change="handleGenderChange" :value="genderIndex" :range="genderOptions">
+					<view class="input picker">{{ genderOptions[genderIndex] }}</view>
+				</picker>
+			</view>
+			
+			<input class="input" type="text" v-model="contact" placeholder="请输入联系方式" />
 
-			<!-- 注册链接 -->
-			<view class="register-link" @click="handleRegister">
+			<!-- 已有账号链接 -->
+			<view class="register-link" @click="handleLogin">
 				<text>已有帐号？点击这里</text>
 			</view>
 
+			<!-- 注册按钮 -->
 			<button class="register-btn" @click="handleregister">注册</button>
 		</view>
 	</view>
@@ -29,35 +38,72 @@
 			return {
 				title: '欢迎注册',
 				username: '', // 账号
-				password: ''  // 密码
-			}
-		},
-		onLoad() {
-
+				realName: '', // 姓名
+				password: '', // 密码
+				genderOptions: ['男', '女'],
+				genderIndex: 0, // 默认为男
+				contact: '', // 联系方式
+			};
 		},
 		methods: {
+			// 处理性别选择
+			handleGenderChange(event) {
+				this.genderIndex = event.detail.value;
+			},
+
 			// 处理注册按钮点击
 			handleregister() {
-				const { username, password } = this;
-				console.log(`账号: ${username}, 密码: ${password}`);
+				const { username, realName, password, genderIndex, contact } = this;
 
-				// 这里可以添加账号和密码的验证逻辑
-				// 例如：调用API进行验证
+				if (!username || !realName || !password || !contact) {
+					uni.showToast({
+						title: '请填写完整信息',
+						icon: 'none'
+					});
+					return;
+				}
 
-                uni.navigateTo({ url: '/pages/login/login' });
-			},
-			// 处理注册链接点击
-			handleRegister() {
-				console.log('跳转到登录页面');
-				// 这里添加跳转到登录页面的逻辑
-				uni.navigateTo({ url: '/pages/login/login' });
-				uni.showToast({
-					title: '跳转到登录页面（模拟）',
-					icon: 'none'
+				const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
+
+				// 你的微信云托管环境 ID
+				const envId = 'prod-7glwxii4e6eb93d8';
+				const apiUrl = `https://${envId}.service.tcloudbase.com/register`;
+
+				// 发送注册请求
+				uni.request({
+					url: apiUrl,
+					method: 'POST',
+					header: { 'content-type': 'application/json' },
+					data: { username, realName, password, gender, contact },
+					success: (res) => {
+						if (res.data.success) {
+							uni.showToast({
+								title: '注册成功',
+								icon: 'success'
+							});
+							uni.navigateTo({ url: '/pages/login/login' });
+						} else {
+							uni.showToast({
+								title: '注册失败，账号已存在',
+								icon: 'none'
+							});
+						}
+					},
+					fail: () => {
+						uni.showToast({
+							title: '请求失败，请检查网络',
+							icon: 'none'
+						});
+					}
 				});
+			},
+
+			// 处理跳转到登录页面
+			handleLogin() {
+				uni.navigateTo({ url: '/pages/login/login' });
 			}
 		}
-	}
+	};
 </script>
 
 <style>
@@ -65,64 +111,83 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
+		padding: 0 40rpx;
+		box-sizing: border-box;
 	}
 
-	/* 顶部标题样式 */
 	.header {
 		width: 100%;
 		text-align: center;
-		margin-top: 50rpx;
-		margin-bottom: 50rpx;
+		margin: 60rpx 0 40rpx;
 	}
 
 	.header-title {
-		font-size: 40rpx;
+		font-size: 44rpx;
 		font-weight: bold;
 		color: #333;
 	}
 
 	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 50rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
+		height: 180rpx;
+		width: 180rpx;
+		margin: 20rpx 0 50rpx;
 	}
 
 	.register-form {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
 		width: 100%;
 	}
 
 	.input {
+		width: 100%;
+		height: 96rpx;
+		margin-bottom: 32rpx;
+		padding: 0 28rpx;
+		border: 1rpx solid #e6e6e6;
+		border-radius: 12rpx;
+		font-size: 32rpx;
+		box-sizing: border-box;
+		background-color: #fff;
+	}
+	
+	.row {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+	
+	.half {
 		width: 80%;
-		height: 80rpx;
-		margin-bottom: 30rpx;
-		padding: 10rpx;
-		border: 1rpx solid #ccc;
-		border-radius: 10rpx;
+	}
+	
+	.picker {
+		display: flex;
+		align-items: center;
+		height: 96rpx;
+		padding: 0 28rpx;
+		border: 1rpx solid #e6e6e6;
+		border-radius: 12rpx;
+		background-color: #fff;
+		color: #333;
+		font-size: 32rpx;
 	}
 
-	/* 注册链接样式 */
 	.register-link {
-		margin-bottom: 30rpx;
+		margin: 20rpx 0 40rpx;
 		color: #007AFF;
 		text-decoration: underline;
 		font-size: 28rpx;
+		text-align: center;
 	}
 
 	.register-btn {
-		width: 80%;
-		height: 80rpx;
+		width: 100%;
+		height: 96rpx;
+		line-height: 96rpx;
 		background-color: #007AFF;
 		color: #fff;
-		border-radius: 10rpx;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		border-radius: 12rpx;
+		font-size: 36rpx;
+		margin-top: 20rpx;
 	}
 </style>

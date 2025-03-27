@@ -15,7 +15,7 @@
 	export default {
 		data() {
 			return {
-				title: 'ClassTap'
+				title: '打卡君'
 			}
 		},
 		onLoad() {

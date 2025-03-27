@@ -4,7 +4,7 @@ const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
-      title: "ClassTap"
+      title: "打卡君"
     };
   },
   onLoad() {
