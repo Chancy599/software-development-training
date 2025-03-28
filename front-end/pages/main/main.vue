@@ -12,9 +12,9 @@
 			</view>
 		</view>
 		<view class="menu-row">
-			<view class="menu-item" @click="handleMenuItemClick('signRecord')">
+			<view class="menu-item" @click="handleMenuItemClick('Location_Check_In')">
 				<text class="menu-icon iconfont">&#xe603;</text>
-				<text class="menu-text">签到记录</text>
+				<text class="menu-text">定位签到</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('mySettings')">
 				<text class="menu-icon iconfont">&#xe604;</text>
@@ -41,9 +41,9 @@
 						// 跳转到我要签到页面
 						uni.navigateTo({ url: '/pages/joinSign/joinSign' });
 						break;
-					case 'signRecord':
-						// 跳转到签到记录页面
-						uni.navigateTo({ url: '/pages/signRecord/signRecord' });
+					case 'Location_Check_In':
+						// 跳转到定位签到页面
+						uni.navigateTo({ url: '/pages/Location_Check_In/Location_Check_In' });
 						break;
 					case 'mySettings':
 						// 跳转到我的设置页面

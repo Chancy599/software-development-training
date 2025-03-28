@@ -7,13 +7,19 @@
     "pages/startSign/startSign",
     "pages/joinSign/joinSign",
     "pages/signRecord/signRecord",
-    "pages/mySettings/mySettings"
+    "pages/mySettings/mySettings",
+    "pages/Location_Check_In/Location_Check_In"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于地图展示及签到功能"
+    }
   },
   "usingComponents": {}
 }

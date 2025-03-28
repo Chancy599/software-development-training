@@ -48,6 +48,13 @@
 			"style": {
 				"navigationBarTitleText": "我的设置"
 			}
+		},
+		{
+			"path" : "pages/Location_Check_In/Location_Check_In",
+			"style" : 
+			{
+				"navigationBarTitleText" : "定位签到"
+			}
 		}
 	],
 	"globalStyle": {

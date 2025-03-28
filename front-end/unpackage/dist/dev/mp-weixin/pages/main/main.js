@@ -15,7 +15,7 @@ const _sfc_main = {
           common_vendor.index.navigateTo({ url: "/pages/joinSign/joinSign" });
           break;
         case "signRecord":
-          common_vendor.index.navigateTo({ url: "/pages/signRecord/signRecord" });
+          common_vendor.index.navigateTo({ url: "/pages/Location_Check_In/Location_Check_In" });
           break;
         case "mySettings":
           common_vendor.index.navigateTo({ url: "/pages/mySettings/mySettings" });

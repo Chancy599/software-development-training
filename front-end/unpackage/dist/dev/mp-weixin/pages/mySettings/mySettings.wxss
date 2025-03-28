@@ -1,0 +1,32 @@
+
+/* 容器样式 */
+.container.data-v-951dd1b8 {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh; /* 适配全屏 */
+}
+
+/* 信息块样式 */
+.info-box.data-v-951dd1b8 {
+  background-color: #fff;
+  padding: 20px; /* 增加内边距，让内容更舒适 */
+  margin-bottom: 20px; /* 增大间隔，使信息块更分明 */
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 标签文本 */
+.label.data-v-951dd1b8 {
+  font-weight: bold;
+  font-size: 18px; /* 稍微增大字体，提升可读性 */
+  color: #333;
+  margin-bottom: 8px; /* 增大标签和值之间的间隔 */
+}
+
+/* 值文本 */
+.value.data-v-951dd1b8 {
+  font-size: 16px;
+  color: #666;
+}

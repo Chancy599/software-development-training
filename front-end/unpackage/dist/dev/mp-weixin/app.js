@@ -10,6 +10,7 @@ if (!Math) {
   "./pages/joinSign/joinSign.js";
   "./pages/signRecord/signRecord.js";
   "./pages/mySettings/mySettings.js";
+  "./pages/Location_Check_In/Location_Check_In.js";
 }
 const _sfc_main = {
   onLaunch: function() {

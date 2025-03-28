@@ -28,10 +28,9 @@
 					title: '即将跳转...',
 					icon: 'none'
 				});
-				// 这里可以添加跳转逻辑，例如跳转到登录页面
 				setTimeout(() => {
 					uni.navigateTo({
-						url: '/pages/login/login' // 跳转到登录页面
+						url: '/pages/main/main' //目前暂时跳转到主菜单
 					});
 				}, 1000); // 1秒后跳转
 			}
