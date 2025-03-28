@@ -3,7 +3,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "打卡君"
 			}
 		},
 		{
@@ -54,6 +54,13 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "定位签到"
+			}
+		},
+		{
+			"path" : "pages/Individual_Check_In/Individual_Check_In",
+			"style" : 
+			{
+				"navigationBarTitleText" : "个人签到记录"
 			}
 		}
 	],

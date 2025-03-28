@@ -72,6 +72,14 @@
 			                    title: '登录成功',
 			                    icon: 'success'
 			                });
+							
+							//将用户名存入全局变量（本地存储）
+							uni.setStorageSync('globalUsername', username); // 使用同步存储
+							
+							//其他页面获取username
+							//const username = uni.getStorageSync('globalUsername');
+							//用户退出时清除全局变量
+							//uni.removeStorageSync('globalUsername'); 
 			
 			                // 登录成功，跳转到主页面
 			                uni.navigateTo({ url: '/pages/main/main' });
