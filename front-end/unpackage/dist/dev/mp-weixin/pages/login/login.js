@@ -24,14 +24,18 @@ const _sfc_main = {
           env: "prod-7glwxii4e6eb93d8"
           // 你的云托管环境ID
         },
-        path: `/login?id=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+        path: `/login`,
         header: {
           "X-WX-SERVICE": "userinfo",
           "content-type": "application/json"
         },
-        method: "GET",
+        method: "POST",
+        data: {
+          id: username,
+          password
+        },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:59", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:63", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1e3 });
             common_vendor.index.setStorageSync("globalUsername", username);
@@ -41,7 +45,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:70", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:74", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

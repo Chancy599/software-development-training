@@ -77,14 +77,21 @@ const _sfc_main = {
           env: "prod-7glwxii4e6eb93d8"
           // 你的云托管环境ID
         },
-        path: `/register?id=${encodeURIComponent(username)}&name=${encodeURIComponent(realName)}&password=${encodeURIComponent(password)}&gender=${encodeURIComponent(gender)}&contact_information=${encodeURIComponent(contact)}`,
+        path: `/register`,
         header: {
           "X-WX-SERVICE": "userinfo",
           "content-type": "application/json"
         },
-        method: "GET",
+        method: "POST",
+        data: {
+          id: username,
+          name: realName,
+          password,
+          gender,
+          contact_information: contact
+        },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/register/register.vue:124", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/register/register.vue:131", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "注册成功", icon: "success" });
             common_vendor.index.navigateTo({ url: "/pages/login/login" });
@@ -93,7 +100,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/register/register.vue:134", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/register/register.vue:141", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

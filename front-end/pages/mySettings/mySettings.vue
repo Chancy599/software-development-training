@@ -64,18 +64,18 @@ export default {
         },
         method: 'GET',
         success: (res) => {
-          console.log('后端返回数据:', res);
-          if (res.data) {
-            this.userData = {
-              id: res.data.id || '',
-              name: res.data.name || '',
-              gender: res.data.gender === 'MALE' ? '男' : res.data.gender === 'FEMALE' ? '女' : '', // 转换性别
-              contact_information: res.data.contact_information || '',
-              belong_information: res.data.belong_information || []
-            };
-          } else {
-            uni.showToast({ title: '获取用户信息失败', icon: 'none' });
-          }
+			console.log('后端返回数据:', res);
+			if (res.data) {
+				this.userData = {
+				id: res.data.id || '',
+				name: res.data.name || '',
+				gender: res.data.gender === 'MALE' ? '男' : res.data.gender === 'FEMALE' ? '女' : '', // 转换性别
+				contact_information: res.data.contact_information || '',
+				belong_information: res.data.belong_information || []
+				;
+			} else {
+				uni.showToast({ title: '获取用户信息失败', icon: 'none' });
+			}
         },
         fail: (err) => {
           console.error('请求失败:', err);

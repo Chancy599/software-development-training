@@ -114,12 +114,19 @@
 					config: {
 						env: 'prod-7glwxii4e6eb93d8' // 你的云托管环境ID
 					},
-					path: `/register?id=${encodeURIComponent(username)}&name=${encodeURIComponent(realName)}&password=${encodeURIComponent(password)}&gender=${encodeURIComponent(gender)}&contact_information=${encodeURIComponent(contact)}`,
+					path: `/register`,
 					header: {
 						'X-WX-SERVICE': 'userinfo',
 						'content-type': 'application/json'
 					},
-					method: 'GET',
+					method: 'POST',
+					data:{
+						id: username,
+						name: realName,
+						password: password,
+						gender: gender,
+						contact_information: contact
+					},
 					success: (res) => {
 						console.log('后端返回数据:', res);
 						

@@ -49,12 +49,16 @@ export default {
 				config: {
 					env: 'prod-7glwxii4e6eb93d8' // 你的云托管环境ID
 				},
-				path: `/login?id=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+				path: `/login`,
 				header: {
 					'X-WX-SERVICE': 'userinfo',
 					'content-type': 'application/json'
 				},
-				method: 'GET',
+				method: 'POST',
+				data:{
+					id: username,
+					password: password
+				},
 				success: (res) => {
 					console.log('后端返回数据:', res);
 		
