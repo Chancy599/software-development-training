@@ -27,6 +27,14 @@ public interface UserMapper {
             "WHERE id = #{id}")
     public boolean updateBelong(String id,String newBelong);
 
+    @Update("UPDATE users_information " +
+            "SET belong_information = JSON_REMOVE(" +
+            "    belong_information, " +
+            "    JSON_UNQUOTE(JSON_SEARCH(belong_information, 'one', #{targetBelong}))" +
+            ") " +
+            "WHERE id = #{id} AND JSON_SEARCH(belong_information, 'one', #{targetBelong}) IS NOT NULL")
+    public boolean deleteBelong(String id, String targetBelong);
+
     @Select("Select * from users_information where id=#{id}")
     public users_information getInfo(String id);
 

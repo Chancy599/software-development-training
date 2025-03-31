@@ -34,6 +34,10 @@ public class UserServiceImpl implements UserService {
         return mapper.updateBelong(id, newBelong);
     }
 
+    public boolean deleteBelong(String id, String targetBelong){
+        return mapper.deleteBelong(id, targetBelong);
+    };
+
 
     public users_information getInfo(String id){
         String jsonString=mapper.getBelong(id);

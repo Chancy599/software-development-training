@@ -1,10 +1,11 @@
 package classtap.userinfo.controller;
 
+import classtap.userinfo.Pojo.UserLoginBody;
+import classtap.userinfo.Pojo.UserRegisterBody;
 import classtap.userinfo.Pojo.users_information;
 import classtap.userinfo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -12,20 +13,25 @@ public class UserController {
     @Autowired
     private UserService userservice;
 
-    @RequestMapping("/register")
-    public boolean Register(String id, String name, String password, String gender, String contact_information){
-        return userservice.register(id,name,password,gender,contact_information);
+    @PostMapping("/register")
+    public boolean Register(@RequestBody UserRegisterBody request){
+        return userservice.register(request.getId(), request.getName(),request.getPassword(),request.getGender(),request.getContact_information());
     }
 
-    @RequestMapping("/login")
-    public boolean login(String id, String password){
-        return userservice.login(id, password);
+    @PostMapping("/login")
+    public boolean login(@RequestBody UserLoginBody request){
+        return userservice.login(request.getId(), request.getPassword());
     }
 
-    @RequestMapping("/updateBelong")
+    @PutMapping("/updateBelong")
     public boolean updateBelong(String id, String newBelong) {
         return userservice.updateBelong(id, newBelong);
     }
+
+    @PutMapping("/deleteBelong")
+    public boolean deleteBelong(String id, String targetBelong){
+        return userservice.deleteBelong(id, targetBelong);
+    };
 
     @RequestMapping("/getInfo")
     public users_information getInfo(String id){
