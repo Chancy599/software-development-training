@@ -7,4 +7,5 @@ public interface UserService {
     public boolean login(String id, String password);
     public boolean updateBelong(String id, String newBelong);
     public users_information getInfo(String id);
+    public boolean deleteBelong(String id, String targetBelong);
 }
