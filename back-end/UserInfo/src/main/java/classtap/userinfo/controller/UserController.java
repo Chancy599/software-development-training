@@ -28,7 +28,7 @@ public class UserController {
         return userservice.updateBelong(id, newBelong);
     }
 
-    @PutMapping("/deleteBelong")
+    @DeleteMapping("/deleteBelong")
     public boolean deleteBelong(String id, String targetBelong){
         return userservice.deleteBelong(id, targetBelong);
     };
