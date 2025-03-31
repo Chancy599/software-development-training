@@ -8,7 +8,8 @@
     "pages/joinSign/joinSign",
     "pages/signRecord/signRecord",
     "pages/mySettings/mySettings",
-    "pages/Location_Check_In/Location_Check_In"
+    "pages/Location_Check_In/Location_Check_In",
+    "pages/Individual_Check_In/Individual_Check_In"
   ],
   "window": {
     "navigationBarTextStyle": "black",

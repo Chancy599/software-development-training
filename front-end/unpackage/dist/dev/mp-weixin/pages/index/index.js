@@ -18,7 +18,8 @@ const _sfc_main = {
       });
       setTimeout(() => {
         common_vendor.index.navigateTo({
-          url: "/pages/Location_Check_In/Location_Check_In"
+          url: "/pages/login/login"
+          //目前暂时跳转到主菜单
         });
       }, 1e3);
     }

@@ -11,16 +11,22 @@ if (!Math) {
   "./pages/signRecord/signRecord.js";
   "./pages/mySettings/mySettings.js";
   "./pages/Location_Check_In/Location_Check_In.js";
+  "./pages/Individual_Check_In/Individual_Check_In.js";
 }
 const _sfc_main = {
   onLaunch: function() {
     common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
+    common_vendor.wx$1.cloud.init({
+      env: "prod-7glwxii4e6eb93d8",
+      // 你的云托管环境 ID
+      traceUser: true
+    });
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:7", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:12", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:10", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:15", "App Hide");
   }
 };
 function createApp() {

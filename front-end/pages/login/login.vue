@@ -24,153 +24,119 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				title: '欢迎登录',
-				username: '', // 账号
-				password: ''  // 密码
+export default {
+	data() {
+		return {
+			title: '欢迎登录',
+			username: '',
+			password: ''
+		};
+	},
+	methods: {
+		handleLogin() {
+			const { username, password } = this;
+		
+			if (!username || !password) {
+				uni.showToast({
+					title: '请输入账号和密码',
+					icon: 'none'
+				});
+				return;
 			}
+		
+			// 调用微信云托管接口，使用 GET 请求
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 你的云托管环境ID
+				},
+				path: `/login?id=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+				header: {
+					'X-WX-SERVICE': 'userinfo',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+		
+					if (res.data === true) {  
+						uni.showToast({ title: '登录成功', icon: 'success', duration: 1000});
+						uni.setStorageSync('globalUsername', username);
+						uni.navigateTo({ url: '/pages/main/main' });
+					} else {
+						uni.showToast({ title: '账号或密码错误', icon: 'none', duration: 1000});
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000});
+				}
+			});
 		},
-		onLoad() {
-
-		},
-		methods: {
-			// 处理登录按钮点击
-			handleLogin() {
-			    const { username, password } = this;
-			
-			    if (!username || !password) {
-			        uni.showToast({
-			            title: '请输入账号和密码',
-			            icon: 'none'
-			        });
-			        return;
-			    }
-			
-			    // 你的云托管环境 ID
-			    const envId = 'prod-7glwxii4e6eb93d8';
-			
-			    // 你的后端登录接口地址
-			    const apiUrl = `https://${envId}.service.tcloudbase.com/login`;
-			
-			    // 发送请求到微信云托管后端
-			    uni.request({
-			        url: apiUrl, 
-			        method: 'POST',
-			        header: {
-			            'content-type': 'application/json'
-			        },
-			        data: {
-			            username,
-			            password
-			        },
-			        success: (res) => {
-			            console.log('后端返回数据:', res);
-			            if (res.data.success) {
-			                uni.showToast({
-			                    title: '登录成功',
-			                    icon: 'success'
-			                });
-							
-							//将用户名存入全局变量（本地存储）
-							uni.setStorageSync('globalUsername', username); // 使用同步存储
-							
-							//其他页面获取username
-							//const username = uni.getStorageSync('globalUsername');
-							//用户退出时清除全局变量
-							//uni.removeStorageSync('globalUsername'); 
-			
-			                // 登录成功，跳转到主页面
-			                uni.navigateTo({ url: '/pages/main/main' });
-			            } else {
-			                uni.showToast({
-			                    title: '账号或密码错误，请重试',
-			                    icon: 'none'
-			                });
-			            }
-			        },
-			        fail: (err) => {
-			            console.error('请求失败:', err);
-			            uni.showToast({
-			                title: '请求失败，请检查网络',
-			                icon: 'none'
-			            });
-			        }
-			    });
-			},
-			
-			// 处理跳转到注册页面
-			handleRegister() {
-				uni.navigateTo({ url: '/pages/register/register' });
-			}
+		handleRegister() {
+			uni.navigateTo({ url: '/pages/register/register' });
 		}
 	}
+};
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
 
-	/* 顶部标题样式 */
-	.header {
-		width: 100%;
-		text-align: center;
-		margin-top: 50rpx;
-		margin-bottom: 50rpx;
-	}
+.header {
+	width: 100%;
+	text-align: center;
+	margin-top: 50rpx;
+	margin-bottom: 50rpx;
+}
 
-	.header-title {
-		font-size: 40rpx;
-		font-weight: bold;
-		color: #333;
-	}
+.header-title {
+	font-size: 40rpx;
+	font-weight: bold;
+	color: #333;
+}
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 50rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
+.logo {
+	height: 200rpx;
+	width: 200rpx;
+	margin: 50rpx auto;
+}
 
-	.login-form {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 100%;
-	}
+.login-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
 
-	.input {
-		width: 80%;
-		height: 80rpx;
-		margin-bottom: 30rpx;
-		padding: 10rpx;
-		border: 1rpx solid #ccc;
-		border-radius: 10rpx;
-	}
+.input {
+	width: 80%;
+	height: 80rpx;
+	margin-bottom: 30rpx;
+	padding: 10rpx;
+	border: 1rpx solid #ccc;
+	border-radius: 10rpx;
+}
 
-	/* 注册链接样式 */
-	.register-link {
-		margin-bottom: 30rpx;
-		color: #007AFF;
-		text-decoration: underline;
-		font-size: 28rpx;
-	}
+.register-link {
+	margin-bottom: 30rpx;
+	color: #007AFF;
+	text-decoration: underline;
+	font-size: 28rpx;
+}
 
-	.login-btn {
-		width: 80%;
-		height: 80rpx;
-		background-color: #007AFF;
-		color: #fff;
-		border-radius: 10rpx;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+.login-btn {
+	width: 80%;
+	height: 80rpx;
+	background-color: #007AFF;
+	color: #fff;
+	border-radius: 10rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 </style>

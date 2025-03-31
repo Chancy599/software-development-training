@@ -14,7 +14,7 @@ const _sfc_main = {
         case "joinSign":
           common_vendor.index.navigateTo({ url: "/pages/joinSign/joinSign" });
           break;
-        case "signRecord":
+        case "Location_Check_In":
           common_vendor.index.navigateTo({ url: "/pages/Location_Check_In/Location_Check_In" });
           break;
         case "mySettings":
@@ -33,7 +33,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.o(($event) => $options.handleMenuItemClick("startSign")),
     b: common_vendor.o(($event) => $options.handleMenuItemClick("joinSign")),
-    c: common_vendor.o(($event) => $options.handleMenuItemClick("signRecord")),
+    c: common_vendor.o(($event) => $options.handleMenuItemClick("Location_Check_In")),
     d: common_vendor.o(($event) => $options.handleMenuItemClick("mySettings"))
   };
 }

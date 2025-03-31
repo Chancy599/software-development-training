@@ -30,7 +30,7 @@
 				});
 				setTimeout(() => {
 					uni.navigateTo({
-						url: '/pages/main/main' //目前暂时跳转到主菜单
+						url: '/pages/login/login' //目前暂时跳转到主菜单
 					});
 				}, 1000); // 1秒后跳转
 			}

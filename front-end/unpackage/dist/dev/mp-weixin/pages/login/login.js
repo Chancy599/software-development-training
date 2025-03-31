@@ -6,15 +6,10 @@ const _sfc_main = {
     return {
       title: "欢迎登录",
       username: "",
-      // 账号
       password: ""
-      // 密码
     };
   },
-  onLoad() {
-  },
   methods: {
-    // 处理登录按钮点击
     handleLogin() {
       const { username, password } = this;
       if (!username || !password) {
@@ -24,43 +19,33 @@ const _sfc_main = {
         });
         return;
       }
-      const envId = "prod-7glwxii4e6eb93d8";
-      const apiUrl = `https://${envId}.service.tcloudbase.com/login`;
-      common_vendor.index.request({
-        url: apiUrl,
-        method: "POST",
+      common_vendor.wx$1.cloud.callContainer({
+        config: {
+          env: "prod-7glwxii4e6eb93d8"
+          // 你的云托管环境ID
+        },
+        path: `/login?id=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
         header: {
+          "X-WX-SERVICE": "userinfo",
           "content-type": "application/json"
         },
-        data: {
-          username,
-          password
-        },
+        method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:69", "后端返回数据:", res);
-          if (res.data.success) {
-            common_vendor.index.showToast({
-              title: "登录成功",
-              icon: "success"
-            });
+          common_vendor.index.__f__("log", "at pages/login/login.vue:59", "后端返回数据:", res);
+          if (res.data === true) {
+            common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1e3 });
+            common_vendor.index.setStorageSync("globalUsername", username);
             common_vendor.index.navigateTo({ url: "/pages/main/main" });
           } else {
-            common_vendor.index.showToast({
-              title: "账号或密码错误，请重试",
-              icon: "none"
-            });
+            common_vendor.index.showToast({ title: "账号或密码错误", icon: "none", duration: 1e3 });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:86", "请求失败:", err);
-          common_vendor.index.showToast({
-            title: "请求失败，请检查网络",
-            icon: "none"
-          });
+          common_vendor.index.__f__("error", "at pages/login/login.vue:70", "请求失败:", err);
+          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
     },
-    // 处理跳转到注册页面
     handleRegister() {
       common_vendor.index.navigateTo({ url: "/pages/register/register" });
     }

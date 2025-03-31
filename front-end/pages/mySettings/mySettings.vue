@@ -16,23 +16,30 @@
       <text class="label">联系方式:</text> 
       <text class="value">{{ userData.contact_information }}</text>
     </view>
-    <view class="info-box">
-      <text class="label">归属组织:</text>
-      <view v-for="(item, index) in userData.belong_information" :key="index">
-        <text class="value">{{ item }}</text>
-      </view>
-    </view>
-	<button @click="handleRecord">签到记录</button>
+	<view class="info-box">
+	  <text class="label">归属组织:</text>
+	  <view v-if="userData.belong_information && userData.belong_information.length">
+		<view v-for="(item, index) in userData.belong_information" :key="index">
+		  <text class="value">{{ item }}</text>
+		</view>
+	  </view>
+	  <text v-else class="value">暂无</text>
+	</view>
+    <button @click="handleRecord">签到记录</button>
   </view>
 </template>
 
 <script>
-const envId = 'prod-7glwxii4e6eb93d8'; // 微信云托管环境 ID
-
 export default {
   data() {
     return {
-      userData: {} // 初始化为空
+      userData: {
+        id: '',
+        name: '',
+        gender: '',
+        contact_information: '',
+        belong_information: []
+      }
     };
   },
   mounted() {
@@ -40,22 +47,47 @@ export default {
   },
   methods: {
     getUserData() {
-      wx.request({
-        url: `https://${envId}.service.tcloudbase.com/user/12345`, // 你的云托管 API 地址
+      const username = uni.getStorageSync('globalUsername'); // 获取已存储的用户 ID
+      if (!username) {
+        uni.showToast({ title: '未获取到用户信息', icon: 'none' });
+        return;
+      }
+
+      wx.cloud.callContainer({
+        config: {
+          env: 'prod-7glwxii4e6eb93d8' 
+        },
+        path: `/getInfo?id=${encodeURIComponent(username)}`, 
+        header: {
+          'X-WX-SERVICE': 'userinfo',
+          'content-type': 'application/json'
+        },
         method: 'GET',
         success: (res) => {
-          this.userData = res.data;
+          console.log('后端返回数据:', res);
+          if (res.data) {
+            this.userData = {
+              id: res.data.id || '',
+              name: res.data.name || '',
+              gender: res.data.gender === 'MALE' ? '男' : res.data.gender === 'FEMALE' ? '女' : '', // 转换性别
+              contact_information: res.data.contact_information || '',
+              belong_information: res.data.belong_information || []
+            };
+          } else {
+            uni.showToast({ title: '获取用户信息失败', icon: 'none' });
+          }
         },
         fail: (err) => {
-          console.error('请求用户数据失败:', err);
+          console.error('请求失败:', err);
+          uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
         }
       });
+    },
+
+    // 处理跳转到签到记录页面
+    handleRecord() {
+      uni.navigateTo({ url: '/pages/signRecord/signRecord' });
     }
-	
-	// 处理跳转到签到记录页面
-	handleRecord() {
-		uni.navigateTo({ url: '/pages/signRecord/signRecord' });
-	}
   }
 };
 </script>
@@ -92,6 +124,4 @@ export default {
   font-size: 16px;
   color: #666;
 }
-
-
 </style>

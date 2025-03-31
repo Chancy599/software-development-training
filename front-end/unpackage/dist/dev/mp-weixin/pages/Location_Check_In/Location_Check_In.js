@@ -23,7 +23,7 @@ const _sfc_main = {
           this.longitude = res.longitude;
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/Location_Check_In/Location_Check_In.vue:41", "获取位置失败:", err);
+          common_vendor.index.__f__("error", "at pages/Location_Check_In/Location_Check_In.vue:38", "获取位置失败:", err);
         }
       });
     },
@@ -42,7 +42,7 @@ const _sfc_main = {
           },
           fail: (err) => {
             common_vendor.wx$1.showToast({ title: "签到失败", icon: "none" });
-            common_vendor.index.__f__("error", "at pages/Location_Check_In/Location_Check_In.vue:59", "签到失败:", err);
+            common_vendor.index.__f__("error", "at pages/Location_Check_In/Location_Check_In.vue:56", "签到失败:", err);
           }
         });
       } else {
