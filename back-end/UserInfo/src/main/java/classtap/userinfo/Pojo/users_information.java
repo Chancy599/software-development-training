@@ -14,18 +14,20 @@ public class users_information {
     private List<String> belong_information;
    // private List<String> belong_information;
     private String contact_information;
+    private List<String> manage_information;
 
     public users_information() {
     }
 
     public users_information(String id, String name, String password,Gender gender,
-                             List<String> belong_information,String contact_information) {
+                             List<String> belong_information,String contact_information,List<String> manage_information) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.gender = gender;
         this.belong_information = belong_information;
         this.contact_information = contact_information;
+        this.manage_information = manage_information;
     }
 
     public String getId() {
@@ -75,6 +77,13 @@ public class users_information {
     public void setContact_information(String contact_information) {
         this.contact_information = contact_information;
     }
+    public List<String> getManage_information() {
+        return manage_information;
+    }
+
+    public void setManage_information(List<String> belong_information) {
+        this.manage_information = manage_information;
+    }
 
     @Override
     public String toString() {
@@ -84,7 +93,8 @@ public class users_information {
                 ", exp=" + password +
                 ", gender=" + gender +
                 ", belong_information=" + belong_information +
-                ", contact_information='" + contact_information + '\'' +
+                ", contact_information=" + contact_information +
+                ", manage_information='" + manage_information + '\'' +
                 '}';
     }
 

@@ -33,6 +33,18 @@ public class UserController {
         return userservice.deleteBelong(id, targetBelong);
     };
 
+
+    @PutMapping("/updateManageBelong")
+    public boolean updateManageBelong(String id, String newBelong) {
+        return userservice.updateManageBelong(id, newBelong);
+    }
+
+    @DeleteMapping("/deleteManageBelong")
+    public boolean deleteManageBelong(String id, String targetBelong){
+        return userservice.deleteManageBelong(id, targetBelong);
+    };
+
+
     @RequestMapping("/getInfo")
     public users_information getInfo(String id){
         return userservice.getInfo(id);

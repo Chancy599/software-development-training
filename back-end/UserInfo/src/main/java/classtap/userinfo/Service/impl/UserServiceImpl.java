@@ -36,15 +36,36 @@ public class UserServiceImpl implements UserService {
 
     public boolean deleteBelong(String id, String targetBelong){
         return mapper.deleteBelong(id, targetBelong);
-    };
+    }
+
+    @Override
+    public boolean updateManageBelong(String id, String newBelong) {
+        return mapper.updateManageBelong(id, newBelong);
+    }
+
+    @Override
+    public boolean deleteManageBelong(String id, String targetBelong) {
+        return mapper.deleteManageBelong(id, targetBelong);
+    }
+
+    ;
 
 
     public users_information getInfo(String id){
-        String jsonString=mapper.getBelong(id);
-        List<String> stringList=new ArrayList<>();
+        String jsonString1=mapper.getBelong(id);
+        List<String> stringList1=new ArrayList<>();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            stringList = objectMapper.readValue(jsonString, new TypeReference<List<String>>() {});
+            stringList1 = objectMapper.readValue(jsonString1, new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            System.out.println("no");
+        }
+
+        String jsonString2=mapper.getManageBelong(id);
+        List<String> stringList2=new ArrayList<>();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            stringList2 = objectMapper.readValue(jsonString2, new TypeReference<List<String>>() {});
         } catch (Exception e) {
             System.out.println("no");
         }
@@ -52,7 +73,7 @@ public class UserServiceImpl implements UserService {
         return new users_information
                 (mapper.getInfo(id).getId(),mapper.getInfo(id).getName(),
                         mapper.getInfo(id).getPassword(),mapper.getInfo(id).getGender()
-                        ,stringList,mapper.getInfo(id).getContact_information());
+                        ,stringList1,mapper.getInfo(id).getContact_information(),stringList2);
     };
 
 }
