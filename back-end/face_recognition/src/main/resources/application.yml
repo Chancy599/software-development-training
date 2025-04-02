@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: face_recognition
+server:
+  port: 5002
+
+
