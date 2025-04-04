@@ -17,6 +17,15 @@
       <text class="value">{{ userData.contact_information }}</text>
     </view>
 	<view class="info-box">
+	  <text class="label">管理组织:</text>
+	  <view v-if="userData.manage_information && userData.manage_information.length">
+		<view v-for="(item, index) in userData.manage_information" :key="index">
+		  <text class="value">{{ item }}</text>
+		</view>
+	  </view>
+	  <text v-else class="value">暂无</text>
+	</view>
+	<view class="info-box">
 	  <text class="label">归属组织:</text>
 	  <view v-if="userData.belong_information && userData.belong_information.length">
 		<view v-for="(item, index) in userData.belong_information" :key="index">
@@ -38,7 +47,8 @@ export default {
         name: '',
         gender: '',
         contact_information: '',
-        belong_information: []
+        belong_information: [],
+		manage_information: []
       }
     };
   },
@@ -71,7 +81,8 @@ export default {
 				name: res.data.name || '',
 				gender: res.data.gender === 'MALE' ? '男' : res.data.gender === 'FEMALE' ? '女' : '', // 转换性别
 				contact_information: res.data.contact_information || '',
-				belong_information: res.data.belong_information || []
+				belong_information: res.data.belong_information || [],
+				manage_information: res.data.manage_information || []
 				;
 			} else {
 				uni.showToast({ title: '获取用户信息失败', icon: 'none' });

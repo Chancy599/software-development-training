@@ -62,6 +62,13 @@
 			{
 				"navigationBarTitleText" : "个人签到记录"
 			}
+		},
+		{
+			"path" : "pages/QRCode/QRCode",
+			"style" : 
+			{
+				"navigationBarTitleText" : "二维码签到"
+			}
 		}
 	],
 	"globalStyle": {
