@@ -4,7 +4,10 @@ import com.scut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -15,26 +18,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // 查询班级所有学生统计
-    @GetMapping("/{className}")
-    public ResponseEntity<?> getClassStudentsStats(@PathVariable String className) {
+    @GetMapping("/{classId}")
+    public ResponseEntity<?> getClassStudentsStats(@PathVariable String classId) {
         try {
-            return ResponseEntity.ok(userService.getClassStudentsStats(className));
+            return ResponseEntity.ok(userService.getClassStudentsStats(classId));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         }
     }
 
-    @GetMapping("/{className}/{userId}")
+    // 修改路径参数 {className} -> {classId}
+    @GetMapping("/{classId}/{userId}")
     public ResponseEntity<?> getStudentDetails(
-            @PathVariable String className,
+            @PathVariable String classId, // ✅ 参数名改为 classId
             @PathVariable String userId
     ) {
         try {
-            return ResponseEntity.ok(userService.getStudentDetails(className, userId));
+            return ResponseEntity.ok(userService.getStudentDetails(classId, userId));
         } catch (RuntimeException e) {
-            // 添加空值保护
             String errorMessage = e.getMessage() != null ? e.getMessage() : "未知错误";
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", errorMessage));

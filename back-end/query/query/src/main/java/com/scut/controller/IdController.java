@@ -35,13 +35,13 @@ public class IdController {
     }
 
     // 查询指定组织的签到记录
-    @GetMapping("/{userId}/{className}")
+    @GetMapping("/{userId}/{classId}")
     public ResponseEntity<?> getClassCheckins(
             @PathVariable String userId,
-            @PathVariable String className
+            @PathVariable String classId
     ) {
         try {
-            EITSC_Detail detail = idService.getClassCheckins(userId, className);
+            EITSC_Detail detail = idService.getClassCheckins(userId, classId);
             return ResponseEntity.ok(detail);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

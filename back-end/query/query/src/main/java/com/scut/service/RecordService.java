@@ -1,7 +1,7 @@
 package com.scut.service;
-import com.scut.entities.ECTSCIR_EST_Summary;
-import com.scut.entities.ECTSCIR_EnterStartTime;
-import com.scut.entities.EnterClassToSelectCheckInRecord;
+import com.scut.entities.ECTSR_EST_Summary;
+import com.scut.entities.ECTSR_EnterStartTime;
+import com.scut.entities.EnterClassToSelectRecord;
 import com.scut.mapper.RecordMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,20 +9,20 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// RecordService.java
 @Service
 public class RecordService {
     @Autowired
     private RecordMapper recordMapper;
 
-    public List<EnterClassToSelectCheckInRecord> getCheckinSummaryByClassName(String className) {
-        return recordMapper.selectCheckinSummaryByClassName(className);
+    // 修改1: 方法名和参数名
+    public List<EnterClassToSelectRecord> getCheckinSummaryByClassId(String classId) {
+        return recordMapper.selectCheckinSummaryByClassId(classId);
     }
 
-    public ECTSCIR_EST_Summary getCheckinsByClassAndTime(String className, LocalDateTime startTime) {
-        // 方法名改为与Controller调用一致
-        ECTSCIR_EST_Summary summary = recordMapper.selectStats(className, startTime);
-        List<ECTSCIR_EnterStartTime> records = recordMapper.selectRecords(className, startTime);
+    // 修改2: 参数名 className -> classId
+    public ECTSR_EST_Summary getCheckinsByClassAndTime(String classId, LocalDateTime startTime) {
+        ECTSR_EST_Summary summary = recordMapper.selectStats(classId, startTime);
+        List<ECTSR_EnterStartTime> records = recordMapper.selectRecords(classId, startTime);
         summary.setRecords(records);
         return summary;
     }

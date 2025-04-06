@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ECTSCIR_EnterStartTime {
+public class ECTSR_EnterStartTime {
     private String name;
     private String userId;
     private LocalDateTime startTime;
