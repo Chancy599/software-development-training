@@ -16,7 +16,7 @@ public class IdService {
     private IdMapper idMapper;
 
     public EITSC_Summary getJoinedClasses(String userId) {
-        List<String> classNames = idMapper.selectJoinedClassNames(userId);
+        List<String> classNames = idMapper.selectJoinedClassNames(userId); // ✅ 方法名改回 selectJoinedClassNames
 
         EITSC_Summary summary = new EITSC_Summary();
         summary.setTotal(classNames.size());
@@ -30,13 +30,15 @@ public class IdService {
         return summary;
     }
 
-    // 查询指定组织签到详情
-    public EITSC_Detail getClassCheckins(String userId, String className) {
-        EITSC_Detail detail = idMapper.selectClassCheckins(userId, className);
+    public EITSC_Detail getClassCheckins(String userId, String classId) {
+        EITSC_Detail detail = idMapper.selectClassCheckins(userId, classId);
 
-        // 检查总记录数是否为0
-        if (detail.getTotal() == 0) {
-            throw new RuntimeException("用户在该组织中没有签到记录");
+        // 检查所有状态是否都为0（无签到记录）
+        if (detail.getIn_TIME() == 0
+                && detail.getLate() == 0
+                && detail.getAbsent() == 0
+                && detail.getRequest_LEAVE() == 0) {
+            throw new RuntimeException("用户在该班级中没有签到记录");
         }
 
         return detail;

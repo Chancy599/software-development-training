@@ -1,7 +1,9 @@
 package com.scut.controller;
-import com.scut.entities.ECTSCIR_EST_Summary;
-import com.scut.entities.EnterClassToSelectCheckInRecord;
-import com.scut.entities.ECTSCIR_Summary;
+
+
+import com.scut.entities.ECTSR_EST_Summary;
+import com.scut.entities.ECTSR_Summary;
+import com.scut.entities.EnterClassToSelectRecord;
 import com.scut.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
-// CheckinController.java
 @RestController
-@RequestMapping("/EnterClassToSelectCheckInRecord")
+@RequestMapping("/EnterClassToSelectRecord")
 public class RecordController {
 
     private final RecordService recordService;
@@ -29,43 +30,36 @@ public class RecordController {
         this.recordService = recordService;
     }
 
-
-    //##################################################################################################
-    @GetMapping("/{className}")
+    // 修改1: 路径参数 {className} -> {classId}
+    @GetMapping("/{classId}")
     public ResponseEntity<?> getCheckinSummary(
-            @PathVariable String className) {
-        List<EnterClassToSelectCheckInRecord> summaries = recordService.getCheckinSummaryByClassName(className);
+            @PathVariable String classId) { // 修改2: 参数名 className -> classId
+        List<EnterClassToSelectRecord> summaries = recordService.getCheckinSummaryByClassId(classId);
 
         if (summaries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "班级不存在或没有签到记录"));
+                    .body(Map.of("message", "班级ID不存在或没有签到记录")); // 修改3: 错误提示
         }
 
-        // 包装响应对象
-        ECTSCIR_Summary response = new ECTSCIR_Summary();
-        response.setTotal(summaries.size());  // 总次数 = 列表长度
+        ECTSR_Summary response = new ECTSR_Summary();
+        response.setTotal(summaries.size());
         response.setRecords(summaries);
-
-
         return ResponseEntity.ok(response);
     }
 
-
-    //##################################################################################################
-    @GetMapping("/{className}/{startTime}")
+    // 修改4: 路径参数 {className} -> {classId}
+    @GetMapping("/{classId}/{startTime}")
     public ResponseEntity<?> getCheckinDetails(
-            @PathVariable String className,
+            @PathVariable String classId, // 修改5: 参数名 className -> classId
             @PathVariable String startTime) {
 
         try {
             LocalDateTime datetime = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            ECTSCIR_EST_Summary response = recordService.getCheckinsByClassAndTime(className, datetime);
+            ECTSR_EST_Summary response = recordService.getCheckinsByClassAndTime(classId, datetime);
 
-            // 优化空记录判断逻辑
             if (response.getRecords() == null || response.getRecords().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of(
-
                                 "message", "未找到签到记录",
                                 "stats", Map.of(
                                         "IN_TIME", response.getIN_TIME(),
@@ -81,6 +75,3 @@ public class RecordController {
         }
     }
 }
-
-//##################################################################################################
-
