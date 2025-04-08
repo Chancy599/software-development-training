@@ -1,1 +1,1 @@
-<view></view>
+<view class="data-v-544370a6"><picker class="data-v-544370a6" range="{{b}}" bindchange="{{c}}"><view class="picker data-v-544370a6"> 选择班级：{{a}}</view></picker><view class="data-v-544370a6">对应信息：{{d}}</view></view>

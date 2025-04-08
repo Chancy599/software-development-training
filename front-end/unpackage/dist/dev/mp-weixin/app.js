@@ -7,7 +7,6 @@ if (!Math) {
   "./pages/register/register.js";
   "./pages/main/main.js";
   "./pages/startSign/startSign.js";
-  "./pages/joinSign/joinSign.js";
   "./pages/mySettings/mySettings.js";
   "./pages/Location_Check_In/Location_Check_In.js";
   "./pages/QRCode_Check_In/QRCode_Check_In.js";
@@ -23,6 +22,7 @@ if (!Math) {
   "./pages/Face_Launch/Face_Launch.js";
   "./pages/UncheckedList/UncheckedList.js";
   "./pages/OrgCreate/OrgCreate.js";
+  "./pages/OrgManage/OrgManage.js";
 }
 const _sfc_main = {
   onLaunch: function() {
@@ -48,8 +48,8 @@ function createApp() {
     contact_information: "",
     belong_information: [],
     manage_information: [],
-    belong_name: [],
-    manage_name: []
+    belongInfo_name: [],
+    manageInfo_name: []
   });
   return { app };
 }

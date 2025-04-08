@@ -5,7 +5,6 @@
     "pages/register/register",
     "pages/main/main",
     "pages/startSign/startSign",
-    "pages/joinSign/joinSign",
     "pages/mySettings/mySettings",
     "pages/Location_Check_In/Location_Check_In",
     "pages/QRCode_Check_In/QRCode_Check_In",
@@ -20,7 +19,8 @@
     "pages/QRCode_Launch/QRCode_Launch",
     "pages/Face_Launch/Face_Launch",
     "pages/UncheckedList/UncheckedList",
-    "pages/OrgCreate/OrgCreate"
+    "pages/OrgCreate/OrgCreate",
+    "pages/OrgManage/OrgManage"
   ],
   "window": {
     "navigationBarTextStyle": "black",

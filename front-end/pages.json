@@ -134,6 +134,13 @@
 			{
 				"navigationBarTitleText" : "新建组织"
 			}
+		},
+		{
+			"path" : "pages/OrgManage/OrgManage",
+			"style" : 
+			{
+				"navigationBarTitleText" : "管理组织"
+			}
 		}
 	],
 	"globalStyle": {

@@ -102,15 +102,14 @@ export default {
 				success: (res) => {
 					console.log('后端返回数据:', res);
 					if (res.data) {
-		
 						// 设置全局变量
 						this.$globalData.name = res.data.name || '';
 						this.$globalData.gender = res.data.gender || '';
 						this.$globalData.contact_information = res.data.contact_information || '';
 						this.$globalData.belong_information = res.data.belong_information || [];
 						this.$globalData.manage_information = res.data.manage_information || [];
-						this.$globalData.belong_name = res.data.belong_name || [];
-						this.$globalData.manage_name = res.data.manage_name || [];
+						this.$globalData.belongInfo_name = res.data.belongInfo_name || [];
+						this.$globalData.manageInfo_name = res.data.manageInfo_name || [];
 					} else {
 						uni.showToast({ title: '获取用户信息失败', icon: 'none' });
 					}
@@ -130,10 +129,10 @@ export default {
 			this.$globalData.contact_information = 'test@example.com';
 			this.$globalData.belong_information = ['TEST_1, TEST_2'];
 			this.$globalData.manage_information = ['TEST_3, TEST_4'];
-			this.$globalData.belong_name = ['测试1组', '测试2组'];
-			this.$globalData.manage_name = ['测试3组', '测试4组'];
+			this.$globalData.belongInfo_name = ['测试1组', '测试2组'];
+			this.$globalData.manageInfo_name = ['测试3组', '测试4组'];
 			uni.navigateTo({ url: '/pages/main/main' });
-		}
+		},
 		
 		// 注册链接
 		handleRegister() {
@@ -202,5 +201,6 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	margin-bottom: 30rpx;
 }
 </style>

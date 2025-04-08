@@ -7,7 +7,7 @@
 				<text class="menu-text">发起签到</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('UncheckedList')">
-				<text class="menu-icon iconfont">&#xe604;</text>
+				<text class="menu-icon iconfont">&#xe602;</text>
 				<text class="menu-text">待签到表</text>
 			</view>
 		</view>
@@ -23,11 +23,11 @@
 		</view>
 		<view class="menu-row">
 			<view class="menu-item" @click="handleMenuItemClick('OrgCreate')">
-				<text class="menu-icon iconfont">&#xe603;</text>
+				<text class="menu-icon iconfont">&#xe605;</text>
 				<text class="menu-text">新建组织</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('OrgManage')">
-				<text class="menu-icon iconfont">&#xe604;</text>
+				<text class="menu-icon iconfont">&#xe606;</text>
 				<text class="menu-text">管理组织</text>
 			</view>
 		</view>
@@ -35,10 +35,8 @@
 </template>
 
 <script>
-	import fetchUserMixin from '@/mixins/fetchUserMixin.js';
 	export default {
 		methods: {
-			mixins: [fetchUserMixin],
 			// 处理菜单项点击
 			handleMenuItemClick(item) {
 				switch (item) {

@@ -13,8 +13,8 @@ Vue.prototype.$globalData = Vue.observable({
   contact_information: '',
   belong_information: [],
   manage_information: [],
-  belong_name: [],
-  manage_name: []
+  belongInfo_name: [],
+  manageInfo_name: []
 })
 
 const app = new Vue({
@@ -37,8 +37,8 @@ export function createApp() {
     contact_information: '',
     belong_information: [],
     manage_information: [],
-    belong_name: [],
-    manage_name: []
+    belongInfo_name: [],
+    manageInfo_name: []
   })
 
   return { app }

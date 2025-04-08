@@ -17,8 +17,8 @@ const _sfc_main = {
         name: "",
         gender: "",
         contact_information: "",
-        belong_name: [],
-        manage_name: []
+        belongInfo_name: [],
+        manageInfo_name: []
       };
     },
     // 同步全局数据
@@ -32,8 +32,8 @@ const _sfc_main = {
         name: this.$globalData.name || "",
         gender: this.formatGender(this.$globalData.gender),
         contact_information: this.$globalData.contact_information || "",
-        belong_name: this.$globalData.belong_name || [],
-        manage_name: this.$globalData.manage_name || []
+        belongInfo_name: this.$globalData.belongInfo_name || [],
+        manageInfo_name: this.$globalData.manageInfo_name || []
       };
     },
     // 格式化性别显示
@@ -50,18 +50,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.t($data.userData.name),
     c: common_vendor.t($data.userData.gender),
     d: common_vendor.t($data.userData.contact_information),
-    e: (_a = $data.userData.manage_name) == null ? void 0 : _a.length
-  }, ((_b = $data.userData.manage_name) == null ? void 0 : _b.length) ? {
-    f: common_vendor.f($data.userData.manage_name, (item, index, i0) => {
+    e: (_a = $data.userData.manageInfo_name) == null ? void 0 : _a.length
+  }, ((_b = $data.userData.manageInfo_name) == null ? void 0 : _b.length) ? {
+    f: common_vendor.f($data.userData.manageInfo_name, (item, index, i0) => {
       return {
         a: common_vendor.t(item),
         b: index
       };
     })
   } : {}, {
-    g: (_c = $data.userData.belong_name) == null ? void 0 : _c.length
-  }, ((_d = $data.userData.belong_name) == null ? void 0 : _d.length) ? {
-    h: common_vendor.f($data.userData.belong_name, (item, index, i0) => {
+    g: (_c = $data.userData.belongInfo_name) == null ? void 0 : _c.length
+  }, ((_d = $data.userData.belongInfo_name) == null ? void 0 : _d.length) ? {
+    h: common_vendor.f($data.userData.belongInfo_name, (item, index, i0) => {
       return {
         a: common_vendor.t(item),
         b: index

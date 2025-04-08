@@ -18,15 +18,15 @@
     </view>
     <view class="info-box">
       <text class="label">管理组织:</text>
-      <view v-if="userData.manage_name?.length">
-        <text class="value" v-for="(item, index) in userData.manage_name" :key="index">{{ item }}</text>
+      <view v-if="userData.manageInfo_name?.length">
+        <text class="value" v-for="(item, index) in userData.manageInfo_name" :key="index">{{ item }}</text>
       </view>
       <text v-else class="value">暂无</text>
     </view>
     <view class="info-box">
       <text class="label">归属组织:</text>
-      <view v-if="userData.belong_name?.length">
-        <text class="value" v-for="(item, index) in userData.belong_name" :key="index">{{ item }}</text>
+      <view v-if="userData.belongInfo_name?.length">
+        <text class="value" v-for="(item, index) in userData.belongInfo_name" :key="index">{{ item }}</text>
       </view>
       <text v-else class="value">暂无</text>
     </view>
@@ -51,8 +51,8 @@ export default {
         name: '',
         gender: '',
         contact_information: '',
-        belong_name: [],
-        manage_name: []
+        belongInfo_name: [],
+        manageInfo_name: []
       }
     },
     // 同步全局数据
@@ -67,8 +67,8 @@ export default {
         name: this.$globalData.name || '',
         gender: this.formatGender(this.$globalData.gender),
         contact_information: this.$globalData.contact_information || '',
-        belong_name: this.$globalData.belong_name || [],
-        manage_name: this.$globalData.manage_name || []
+        belongInfo_name: this.$globalData.belongInfo_name || [],
+        manageInfo_name: this.$globalData.manageInfo_name || []
       }
     },
     // 格式化性别显示
