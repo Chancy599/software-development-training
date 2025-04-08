@@ -32,12 +32,6 @@
 			}
 		},
 		{
-			"path": "pages/joinSign/joinSign",
-			"style": {
-				"navigationBarTitleText": "我要签到"
-			}
-		},
-		{
 			"path": "pages/mySettings/mySettings",
 			"style": {
 				"navigationBarTitleText": "我的设置"
@@ -131,7 +125,7 @@
 			"path" : "pages/UncheckedList/UncheckedList",
 			"style" : 
 			{
-				"navigationBarTitleText" : "尚未签到"
+				"navigationBarTitleText" : "待签到表"
 			}
 		},
 		{

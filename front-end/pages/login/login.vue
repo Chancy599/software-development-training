@@ -19,6 +19,7 @@
 			</view>
 
 			<button class="login-btn" @click="handleLogin">登录</button>
+			<button class="login-btn" @click="TestleLogin">测试</button>
 		</view>
 	</view>
 </template>
@@ -67,6 +68,9 @@ export default {
 
 						// 存入全局变量
 						this.$globalData.username = username;
+						
+						// 设置全局变量
+						this.fetchUserInfo();
 
 						// 跳转主页面
 						uni.navigateTo({ url: '/pages/main/main' });
@@ -80,6 +84,58 @@ export default {
 				}
 			});
 		},
+		
+		// 获取用户信息
+		fetchUserInfo() {
+			const username = this.$globalData.username;
+			
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8'
+				},
+				path: `/getInfo?id=${encodeURIComponent(username)}`,
+				header: {
+					'X-WX-SERVICE': 'userinfo',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (res.data) {
+		
+						// 设置全局变量
+						this.$globalData.name = res.data.name || '';
+						this.$globalData.gender = res.data.gender || '';
+						this.$globalData.contact_information = res.data.contact_information || '';
+						this.$globalData.belong_information = res.data.belong_information || [];
+						this.$globalData.manage_information = res.data.manage_information || [];
+						this.$globalData.belong_name = res.data.belong_name || [];
+						this.$globalData.manage_name = res.data.manage_name || [];
+					} else {
+						uni.showToast({ title: '获取用户信息失败', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
+		
+		// 测试登录
+		TestLogin() {
+			// 设置全局变量
+			this.$globalData.name = '0';
+			this.$globalData.gender = '测试';
+			this.$globalData.contact_information = 'test@example.com';
+			this.$globalData.belong_information = ['TEST_1, TEST_2'];
+			this.$globalData.manage_information = ['TEST_3, TEST_4'];
+			this.$globalData.belong_name = ['测试1组', '测试2组'];
+			this.$globalData.manage_name = ['测试3组', '测试4组'];
+			uni.navigateTo({ url: '/pages/main/main' });
+		}
+		
+		// 注册链接
 		handleRegister() {
 			uni.navigateTo({ url: '/pages/register/register' });
 		}

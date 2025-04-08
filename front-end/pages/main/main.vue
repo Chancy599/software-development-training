@@ -6,9 +6,9 @@
 				<text class="menu-icon iconfont">&#xe601;</text>
 				<text class="menu-text">发起签到</text>
 			</view>
-			<view class="menu-item" @click="handleMenuItemClick('joinSign')">
-				<text class="menu-icon iconfont">&#xe602;</text>
-				<text class="menu-text">我要签到</text>
+			<view class="menu-item" @click="handleMenuItemClick('UncheckedList')">
+				<text class="menu-icon iconfont">&#xe604;</text>
+				<text class="menu-text">待签到表</text>
 			</view>
 		</view>
 		<view class="menu-row">
@@ -26,17 +26,19 @@
 				<text class="menu-icon iconfont">&#xe603;</text>
 				<text class="menu-text">新建组织</text>
 			</view>
-			<view class="menu-item" @click="handleMenuItemClick('UncheckedList')">
+			<view class="menu-item" @click="handleMenuItemClick('OrgManage')">
 				<text class="menu-icon iconfont">&#xe604;</text>
-				<text class="menu-text">尚未签到</text>
+				<text class="menu-text">管理组织</text>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import fetchUserMixin from '@/mixins/fetchUserMixin.js';
 	export default {
 		methods: {
+			mixins: [fetchUserMixin],
 			// 处理菜单项点击
 			handleMenuItemClick(item) {
 				switch (item) {
@@ -44,9 +46,9 @@
 						// 跳转到发起签到页面
 						uni.navigateTo({ url: '/pages/startSign/startSign' });
 						break;
-					case 'joinSign':
-						// 跳转到我要签到页面
-						uni.navigateTo({ url: '/pages/joinSign/joinSign' });
+					case 'UncheckedList':
+						// 跳转到待签到表页面
+						uni.navigateTo({ url: '/pages/UncheckedList/UncheckedList' });
 						break;
 					case 'Check_Record':
 						// 跳转到查看记录页面
@@ -56,13 +58,13 @@
 						// 跳转到我的设置页面
 						uni.navigateTo({ url: '/pages/mySettings/mySettings' });
 						break;
-					case 'mySettings':
+					case 'OrgCreate':
 						// 跳转到新建组织页面
 						uni.navigateTo({ url: '/pages/OrgCreate/OrgCreate' });
 						break;
-					case 'mySettings':
-						// 跳转到尚未签到页面
-						uni.navigateTo({ url: '/pages/UncheckedList/UncheckedList' });
+					case 'OrgManage':
+						// 跳转到管理组织页面
+						uni.navigateTo({ url: '/pages/OrgManage/OrgManage' });
 						break;
 					default:
 						uni.showToast({
@@ -70,47 +72,7 @@
 							icon: 'none'
 						});
 				}
-			},
-			
-			// 获取用户信息
-			fetchUserInfo() {
-				const username = this.$globalData.username;
-				
-				wx.cloud.callContainer({
-					config: {
-						env: 'prod-7glwxii4e6eb93d8'
-					},
-					path: `/getInfo?id=${encodeURIComponent(username)}`,
-					header: {
-						'X-WX-SERVICE': 'userinfo',
-						'content-type': 'application/json'
-					},
-					method: 'GET',
-					success: (res) => {
-						console.log('后端返回数据:', res);
-						if (res.data) {
-			
-							// 设置全局变量
-							this.$globalData.name = res.data.name || '';
-							this.$globalData.gender = res.data.gender || '';
-							this.$globalData.contact_information = res.data.contact_information || '';
-							this.$globalData.belong_information = res.data.belong_information || [];
-							this.$globalData.manage_information = res.data.manage_information || [];
-							this.$globalData.belong_name = res.data.belong_name || [];
-							this.$globalData.manage_name = res.data.manage_name || [];
-						} else {
-							uni.showToast({ title: '获取用户信息失败', icon: 'none' });
-						}
-					},
-					fail: (err) => {
-						console.error('请求失败:', err);
-						uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-					}
-				});
 			}
-		},
-		onLoad() {
-			this.fetchUserInfo();
 		}
 	};
 </script>
