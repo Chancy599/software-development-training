@@ -22,7 +22,7 @@ const _sfc_main = {
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
-          // 你的云托管环境ID
+          // 云托管环境ID
         },
         path: `/login`,
         header: {
@@ -38,14 +38,14 @@ const _sfc_main = {
           common_vendor.index.__f__("log", "at pages/login/login.vue:63", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1e3 });
-            common_vendor.index.setStorageSync("globalUsername", username);
+            this.$globalData.username = username;
             common_vendor.index.navigateTo({ url: "/pages/main/main" });
           } else {
             common_vendor.index.showToast({ title: "账号或密码错误", icon: "none", duration: 1e3 });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:74", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:78", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

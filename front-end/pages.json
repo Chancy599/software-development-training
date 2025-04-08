@@ -38,12 +38,6 @@
 			}
 		},
 		{
-			"path": "pages/signRecord/signRecord",
-			"style": {
-				"navigationBarTitleText": "签到记录"
-			}
-		},
-		{
 			"path": "pages/mySettings/mySettings",
 			"style": {
 				"navigationBarTitleText": "我的设置"
@@ -57,17 +51,94 @@
 			}
 		},
 		{
-			"path" : "pages/Individual_Check_In/Individual_Check_In",
-			"style" : 
-			{
-				"navigationBarTitleText" : "个人签到记录"
-			}
-		},
-		{
-			"path" : "pages/QRCode/QRCode",
+			"path" : "pages/QRCode_Check_In/QRCode_Check_In",
 			"style" : 
 			{
 				"navigationBarTitleText" : "二维码签到"
+			}
+		},
+		{
+			"path" : "pages/Organization_Records/Organization_Records",
+			"style" : 
+			{
+				"navigationBarTitleText" : "组织签到"
+			}
+		},
+		{
+			"path" : "pages/Member_Records/Member_Records",
+			"style" : 
+			{
+				"navigationBarTitleText" : "成员签到"
+			}
+		},
+		{
+			"path" : "pages/My_Records/My_Records",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的签到"
+			}
+		},
+		{
+			"path" : "pages/Cipher_Check_In/Cipher_Check_In",
+			"style" : 
+			{
+				"navigationBarTitleText" : "暗号签到"
+			}
+		},
+		{
+			"path" : "pages/Face_Check_In/Face_Check_In",
+			"style" : 
+			{
+				"navigationBarTitleText" : "刷脸签到"
+			}
+		},
+		{
+			"path" : "pages/Check_Record/Check_Record",
+			"style" : 
+			{
+				"navigationBarTitleText" : "查看记录"
+			}
+		},
+		{
+			"path" : "pages/Location_Launch/Location_Launch",
+			"style" : 
+			{
+				"navigationBarTitleText" : "定位签到"
+			}
+		},
+		{
+			"path" : "pages/Cipher_Launch/Cipher_Launch",
+			"style" : 
+			{
+				"navigationBarTitleText" : "暗号签到"
+			}
+		},
+		{
+			"path" : "pages/QRCode_Launch/QRCode_Launch",
+			"style" : 
+			{
+				"navigationBarTitleText" : "二维码签到"
+			}
+		},
+		{
+			"path" : "pages/Face_Launch/Face_Launch",
+			"style" : 
+			{
+				"navigationBarTitleText" : "刷脸签到"
+			}
+		},
+		{
+			"path" : "pages/UncheckedList/UncheckedList",
+			"style" : 
+			{
+				"navigationBarTitleText" : "尚未签到"
+			}
+		},
+		{
+			"path" : "pages/OrgCreate/OrgCreate",
+			"style" : 
+			{
+				"navigationBarTitleText" : "新建组织"
 			}
 		}
 	],

@@ -44,10 +44,10 @@ export default {
 				return;
 			}
 		
-			// 调用微信云托管接口，使用 GET 请求
+			// 调用微信云托管接口，使用 POST 请求
 			wx.cloud.callContainer({
 				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 你的云托管环境ID
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
 				},
 				path: `/login`,
 				header: {
@@ -55,24 +55,28 @@ export default {
 					'content-type': 'application/json'
 				},
 				method: 'POST',
-				data:{
+				data: {
 					id: username,
 					password: password
 				},
 				success: (res) => {
 					console.log('后端返回数据:', res);
 		
-					if (res.data === true) {  
-						uni.showToast({ title: '登录成功', icon: 'success', duration: 1000});
-						uni.setStorageSync('globalUsername', username);
+					if (res.data === true) {
+						uni.showToast({ title: '登录成功', icon: 'success', duration: 1000 });
+
+						// 存入全局变量
+						this.$globalData.username = username;
+
+						// 跳转主页面
 						uni.navigateTo({ url: '/pages/main/main' });
 					} else {
-						uni.showToast({ title: '账号或密码错误', icon: 'none', duration: 1000});
+						uni.showToast({ title: '账号或密码错误', icon: 'none', duration: 1000 });
 					}
 				},
 				fail: (err) => {
 					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000});
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
 				}
 			});
 		},

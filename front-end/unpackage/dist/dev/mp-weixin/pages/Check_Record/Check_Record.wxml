@@ -1,0 +1,1 @@
+<view class="container"><view class="button" bindtap="{{a}}">组织签到</view><view class="button" bindtap="{{b}}">成员签到</view><view class="button" bindtap="{{c}}">我的签到</view></view>

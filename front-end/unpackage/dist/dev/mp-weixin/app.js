@@ -8,10 +8,21 @@ if (!Math) {
   "./pages/main/main.js";
   "./pages/startSign/startSign.js";
   "./pages/joinSign/joinSign.js";
-  "./pages/signRecord/signRecord.js";
   "./pages/mySettings/mySettings.js";
   "./pages/Location_Check_In/Location_Check_In.js";
-  "./pages/Individual_Check_In/Individual_Check_In.js";
+  "./pages/QRCode_Check_In/QRCode_Check_In.js";
+  "./pages/Organization_Records/Organization_Records.js";
+  "./pages/Member_Records/Member_Records.js";
+  "./pages/My_Records/My_Records.js";
+  "./pages/Cipher_Check_In/Cipher_Check_In.js";
+  "./pages/Face_Check_In/Face_Check_In.js";
+  "./pages/Check_Record/Check_Record.js";
+  "./pages/Location_Launch/Location_Launch.js";
+  "./pages/Cipher_Launch/Cipher_Launch.js";
+  "./pages/QRCode_Launch/QRCode_Launch.js";
+  "./pages/Face_Launch/Face_Launch.js";
+  "./pages/UncheckedList/UncheckedList.js";
+  "./pages/OrgCreate/OrgCreate.js";
 }
 const _sfc_main = {
   onLaunch: function() {
@@ -31,9 +42,16 @@ const _sfc_main = {
 };
 function createApp() {
   const app = common_vendor.createSSRApp(_sfc_main);
-  return {
-    app
-  };
+  app.config.globalProperties.$globalData = common_vendor.reactive({
+    username: "",
+    gender: "",
+    contact_information: "",
+    belong_information: [],
+    manage_information: [],
+    belong_name: [],
+    manage_name: []
+  });
+  return { app };
 }
 createApp().app.mount("#app");
 exports.createApp = createApp;
