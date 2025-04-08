@@ -1,7 +1,9 @@
 package classtap.userinfo.Service.impl;
 
-import classtap.userinfo.Mapper.UserMapper;
-import classtap.userinfo.Pojo.users_information;
+import classtap.userinfo.check_in_list.Mapper.UserMapper2;
+import classtap.userinfo.users_information.Mapper.UserMapper;
+import classtap.userinfo.users_information.Pojo.UserInfo;
+import classtap.userinfo.users_information.Pojo.users_information;
 import classtap.userinfo.Service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +18,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper mapper;
+    @Autowired
+    private UserMapper2 mapper2;
 
     public boolean register(String id, String name, String password, String gender, String contact_information){
 
@@ -51,7 +55,7 @@ public class UserServiceImpl implements UserService {
     ;
 
 
-    public users_information getInfo(String id){
+    public UserInfo getInfo(String id){
         String jsonString1=mapper.getBelong(id);
         List<String> stringList1=new ArrayList<>();
         try {
@@ -70,10 +74,20 @@ public class UserServiceImpl implements UserService {
             System.out.println("no");
         }
 
-        return new users_information
+        List<String> stringList3=new ArrayList<>();
+        for(String class_id : stringList1){
+            stringList3.add(mapper2.getBelong(class_id));
+        }
+
+        List<String> stringList4=new ArrayList<>();
+        for(String class_id : stringList2){
+            stringList4.add(mapper2.getManageBelong(class_id));
+        }
+
+        return new UserInfo
                 (mapper.getInfo(id).getId(),mapper.getInfo(id).getName(),
-                        mapper.getInfo(id).getPassword(),mapper.getInfo(id).getGender()
-                        ,stringList1,mapper.getInfo(id).getContact_information(),stringList2);
+                        mapper.getInfo(id).getGender(),
+                        stringList1,mapper.getInfo(id).getContact_information(),stringList2,stringList3,stringList4);
     };
 
 }

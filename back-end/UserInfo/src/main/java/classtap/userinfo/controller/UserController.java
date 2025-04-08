@@ -1,8 +1,9 @@
 package classtap.userinfo.controller;
 
-import classtap.userinfo.Pojo.UserLoginBody;
-import classtap.userinfo.Pojo.UserRegisterBody;
-import classtap.userinfo.Pojo.users_information;
+import classtap.userinfo.users_information.Pojo.UserInfo;
+import classtap.userinfo.users_information.Pojo.UserLoginBody;
+import classtap.userinfo.users_information.Pojo.UserRegisterBody;
+import classtap.userinfo.users_information.Pojo.users_information;
 import classtap.userinfo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class UserController {
 
 
     @RequestMapping("/getInfo")
-    public users_information getInfo(String id){
+    public UserInfo getInfo(String id){
         return userservice.getInfo(id);
     };
 }
