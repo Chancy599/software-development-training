@@ -25,8 +25,8 @@
 		padding: 20rpx;
 }
 .menu-icon {
-		font-size: 60rpx;
-		color: #007aff;
+		width: 60rpx;
+		height: 60rpx;
 		margin-bottom: 10rpx;
 }
 .menu-text {

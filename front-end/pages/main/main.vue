@@ -3,31 +3,31 @@
 		<!-- 2x2 菜单布局 -->
 		<view class="menu-row">
 			<view class="menu-item" @click="handleMenuItemClick('startSign')">
-				<text class="menu-icon iconfont">&#xe601;</text>
+				<image class="menu-icon" src="/static/Function/startSign.png"></image>
 				<text class="menu-text">发起签到</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('UncheckedList')">
-				<text class="menu-icon iconfont">&#xe602;</text>
+				<image class="menu-icon" src="/static/Function/UncheckedList.png"></image>
 				<text class="menu-text">待签到表</text>
 			</view>
 		</view>
 		<view class="menu-row">
 			<view class="menu-item" @click="handleMenuItemClick('Check_Record')">
-				<text class="menu-icon iconfont">&#xe603;</text>
+				<image class="menu-icon" src="/static/Function/Check_Record.png"></image>
 				<text class="menu-text">查看记录</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('mySettings')">
-				<text class="menu-icon iconfont">&#xe604;</text>
+				<image class="menu-icon" src="/static/Function/mySettings.png"></image>
 				<text class="menu-text">我的设置</text>
 			</view>
 		</view>
 		<view class="menu-row">
 			<view class="menu-item" @click="handleMenuItemClick('OrgCreate')">
-				<text class="menu-icon iconfont">&#xe605;</text>
+				<image class="menu-icon" src="/static/Function/OrgCreate.png"></image>
 				<text class="menu-text">新建组织</text>
 			</view>
 			<view class="menu-item" @click="handleMenuItemClick('OrgManage')">
-				<text class="menu-icon iconfont">&#xe606;</text>
+				<image class="menu-icon" src="/static/Function/OrgManage.png"></image>
 				<text class="menu-text">管理组织</text>
 			</view>
 		</view>
@@ -105,8 +105,8 @@
 	}
 
 	.menu-icon {
-		font-size: 60rpx;
-		color: #007aff;
+		width: 60rpx;
+		height: 60rpx;
 		margin-bottom: 10rpx;
 	}
 

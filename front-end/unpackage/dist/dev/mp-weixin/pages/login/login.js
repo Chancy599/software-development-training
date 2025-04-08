@@ -86,8 +86,9 @@ const _sfc_main = {
     },
     // 测试登录
     TestLogin() {
-      this.$globalData.name = "0";
-      this.$globalData.gender = "测试";
+      this.$globalData.username = "0";
+      this.$globalData.name = "测试";
+      this.$globalData.gender = "MALE";
       this.$globalData.contact_information = "test@example.com";
       this.$globalData.belong_information = ["TEST_1, TEST_2"];
       this.$globalData.manage_information = ["TEST_3, TEST_4"];
@@ -111,7 +112,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     f: common_vendor.o(($event) => $data.password = $event.detail.value),
     g: common_vendor.o((...args) => $options.handleRegister && $options.handleRegister(...args)),
     h: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args)),
-    i: common_vendor.o((...args) => _ctx.TestleLogin && _ctx.TestleLogin(...args))
+    i: common_vendor.o((...args) => $options.TestLogin && $options.TestLogin(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

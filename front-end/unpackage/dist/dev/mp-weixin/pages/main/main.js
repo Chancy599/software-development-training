@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   methods: {
     // 处理菜单项点击
@@ -34,12 +35,18 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o(($event) => $options.handleMenuItemClick("startSign")),
-    b: common_vendor.o(($event) => $options.handleMenuItemClick("UncheckedList")),
-    c: common_vendor.o(($event) => $options.handleMenuItemClick("Check_Record")),
-    d: common_vendor.o(($event) => $options.handleMenuItemClick("mySettings")),
-    e: common_vendor.o(($event) => $options.handleMenuItemClick("OrgCreate")),
-    f: common_vendor.o(($event) => $options.handleMenuItemClick("OrgManage"))
+    a: common_assets._imports_0$1,
+    b: common_vendor.o(($event) => $options.handleMenuItemClick("startSign")),
+    c: common_assets._imports_1,
+    d: common_vendor.o(($event) => $options.handleMenuItemClick("UncheckedList")),
+    e: common_assets._imports_2,
+    f: common_vendor.o(($event) => $options.handleMenuItemClick("Check_Record")),
+    g: common_assets._imports_3,
+    h: common_vendor.o(($event) => $options.handleMenuItemClick("mySettings")),
+    i: common_assets._imports_4,
+    j: common_vendor.o(($event) => $options.handleMenuItemClick("OrgCreate")),
+    k: common_assets._imports_5,
+    l: common_vendor.o(($event) => $options.handleMenuItemClick("OrgManage"))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

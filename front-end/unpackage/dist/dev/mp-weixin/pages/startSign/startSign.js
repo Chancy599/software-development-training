@@ -12,13 +12,13 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_assets._imports_0$1,
+    a: common_assets._imports_0$2,
     b: common_vendor.o(($event) => $options.navigateTo("pages/Location_Launch/Location_Launch")),
-    c: common_assets._imports_1,
+    c: common_assets._imports_1$1,
     d: common_vendor.o(($event) => $options.navigateTo("pages/Cipher_Launch/Cipher_Launch")),
-    e: common_assets._imports_2,
+    e: common_assets._imports_2$1,
     f: common_vendor.o(($event) => $options.navigateTo("pages/QRCode_Launch/QRCode_Launch")),
-    g: common_assets._imports_3,
+    g: common_assets._imports_3$1,
     h: common_vendor.o(($event) => $options.navigateTo("pages/Face_Launch/Face_Launch"))
   };
 }
