@@ -27,7 +27,7 @@
 //    @Column(name = "start_time")
 //    private Timestamp startTime;
 //
-//    @Column(name = "checkin_code", length = 10)
+//    @Column(name = "cipher", length = 10)
 //    private String checkinCode;
 //
 //    @Enumerated(EnumType.STRING)
@@ -57,7 +57,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "checkin_record")
+@Table(name = "check_in_record")
 @Data
 public class CheckinRecord {
     @Id
@@ -84,7 +84,7 @@ public class CheckinRecord {
     @Column(name = "start_time")
     private Timestamp startTime;
 
-    @Column(name = "checkin_code", length = 10)
+    @Column(name = "cipher", length = 10)
     private String checkinCode;
 
     @Enumerated(EnumType.STRING)
