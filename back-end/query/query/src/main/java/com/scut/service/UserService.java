@@ -1,7 +1,9 @@
 package com.scut.service;
 
+import com.scut.entities.ClassSchedule;
 import com.scut.entities.ECTSU_Detail;
 import com.scut.entities.EnterClassToSelectUser;
+import com.scut.mapper.ClassScheduleMapper;
 import com.scut.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,5 +43,12 @@ public class UserService {
         }
 
         return detail;
+    }
+
+    @Autowired
+    private ClassScheduleMapper classScheduleMapper;
+
+    public List<ClassSchedule> GetUncheckedList(String userId) {
+        return classScheduleMapper.GetUncheckedList(userId);
     }
 }
