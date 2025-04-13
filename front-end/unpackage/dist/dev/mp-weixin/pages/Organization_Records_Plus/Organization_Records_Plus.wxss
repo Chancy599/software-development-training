@@ -1,0 +1,16 @@
+
+.container.data-v-5688b43e {
+	padding: 24rpx;
+}
+.summary.data-v-5688b43e {
+	margin-bottom: 30rpx;
+	font-weight: bold;
+	font-size: 28rpx;
+}
+.record.data-v-5688b43e {
+	margin-bottom: 24rpx;
+	padding: 20rpx;
+	border: 1px solid #eee;
+	border-radius: 12rpx;
+	background-color: #f9f9f9;
+}

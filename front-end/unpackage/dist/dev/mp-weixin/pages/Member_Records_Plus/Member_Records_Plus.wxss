@@ -1,0 +1,17 @@
+
+.container.data-v-cc49c3cb {
+	padding: 24rpx;
+}
+.base-info.data-v-cc49c3cb,
+.summary.data-v-cc49c3cb {
+	margin-bottom: 20rpx;
+	font-weight: bold;
+	font-size: 28rpx;
+}
+.record.data-v-cc49c3cb {
+	margin-bottom: 24rpx;
+	padding: 20rpx;
+	border: 1px solid #eee;
+	border-radius: 12rpx;
+	background-color: #f9f9f9;
+}

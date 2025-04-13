@@ -141,6 +141,20 @@
 			{
 				"navigationBarTitleText" : "管理组织"
 			}
+		},
+		{
+			"path" : "pages/Organization_Records_Plus/Organization_Records_Plus",
+			"style" : 
+			{
+				"navigationBarTitleText" : "组织签到详情"
+			}
+		},
+		{
+			"path" : "pages/Member_Records_Plus/Member_Records_Plus",
+			"style" : 
+			{
+				"navigationBarTitleText" : "成员签到详情"
+			}
 		}
 	],
 	"globalStyle": {

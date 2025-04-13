@@ -8,6 +8,7 @@ App.mpType = 'app'
 
 // 响应式全局变量（Vue2）
 Vue.prototype.$globalData = Vue.observable({
+  name: '',
   username: '',
   gender: '',
   contact_information: '',
@@ -32,6 +33,7 @@ export function createApp() {
   
   // 响应式全局变量（Vue3）
   app.config.globalProperties.$globalData = reactive({
+	name: '',
     username: '',
     gender: '',
     contact_information: '',

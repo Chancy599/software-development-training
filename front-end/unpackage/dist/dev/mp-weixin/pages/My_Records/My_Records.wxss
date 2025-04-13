@@ -3,4 +3,21 @@
 	padding: 16rpx;
 	border: 1px solid #ccc;
 	border-radius: 8rpx;
+	margin: 20rpx 0;
+}
+.btn-area.data-v-e89e0f0f {
+	margin: 20rpx 0;
+	text-align: center;
+}
+.summary.data-v-e89e0f0f {
+	margin-bottom: 30rpx;
+	font-weight: bold;
+	font-size: 28rpx;
+}
+.record.data-v-e89e0f0f {
+	margin-bottom: 24rpx;
+	padding: 20rpx;
+	border: 1px solid #eee;
+	border-radius: 12rpx;
+	background-color: #f9f9f9;
 }

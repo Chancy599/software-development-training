@@ -20,7 +20,9 @@
     "pages/Face_Launch/Face_Launch",
     "pages/UncheckedList/UncheckedList",
     "pages/OrgCreate/OrgCreate",
-    "pages/OrgManage/OrgManage"
+    "pages/OrgManage/OrgManage",
+    "pages/Organization_Records_Plus/Organization_Records_Plus",
+    "pages/Member_Records_Plus/Member_Records_Plus"
   ],
   "window": {
     "navigationBarTextStyle": "black",

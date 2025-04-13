@@ -23,6 +23,8 @@ if (!Math) {
   "./pages/UncheckedList/UncheckedList.js";
   "./pages/OrgCreate/OrgCreate.js";
   "./pages/OrgManage/OrgManage.js";
+  "./pages/Organization_Records_Plus/Organization_Records_Plus.js";
+  "./pages/Member_Records_Plus/Member_Records_Plus.js";
 }
 const _sfc_main = {
   onLaunch: function() {
@@ -43,6 +45,7 @@ const _sfc_main = {
 function createApp() {
   const app = common_vendor.createSSRApp(_sfc_main);
   app.config.globalProperties.$globalData = common_vendor.reactive({
+    name: "",
     username: "",
     gender: "",
     contact_information: "",
