@@ -50,7 +50,7 @@
     "Spring Boot.Application.executor": "Run",
     "Spring Boot.Springboot01QuickstartApplication.executor": "Run",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/IdeaProjects/query/query/src/main/resources",
+    "last_opened_file_path": "C:/IdeaProjects/face_recognition-Linux",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -170,7 +170,11 @@
       <workItem from="1743921518714" duration="15873000" />
       <workItem from="1744102828234" duration="1547000" />
       <workItem from="1744193226035" duration="28000" />
-      <workItem from="1744537260373" duration="559000" />
+      <workItem from="1744537260373" duration="8796000" />
+      <workItem from="1744556640788" duration="436000" />
+      <workItem from="1744557326590" duration="893000" />
+      <workItem from="1744560943612" duration="193000" />
+      <workItem from="1744596897923" duration="3572000" />
     </task>
     <servers />
   </component>
