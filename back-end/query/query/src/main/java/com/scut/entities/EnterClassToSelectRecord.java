@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 @JsonPropertyOrder({"startTime", "method", "in_TIME", "late", "absent", "request_LEAVE"})
 public class EnterClassToSelectRecord {
-    private LocalDateTime startTime;
+    private String startTime;
     private String method;
     private Integer IN_TIME;
     private Integer LATE;

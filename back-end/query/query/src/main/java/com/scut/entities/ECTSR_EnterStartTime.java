@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 public class ECTSR_EnterStartTime {
     private String name;
     private String userId;
-    private LocalDateTime startTime;
+    private String startTime;
     private Integer validDuration;
-    private LocalDateTime actualTime;
+    private String actualTime;
     private String state;
 }

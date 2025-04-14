@@ -16,14 +16,14 @@ public class ECTSU_Detail {
     private Integer late;
     private Integer absent;
     private Integer request_LEAVE;
-    private List<CheckinRecord> checkins = new ArrayList<>(); // ✅ 初始化空列表
+    private List<CheckinRecord> checkins = new ArrayList<>();
 
     @Data
-    @JsonPropertyOrder({"startTime", "valid_duration", "actualTime", "state"}) // ✅ 控制顺序
+    @JsonPropertyOrder({"startTime", "valid_duration", "actualTime", "state"})
     public static class CheckinRecord {
-        private LocalDateTime startTime;
+        private String startTime;
         private Integer valid_duration; // 新增字段
-        private LocalDateTime actualTime;
+        private String actualTime;
         private String state;
     }
 }

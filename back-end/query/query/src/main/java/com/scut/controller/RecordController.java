@@ -30,10 +30,9 @@ public class RecordController {
         this.recordService = recordService;
     }
 
-    // 修改1: 路径参数 {className} -> {classId}
     @GetMapping("/{classId}")
     public ResponseEntity<?> getCheckinSummary(
-            @PathVariable String classId) { // 修改2: 参数名 className -> classId
+            @PathVariable String classId) {
         List<EnterClassToSelectRecord> summaries = recordService.getCheckinSummaryByClassId(classId);
 
         if (summaries.isEmpty()) {
@@ -47,14 +46,14 @@ public class RecordController {
         return ResponseEntity.ok(response);
     }
 
-    // 修改4: 路径参数 {className} -> {classId}
     @GetMapping("/{classId}/{startTime}")
     public ResponseEntity<?> getCheckinDetails(
-            @PathVariable String classId, // 修改5: 参数名 className -> classId
+            @PathVariable String classId,
             @PathVariable String startTime) {
 
         try {
-            LocalDateTime datetime = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime datetime = LocalDateTime.parse(startTime, formatter);
             ECTSR_EST_Summary response = recordService.getCheckinsByClassAndTime(classId, datetime);
 
             if (response.getRecords() == null || response.getRecords().isEmpty()) {
@@ -71,7 +70,7 @@ public class RecordController {
             return ResponseEntity.ok(response);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("error", "时间格式错误，示例：2025-04-01T15:30:00"));
+                    .body(Map.of("error", "时间格式错误，示例：2025-04-01 15:30:00"));
         }
     }
 }

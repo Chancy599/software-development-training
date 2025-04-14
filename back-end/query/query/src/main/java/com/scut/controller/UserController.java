@@ -44,8 +44,6 @@ public class UserController {
                     .body(Map.of("error", errorMessage));
         }
     }
-
-    @GetMapping("/GetUncheckedList")
     public List<ClassSchedule> GetUncheckedList(String userId)
     {
         return userService.GetUncheckedList(userId);
