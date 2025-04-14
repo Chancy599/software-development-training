@@ -1,7 +1,10 @@
 package classtap.face_recognition.Controller;
 
+import classtap.face_recognition.Mapper.CheckinRecordMapper;
+import classtap.face_recognition.Pojo.CheckinRecord;
 import classtap.face_recognition.Service.UserService;
 import classtap.face_recognition.Service.WxFile;
+import classtap.face_recognition.Service.impl.CheckinService;
 import classtap.face_recognition.Service.impl.UserServiceImpl;
 import classtap.face_recognition.Service.impl.WxFileImpl;
 import com.arcsoft.face.EngineConfiguration;
@@ -21,6 +24,10 @@ import java.security.NoSuchAlgorithmException;
 public class UserController {
     @Autowired
     private final UserService userService=new UserServiceImpl();
+
+    @Autowired
+    CheckinService checkinService;
+
     @Autowired
     private final WxFile wxfile=new WxFileImpl();
     public static String libName;
@@ -45,15 +52,18 @@ public class UserController {
     public UserController() throws NoSuchAlgorithmException, KeyManagementException {
     }
 
-    @RequestMapping("/compare")
-    public float Compare(String fileId1, String fileId2) {
+    @RequestMapping("/FaceCompare")
+    public boolean Compare(String fileId1, String fileId2,String userId,String classId) {
         wxfile.downloadFile(fileId1);
         wxfile.downloadFile(fileId2);
         userService
                 .initialize(faceEngine, engineConfiguration, functionConfiguration);
         FaceFeature faceFeature1= userService.DoAnalyze(faceEngine,"C:\\IdeaProjects\\face_recognition-Linux\\src\\main\\resources\\photos\\"+fileId1+".jpg");
         FaceFeature faceFeature2= userService.DoAnalyze(faceEngine,"C:\\IdeaProjects\\face_recognition-Linux\\src\\main\\resources\\photos\\"+fileId2+".jpg");
-        return userService.Compare(faceEngine,faceFeature1,faceFeature2);
+        if( userService.Compare(faceEngine,faceFeature1,faceFeature2)>0.8){
+            return checkinService.verifyCheckin(userId,classId);
+        }
+        return false;
     }
 
 
