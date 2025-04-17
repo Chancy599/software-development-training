@@ -1,1 +1,1 @@
-<view></view>
+<view class="container"><view class="input-group"><text>班级名称：</text><input placeholder="例如：软件工程1班" value="{{a}}" bindinput="{{b}}"/></view><view class="input-group"><text>学生学号：</text><block wx:if="{{r0}}"><textarea placeholder="例如：STU001 STU002 STU003" auto-height value="{{c}}" bindinput="{{d}}"/></block></view><button bindtap="{{e}}" type="primary">创建班级</button></view>
