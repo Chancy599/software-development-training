@@ -15,8 +15,8 @@
 
 			<!-- 按钮区域 -->
 			<view class="action-buttons">
-				<button type="default" size="mini" @click="onLeave(item)">请假</button>
 				<button type="primary" size="mini" @click="onSignIn(item)">签到</button>
+				<button type="default" size="mini" @click="onLeave(item)">请假</button>
 			</view>
 		</view>
 

@@ -155,6 +155,41 @@
 			{
 				"navigationBarTitleText" : "成员签到详情"
 			}
+		},
+		{
+			"path" : "pages/addMember/addMember",
+			"style" : 
+			{
+				"navigationBarTitleText" : "增加成员"
+			}
+		},
+		{
+			"path" : "pages/checkMember/checkMember",
+			"style" : 
+			{
+				"navigationBarTitleText" : "查询成员"
+			}
+		},
+		{
+			"path" : "pages/deleteMember/deleteMember",
+			"style" : 
+			{
+				"navigationBarTitleText" : "删除成员"
+			}
+		},
+		{
+			"path" : "pages/leaveApplication/leaveApplication",
+			"style" : 
+			{
+				"navigationBarTitleText" : "请假申请"
+			}
+		},
+		{
+			"path" : "pages/leaveApproval/leaveApproval",
+			"style" : 
+			{
+				"navigationBarTitleText" : "请假审核"
+			}
 		}
 	],
 	"globalStyle": {
