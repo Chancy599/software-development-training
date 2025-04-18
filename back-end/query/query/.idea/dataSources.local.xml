@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-243.26053.27">
+  <component name="dataSourceStorageLocal" created-in="IU-242.20224.419">
     <data-source name="@localhost" uuid="ff26d2b4-4707-4a35-94cb-d214e50f0598">
       <database-info product="MySQL" version="8.0.41" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.41" exact-driver-version="8.2">
         <extra-name-characters>#@</extra-name-characters>
@@ -12,18 +12,13 @@
       <schema-mapping>
         <introspection-scope>
           <node kind="schema">
-            <name qname="check_in_record" />
-            <name qname="users_information" />
             <name qname="@" />
             <name qname="check_in_list" />
+            <name qname="check_in_record" />
+            <name qname="users_information" />
           </node>
         </introspection-scope>
       </schema-mapping>
-    </data-source>
-    <data-source name="check_in_record@localhost" uuid="504f9598-cb7c-4dd4-8df7-0e12afdf0ed4">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
-      <user-name>root</user-name>
-      <schema-mapping />
     </data-source>
     <data-source name="@sh-cynosdbmysql-grp-c35fzur8.sql.tencentcdb.com" uuid="ff1d2e78-21f3-4705-81e6-38f90d28f061">
       <database-info product="MySQL" version="5.7.18-cynos-2.1.13-log" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="5.7.18" exact-driver-version="8.2">

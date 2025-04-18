@@ -14,6 +14,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleException(RuntimeException ex) {
         String errorMessage = ex.getMessage() != null ? ex.getMessage() : "未知错误";
         return ResponseEntity.status(404)
-                .body(Collections.singletonMap("error", errorMessage)); // ✅ 使用单元素Map
+                .body(Collections.singletonMap("error", errorMessage));
     }
 }
