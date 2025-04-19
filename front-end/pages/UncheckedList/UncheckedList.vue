@@ -65,7 +65,7 @@
 				});
 			},
 			onLeave(item) {
-				uni.navigateTo({ url: '/pages/leaveApplication/leaveApplication' });
+				uni.navigateTo({ url: '/pages/leaveApplication/leaveApplication?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}' });
 			},
 			onSignIn(item) {
 				const method = item.method;

@@ -1,34 +1,38 @@
 <template>
   <view class="container">
-    <!-- 学生详情卡片 -->
-    <view class="detail-card" v-if="memberInfo">
-      <view class="detail-item">
-        <text class="label">学号：</text>
-        <text class="value">{{ memberInfo.id }}</text>
-      </view>
-      <view class="detail-item">
-        <text class="label">姓名：</text>
-        <text class="value">{{ memberInfo.name }}</text>
-      </view>
-      <view class="detail-item">
-        <text class="label">性别：</text>
-        <text class="value">{{ memberInfo.gender }}</text>
-      </view>
-      <view class="detail-item">
-        <text class="label">联系方式：</text>
-        <text class="value">{{ memberInfo.contactInformation }}</text>
-      </view>
+    <!-- 成员列表标题 -->
+    <view class="header">
+      <text class="title">班级成员列表</text>
     </view>
-
-    <!-- 加载状态 -->
-    <view v-if="loading" class="loading">
-      <text>加载中...</text>
-    </view>
-
-    <!-- 错误状态 -->
-    <view v-if="error" class="error">
-      <text>加载失败，请重试</text>
-      <button @click="fetchMemberDetail" class="retry-btn">重新加载</button>
+    
+    <!-- 成员列表 -->
+    <view class="member-list">
+      <view v-if="loading" class="loading">
+        <text>加载中...</text>
+      </view>
+      
+      <view v-else-if="members.length === 0" class="empty">
+        <text>暂无成员数据</text>
+      </view>
+      
+      <view v-else>
+        <view 
+          v-for="(member, index) in members" 
+          :key="index" 
+          class="member-item"
+        >
+          <view class="member-info">
+            <text class="member-id">{{ member.id }}</text>
+            <text class="member-name">{{ member.name }}</text>
+          </view>
+          <button 
+            class="detail-btn" 
+            @click="goToDetail(member.id)"
+          >
+            查看详情
+          </button>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -38,26 +42,22 @@ export default {
   data() {
     return {
       classid: '',
-      userid: '',
-      memberInfo: null,
-      loading: false,
-      error: false
+      members: [],
+      loading: false
     }
   },
   onLoad(options) {
     this.classid = decodeURIComponent(options.classid || '');
-    this.userid = decodeURIComponent(options.userid || '');
-    this.fetchMemberDetail();
+    this.fetchMembers();
   },
   methods: {
-    // 获取成员详情
-    async fetchMemberDetail() {
+    // 获取成员列表
+    async fetchMembers() {
       this.loading = true;
-      this.error = false;
       try {
         const res = await wx.cloud.callContainer({
           config: { env: 'prod-7glwxii4e6eb93d8' },
-          path: `/classMember/query/${encodeURIComponent(this.classid)}/${encodeURIComponent(this.userid)}`,
+          path: `/classMember/query/${encodeURIComponent(this.classid)}`,
           header: {
             'X-WX-SERVICE': 'manage',
             'content-type': 'application/json'
@@ -65,17 +65,23 @@ export default {
           method: 'GET'
         });
         
-        this.memberInfo = res.data;
+        this.members = res.data || [];
       } catch (err) {
-        console.error('查询详情失败:', err);
-        this.error = true;
+        console.error('查询失败:', err);
         uni.showToast({
-          title: '加载详情失败',
+          title: '加载失败',
           icon: 'none'
         });
       } finally {
         this.loading = false;
       }
+    },
+    
+    // 跳转到详情页
+    goToDetail(userid) {
+      uni.navigateTo({
+        url: `/pages/checkMember/checkMember?classid=${encodeURIComponent(this.classid)}&userid=${encodeURIComponent(userid)}`
+      });
     }
   }
 }
@@ -83,49 +89,55 @@ export default {
 
 <style>
 .container {
-  padding: 20px;
+  padding: 15px;
 }
 
-.detail-card {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.detail-item {
-  display: flex;
+.header {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
   margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #f5f5f5;
 }
 
-.detail-item:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.label {
-  width: 80px;
-  color: #666;
+.title {
+  font-size: 18px;
   font-weight: bold;
 }
 
-.value {
+.member-list {
+  margin-top: 10px;
+}
+
+.member-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.member-info {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.member-id {
+  width: 120px;
+  color: #666;
+}
+
+.member-name {
   flex: 1;
 }
 
-.loading, .error {
+.detail-btn {
+  background-color: #007aff;
+  color: white;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  width: 100px;
+}
+
+.loading, .empty {
   text-align: center;
   padding: 50px 0;
   color: #999;
-}
-
-.retry-btn {
-  margin-top: 15px;
-  background-color: #007aff;
-  color: white;
-  width: 120px;
 }
 </style>
