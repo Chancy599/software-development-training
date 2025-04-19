@@ -190,6 +190,13 @@
 			{
 				"navigationBarTitleText" : "请假审核"
 			}
+		},
+		{
+			"path" : "pages/checkMember_Plus/checkMember_Plus",
+			"style" : 
+			{
+				"navigationBarTitleText" : "查询成员"
+			}
 		}
 	],
 	"globalStyle": {

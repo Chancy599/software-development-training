@@ -65,8 +65,7 @@
 				});
 			},
 			onLeave(item) {
-				// 暂未定义
-				console.log('请假按钮点击：', item);
+				uni.navigateTo({ url: '/pages/leaveApplication/leaveApplication' });
 			},
 			onSignIn(item) {
 				const method = item.method;

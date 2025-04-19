@@ -19,7 +19,6 @@
 			</view>
 
 			<button class="login-btn" @click="handleLogin">登录</button>
-			<button class="login-btn" @click="TestLogin">测试</button>
 		</view>
 	</view>
 </template>
@@ -119,20 +118,6 @@ export default {
 					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
 				}
 			});
-		},
-		
-		// 测试登录
-		TestLogin() {
-			// 设置全局变量
-			this.$globalData.username = '0';
-			this.$globalData.name = '测试';
-			this.$globalData.gender = 'MALE';
-			this.$globalData.contact_information = 'test@example.com';
-			this.$globalData.belong_information = ['TEST_1, TEST_2'];
-			this.$globalData.manage_information = ['TEST_3, TEST_4'];
-			this.$globalData.belongInfo_name = ['测试1组', '测试2组'];
-			this.$globalData.manageInfo_name = ['测试3组', '测试4组'];
-			uni.navigateTo({ url: '/pages/main/main' });
 		},
 		
 		// 注册链接

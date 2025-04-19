@@ -12,7 +12,7 @@
       </view>
       <view class="detail-item">
         <text class="label">性别：</text>
-        <text class="value">{{ memberInfo.gender }}</text>
+        <text class="value">{{ genderMap[memberInfo.gender] || memberInfo.gender }}</text>
       </view>
       <view class="detail-item">
         <text class="label">联系方式：</text>
@@ -41,7 +41,11 @@ export default {
       userid: '',
       memberInfo: null,
       loading: false,
-      error: false
+      error: false,
+      genderMap: {
+        'MALE': '男',
+        'FEMALE': '女'
+      }
     }
   },
   onLoad(options) {
@@ -82,6 +86,7 @@ export default {
 </script>
 
 <style>
+/* 保持原有样式不变 */
 .container {
   padding: 20px;
 }
