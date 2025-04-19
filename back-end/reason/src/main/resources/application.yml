@@ -1,0 +1,12 @@
+
+spring:
+  application:
+    name: reason
+  datasource:
+    url: jdbc:mysql://sh-cynosdbmysql-grp-c35fzur8.sql.tencentcdb.com:24911/reason?useSSL=false&serverTimezone=UTC
+    username: root
+    password: 8S3VvXv9
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 5006
+
