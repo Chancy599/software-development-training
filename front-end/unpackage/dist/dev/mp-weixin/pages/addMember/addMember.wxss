@@ -1,0 +1,38 @@
+
+.container {
+		padding: 20px;
+}
+.input-area {
+		margin-bottom: 20px;
+}
+.submit-btn {
+		margin-top: 20px;
+}
+.result-area {
+		margin-top: 30px;
+		border-top: 1px solid #eee;
+		padding-top: 20px;
+}
+.result-item {
+		margin-bottom: 15px;
+		padding: 10px;
+		border-radius: 5px;
+}
+.result-item.success {
+		background-color: #f0f9eb;
+		color: #67c23a;
+}
+.result-item.conflict {
+		background-color: #fdf6ec;
+		color: #e6a23c;
+}
+.result-item.not-found {
+		background-color: #fef0f0;
+		color: #f56c6c;
+}
+.id-list {
+		display: block;
+		margin-top: 5px;
+		font-size: 14px;
+		color: #666;
+}

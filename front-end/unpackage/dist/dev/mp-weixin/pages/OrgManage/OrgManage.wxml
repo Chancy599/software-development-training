@@ -1,1 +1,1 @@
-<view></view>
+<view class="container"><picker range="{{b}}" bindchange="{{c}}"><view class="picker"> 选择班级：{{a}}</view></picker><view class="menu-item" bindtap="{{d}}"><text>增加成员</text></view><view class="menu-item" bindtap="{{e}}"><text>查询成员</text></view><view class="menu-item" bindtap="{{f}}"><text>删除成员</text></view><view class="menu-item" bindtap="{{g}}"><text>请假审核</text></view></view>

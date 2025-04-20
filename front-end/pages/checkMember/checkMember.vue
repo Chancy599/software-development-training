@@ -59,7 +59,7 @@ export default {
           config: { env: 'prod-7glwxii4e6eb93d8' },
           path: `/classMember/query/${encodeURIComponent(this.classid)}`,
           header: {
-            'X-WX-SERVICE': 'manage',
+            'X-WX-SERVICE': 'query',
             'content-type': 'application/json'
           },
           method: 'GET'

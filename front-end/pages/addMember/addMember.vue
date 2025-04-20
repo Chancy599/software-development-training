@@ -71,16 +71,15 @@
 					},
 					path: `/classMember/add/${encodeURIComponent(this.classid)}`,
 					header: {
-						'X-WX-SERVICE': 'manage',
+						'X-WX-SERVICE': 'query',
 						'content-type': 'application/json'
 					},
 					method: 'POST',
 					data: {
 						studentIds: studentIds
 					},
-					success: (res) => {
+					success: async (res) => {
 						console.log('后端返回数据:', res);
-						uni.hideLoading();
 						
 						// 处理返回结果
 						this.result = {
@@ -91,6 +90,23 @@
 							unFoundIds: res.data.unFoundIds || []
 						};
 						this.showResult = true;
+						
+						// 找出成功添加的学生ID（不在conflictIds和unFoundIds中的）
+						const successIds = studentIds.filter(id => 
+							!this.result.conflictIds.includes(id) && 
+							!this.result.unFoundIds.includes(id)
+						);
+						
+						// 为每个成功添加的学生执行updateBelong
+						try {
+							const updatePromises = successIds.map(id => this.updateBelong(id));
+							await Promise.all(updatePromises);
+							console.log('所有学生归属更新完成');
+						} catch (error) {
+							console.error('部分学生归属更新失败:', error);
+						}
+						
+						uni.hideLoading();
 						
 						// 根据结果显示不同提示
 						if (this.result.successAddedCount > 0) {
@@ -117,6 +133,29 @@
 						});
 					}
 				});
+			},
+			async updateBelong(id) {
+			  return new Promise((resolve, reject) => {
+			    wx.cloud.callContainer({
+			      config: {
+			        env: 'prod-7glwxii4e6eb93d8'
+			      },
+			      path: `/updateBelong?id=${encodeURIComponent(id)}&newBelong=${encodeURIComponent(this.classid)}`,
+			      header: {
+			        'X-WX-SERVICE': 'userinfo',
+			        'content-type': 'application/json'
+			      },
+			      method: 'PUT',
+			      success: (res) => {
+			        console.log(`学生 ${id} 归属更新成功:`, res);
+			        resolve(res);
+			      },
+			      fail: (err) => {
+			        console.error(`学生 ${id} 归属更新失败:`, err);
+			        reject(err);
+			      }
+			    });
+			  });
 			}
 		}
 	}

@@ -23,10 +23,6 @@
 		<view v-else class="empty">
 			<text>暂无未签到课程</text>
 		</view>
-
-		<view class="btn-wrap">
-			<button type="primary" @click="Check_In">获取未签到信息</button>
-		</view>
 	</view>
 </template>
 
@@ -36,6 +32,9 @@
 			return {
 				uncheckedList: []
 			}
+		},
+		onLoad() {
+			this.Check_In();
 		},
 		methods: {
 			Check_In() {
@@ -65,7 +64,9 @@
 				});
 			},
 			onLeave(item) {
-				uni.navigateTo({ url: '/pages/leaveApplication/leaveApplication?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}' });
+				uni.navigateTo({ 
+					url: `/pages/leaveApplication/leaveApplication?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}`
+					});
 			},
 			onSignIn(item) {
 				const method = item.method;
@@ -114,11 +115,6 @@
 
 .spacer {
 	height: 10rpx;
-}
-
-.btn-wrap {
-	margin-top: 40rpx;
-	text-align: center;
 }
 
 .empty {

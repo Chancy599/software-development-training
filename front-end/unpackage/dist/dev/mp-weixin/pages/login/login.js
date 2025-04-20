@@ -35,7 +35,7 @@ const _sfc_main = {
           password
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:64", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:63", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1e3 });
             this.$globalData.username = username;
@@ -46,7 +46,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:82", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:81", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
@@ -65,7 +65,7 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:103", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:102", "后端返回数据:", res);
           if (res.data) {
             this.$globalData.name = res.data.name || "";
             this.$globalData.gender = res.data.gender || "";
@@ -79,22 +79,10 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:118", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:117", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
-    },
-    // 测试登录
-    TestLogin() {
-      this.$globalData.username = "0";
-      this.$globalData.name = "测试";
-      this.$globalData.gender = "MALE";
-      this.$globalData.contact_information = "test@example.com";
-      this.$globalData.belong_information = ["TEST_1, TEST_2"];
-      this.$globalData.manage_information = ["TEST_3, TEST_4"];
-      this.$globalData.belongInfo_name = ["测试1组", "测试2组"];
-      this.$globalData.manageInfo_name = ["测试3组", "测试4组"];
-      common_vendor.index.navigateTo({ url: "/pages/main/main" });
     },
     // 注册链接
     handleRegister() {
@@ -111,8 +99,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $data.password,
     f: common_vendor.o(($event) => $data.password = $event.detail.value),
     g: common_vendor.o((...args) => $options.handleRegister && $options.handleRegister(...args)),
-    h: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args)),
-    i: common_vendor.o((...args) => $options.TestLogin && $options.TestLogin(...args))
+    h: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

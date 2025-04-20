@@ -1,0 +1,107 @@
+
+.container {
+  padding: 15px;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+}
+.header {
+  margin-bottom: 20px;
+}
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+}
+.list-scroll {
+  height: calc(100vh - 100px);
+}
+.reason-list {
+  padding-bottom: 20px;
+}
+.reason-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+.user-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.user-info {
+  flex: 1;
+}
+.name {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 2px;
+}
+.id {
+  font-size: 12px;
+  color: #999;
+}
+.time {
+  font-size: 12px;
+  color: #666;
+}
+.reason-section, .photo-section {
+  margin-bottom: 12px;
+}
+.label {
+  font-size: 14px;
+  color: #666;
+  margin-right: 8px;
+}
+.content {
+  font-size: 15px;
+  color: #333;
+}
+.proof-image {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 6px;
+  margin-top: 8px;
+  border: 1px solid #eee;
+}
+.no-photo {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}
+.action-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.btn-approve, .btn-reject {
+  margin-left: 10px;
+  font-size: 14px;
+  padding: 0 15px;
+  height: 32px;
+  line-height: 32px;
+}
+.btn-approve {
+  background: #e1f3d8;
+  color: #67c23a;
+}
+.btn-reject {
+  background: #fde2e2;
+  color: #f56c6c;
+}
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 40px 0;
+}
+.empty-state image {
+  width: 100px;
+  height: 100px;
+  opacity: 0.5;
+  margin-bottom: 10px;
+}
+.empty-state text {
+  display: block;
+  color: #999;
+}

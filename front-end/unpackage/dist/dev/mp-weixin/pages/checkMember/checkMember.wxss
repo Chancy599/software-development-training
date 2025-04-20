@@ -1,0 +1,44 @@
+
+.container {
+  padding: 15px;
+}
+.header {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.member-list {
+  margin-top: 10px;
+}
+.member-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+.member-info {
+  display: flex;
+  margin-bottom: 8px;
+}
+.member-id {
+  width: 120px;
+  color: #666;
+}
+.member-name {
+  flex: 1;
+}
+.detail-btn {
+  background-color: #007aff;
+  color: white;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  width: 100px;
+}
+.loading, .empty {
+  text-align: center;
+  padding: 50px 0;
+  color: #999;
+}

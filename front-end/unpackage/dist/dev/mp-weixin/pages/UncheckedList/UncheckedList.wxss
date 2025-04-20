@@ -16,10 +16,6 @@
 .spacer {
 	height: 10rpx;
 }
-.btn-wrap {
-	margin-top: 40rpx;
-	text-align: center;
-}
 .empty {
 	text-align: center;
 	color: #999;

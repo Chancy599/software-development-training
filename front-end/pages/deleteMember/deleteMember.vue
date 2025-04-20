@@ -81,7 +81,7 @@ export default {
         },
         path: `/classMember/delete/${encodeURIComponent(this.classid)}`,
         header: {
-          'X-WX-SERVICE': 'manage',
+          'X-WX-SERVICE': 'query',
           'content-type': 'application/json'
         },
         method: 'POST',
@@ -120,7 +120,30 @@ export default {
           });
         }
       });
-    }
+    },
+	async deleteBelong(id) {
+	  return new Promise((resolve, reject) => {
+	    wx.cloud.callContainer({
+	      config: {
+	        env: 'prod-7glwxii4e6eb93d8'
+	      },
+	      path: `/deleteBelong?id=${encodeURIComponent(id)}&targetBelong=${encodeURIComponent(this.classid)}`,
+	      header: {
+	        'X-WX-SERVICE': 'userinfo',
+	        'content-type': 'application/json'
+	      },
+	      method: 'DELETE',
+	      success: (res) => {
+	        console.log(`学生 ${id} 归属删除成功:`, res);
+	        resolve(res);
+	      },
+	      fail: (err) => {
+	        console.error(`学生 ${id} 归属删除失败:`, err);
+	        reject(err);
+	      }
+	    });
+	  });
+	}
   }
 }
 </script>

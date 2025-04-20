@@ -6,6 +6,9 @@ const _sfc_main = {
       uncheckedList: []
     };
   },
+  onLoad() {
+    this.Check_In();
+  },
   methods: {
     Check_In() {
       common_vendor.wx$1.cloud.callContainer({
@@ -19,7 +22,7 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:53", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:52", "后端返回数据:", res);
           if (Array.isArray(res.data) && res.data.length > 0) {
             this.uncheckedList = res.data;
           } else {
@@ -28,13 +31,15 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:62", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:61", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
     },
     onLeave(item) {
-      common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:69", "请假按钮点击：", item);
+      common_vendor.index.navigateTo({
+        url: `/pages/leaveApplication/leaveApplication?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}`
+      });
     },
     onSignIn(item) {
       const method = item.method;
@@ -67,14 +72,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: common_vendor.t(item.className),
         b: common_vendor.t(item.startTime),
         c: common_vendor.t(item.method),
-        d: common_vendor.o(($event) => $options.onLeave(item), index),
-        e: common_vendor.o(($event) => $options.onSignIn(item), index),
+        d: common_vendor.o(($event) => $options.onSignIn(item), index),
+        e: common_vendor.o(($event) => $options.onLeave(item), index),
         f: index
       };
     })
-  } : {}, {
-    c: common_vendor.o((...args) => $options.Check_In && $options.Check_In(...args))
-  });
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
