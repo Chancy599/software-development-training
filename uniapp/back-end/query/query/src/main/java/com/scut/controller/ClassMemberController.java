@@ -1,4 +1,3 @@
-// ClassMemberController.java
 package com.scut.controller;
 
 import com.scut.entities.*;
@@ -9,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,8 +65,35 @@ public class ClassMemberController {
             CMQ_Detail detail = classMemberService.queryStudentDetail(classId, userId);
             return ResponseEntity.ok(detail);
         } catch (RuntimeException e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> response = new HashMap<>();
+
+            // 复合错误处理
+            if (errorMessage.contains(",")) {
+                response.put("class_error", "Class not found");
+                response.put("user_error", "User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            // 单一错误处理
+            response.put("error", errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @DeleteMapping("/deleteAll/{classId}")
+    public ResponseEntity<?> deleteAllClassInfo(@PathVariable String classId) {
+        try {
+            ClassMemberDeleteAll result = classMemberService.deleteAllClassInfo(classId);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            // 处理班级不存在的专用异常
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", e.getMessage()));
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            // 处理其他异常
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Internal server error"));
         }
     }
 }

@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface ClassMemberMapper {
     // 验证班级存在
-    @Select("SELECT class_id FROM check_in_list.class_info WHERE class_id = #{classId}")
-    String getClassById(String classId);
+    @Select("SELECT class_id FROM check_in_list.class_info WHERE class_id = #{classId} LIMIT 1")
+    String getClassById(@Param("classId") String classId);
 
     // 查询已存在成员
     @Select({
@@ -81,6 +81,51 @@ public interface ClassMemberMapper {
             @Param("studentIds") List<String> studentIds
     );
 
+    @Update({
+            "<script>",
+            "UPDATE users_information.users_information",
+            "SET belong_information = JSON_ARRAY_APPEND(",
+            "   COALESCE(belong_information, '[]'), ",
+            "   '$', ",
+            "   #{classId}",
+            ") ",
+            "WHERE id = #{userId}",
+            "AND NOT JSON_CONTAINS(COALESCE(belong_information, '[]'), #{classId}, '$')",
+            "</script>"
+    })
+    int addClassToUserBelong(@Param("userId") String userId,
+                             @Param("classId") String classId);
+
+    @Select({
+            "<script>",
+            "SELECT user_id FROM check_in_list.class_member",
+            "WHERE class_id = #{classId}",
+            "AND user_id IN",
+            "<foreach item='id' collection='studentIds' open='(' separator=',' close=')'>",
+            "   CAST(#{id} AS CHAR)", // 确保类型匹配
+            "</foreach>",
+            "</script>"
+    })
+    List<String> getExistingMembersWithTypeCheck(
+            @Param("classId") String classId,
+            @Param("studentIds") List<String> studentIds
+    );
+
+    @Insert({
+            "<script>",
+            "INSERT IGNORE INTO check_in_list.class_member",
+            "(class_id, user_id, role)",
+            "VALUES",
+            "<foreach item='id' collection='studentIds' separator=','>",
+            "(#{classId}, CAST(#{id} AS CHAR), 'MEMBER')", // 双重类型保证
+            "</foreach>",
+            "</script>"
+    })
+    void safeBatchInsert(
+            @Param("classId") String classId,
+            @Param("studentIds") List<String> studentIds
+    );
+
     // 批量删除成员
     @Delete({
             "<script>",
@@ -113,6 +158,7 @@ public interface ClassMemberMapper {
             @Param("studentIds") List<String> studentIds
     );
 
+
     // 查询任意角色的存在成员
     @Select({
             "<script>",
@@ -128,6 +174,9 @@ public interface ClassMemberMapper {
             @Param("studentIds") List<String> studentIds
     );
 
+    @Select("SELECT id FROM users_information.users_information WHERE id = #{userId}")
+    String checkUserExists(@Param("userId") String userId);
+
     @Select("SELECT u.id, u.name " +
             "FROM check_in_list.class_member cm " +
             "JOIN users_information.users_information u ON cm.user_id = u.id " +
@@ -140,4 +189,14 @@ public interface ClassMemberMapper {
             "WHERE cm.class_id = #{classId} AND cm.user_id = #{userId} AND cm.role = 'MEMBER'")
     CMQ_Detail getStudentDetail(@Param("classId") String classId,
                                 @Param("userId") String userId);
+
+    @Delete("DELETE FROM check_in_record.check_in_record WHERE class_id = #{classId}")
+    int deleteAllCheckinRecords(String classId);
+
+    @Delete("DELETE FROM check_in_list.class_info WHERE class_id = #{classId}")
+    int deleteClassInfo(String classId);
+
+    @Delete("DELETE FROM check_in_list.class_member WHERE class_id = #{classId}")
+    int deleteAllClassMembers(String classId);
+
 }
