@@ -56,51 +56,55 @@ export default {
     this.start_time = decodeURIComponent(options.startTime || '');
   },
   methods: {
-    AddReason() {
-      if (!this.word) {
-        return uni.showToast({ title: '请填写请假原因', icon: 'none' });
-      }
-      if (!this.photo_path) {
-        return uni.showToast({ title: '请上传证明材料', icon: 'none' });
-      }
-      
-      uni.showLoading({ title: '提交中...', mask: true });
-      
-      wx.cloud.callContainer({
-        config: { env: 'prod-7glwxii4e6eb93d8' },
-        path: `/AddReason`,
-        header: {
-          'X-WX-SERVICE': 'reason',
-          'content-type': 'application/json'
-        },
-        method: 'PUT',
-        data: {
-          sender_id: this.$globalData.username,
-          class_id: this.class_id,
-          start_time: this.start_time,
-          word: this.word,
-          photo_path: this.photo_path
-        },
-        success: (res) => {
-          console.log('后端返回数据:', res);
-          uni.hideLoading();
-          
-          if (res.data === true) {
-            uni.showToast({ title: '申请成功', icon: 'success' });
-            setTimeout(() => {
-              uni.navigateTo({ url: '/pages/UncheckedList/UncheckedList' });
-            }, 1500);
-          } else {
-            uni.showToast({ title: '申请失败', icon: 'none' });
-          }
-        },
-        fail: (err) => {
-          console.error('请求失败:', err);
-          uni.hideLoading();
-          uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
-        }
-      });
-    },
+	AddReason() {
+	  if (!this.word) {
+	    return uni.showToast({ title: '请填写请假原因', icon: 'none' });
+	  }
+	  if (!this.photo_path) {
+	    return uni.showToast({ title: '请上传证明材料', icon: 'none' });
+	  }
+	  
+	  // 打印要发送的数据
+	  const requestData = {
+	    sender_id: this.$globalData.username,
+	    class_id: this.class_id,
+	    start_time: this.start_time,
+	    word: this.word,
+	    photo_path: this.photo_path
+	  };
+	  console.log('将要发送给后端的数据:', requestData);
+	  
+	  uni.showLoading({ title: '提交中...', mask: true });
+	  
+	  wx.cloud.callContainer({
+	    config: { env: 'prod-7glwxii4e6eb93d8' },
+	    path: `/AddReason`,
+	    header: {
+	      'X-WX-SERVICE': 'reason',
+	      'content-type': 'application/json'
+	    },
+	    method: 'PUT',
+	    data: requestData,  // 使用上面定义的数据对象
+	    success: (res) => {
+	      console.log('后端返回数据:', res);
+	      uni.hideLoading();
+	      
+	      if (res.data === true) {
+	        uni.showToast({ title: '申请成功', icon: 'success' });
+	        setTimeout(() => {
+	          uni.navigateTo({ url: '/pages/UncheckedList/UncheckedList' });
+	        }, 1500);
+	      } else {
+	        uni.showToast({ title: '申请失败', icon: 'none' });
+	      }
+	    },
+	    fail: (err) => {
+	      console.error('请求失败:', err);
+	      uni.hideLoading();
+	      uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
+	    }
+	  });
+	},
     
     takePhoto() {
       uni.chooseImage({

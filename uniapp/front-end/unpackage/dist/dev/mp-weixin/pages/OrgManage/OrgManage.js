@@ -36,7 +36,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     d: common_vendor.o(($event) => $options.navigateTo("addMember")),
     e: common_vendor.o(($event) => $options.navigateTo("checkMember")),
     f: common_vendor.o(($event) => $options.navigateTo("deleteMember")),
-    g: common_vendor.o(($event) => $options.navigateTo("leaveApproval"))
+    g: common_vendor.o(($event) => $options.navigateTo("leaveApproval")),
+    h: common_vendor.o(($event) => $options.navigateTo("OrgDelete"))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

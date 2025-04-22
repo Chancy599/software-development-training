@@ -44,7 +44,7 @@
 					},
 					path: `/EnterClassToSelectUser/GetUncheckedList?userId=${encodeURIComponent(this.$globalData.username)}`,
 					header: {
-						'X-WX-SERVICE': 'userinfo',
+						'X-WX-SERVICE': 'query',
 						'content-type': 'application/json'
 					},
 					method: 'GET',

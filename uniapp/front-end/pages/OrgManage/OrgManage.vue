@@ -18,6 +18,9 @@
 		<view class="menu-item" @click="navigateTo('leaveApproval')">
 			<text>请假审核</text>
 		</view>
+		<view class="menu-item" @click="navigateTo('OrgDelete')">
+			<text>删除组织</text>
+		</view>
 	</view>
 </template>
 

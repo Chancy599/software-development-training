@@ -31,6 +31,7 @@ if (!Math) {
   "./pages/leaveApplication/leaveApplication.js";
   "./pages/leaveApproval/leaveApproval.js";
   "./pages/checkMember_Plus/checkMember_Plus.js";
+  "./pages/OrgDelete/OrgDelete.js";
 }
 const _sfc_main = {
   onLaunch: function() {

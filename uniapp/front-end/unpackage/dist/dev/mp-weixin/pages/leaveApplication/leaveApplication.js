@@ -21,6 +21,14 @@ const _sfc_main = {
       if (!this.photo_path) {
         return common_vendor.index.showToast({ title: "请上传证明材料", icon: "none" });
       }
+      const requestData = {
+        sender_id: this.$globalData.username,
+        class_id: this.class_id,
+        start_time: this.start_time,
+        word: this.word,
+        photo_path: this.photo_path
+      };
+      common_vendor.index.__f__("log", "at pages/leaveApplication/leaveApplication.vue:75", "将要发送给后端的数据:", requestData);
       common_vendor.index.showLoading({ title: "提交中...", mask: true });
       common_vendor.wx$1.cloud.callContainer({
         config: { env: "prod-7glwxii4e6eb93d8" },
@@ -30,15 +38,10 @@ const _sfc_main = {
           "content-type": "application/json"
         },
         method: "PUT",
-        data: {
-          sender_id: this.$globalData.username,
-          class_id: this.class_id,
-          start_time: this.start_time,
-          word: this.word,
-          photo_path: this.photo_path
-        },
+        data: requestData,
+        // 使用上面定义的数据对象
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/leaveApplication/leaveApplication.vue:85", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/leaveApplication/leaveApplication.vue:89", "后端返回数据:", res);
           common_vendor.index.hideLoading();
           if (res.data === true) {
             common_vendor.index.showToast({ title: "申请成功", icon: "success" });
@@ -50,7 +53,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:98", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:102", "请求失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
@@ -68,20 +71,20 @@ const _sfc_main = {
             cloudPath: fileName,
             filePath: tempFilePath,
             success: (res) => {
-              common_vendor.index.__f__("log", "at pages/leaveApplication/leaveApplication.vue:119", "上传成功:", res.fileID);
+              common_vendor.index.__f__("log", "at pages/leaveApplication/leaveApplication.vue:123", "上传成功:", res.fileID);
               this.photo_path = res.fileID;
               common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "上传成功", icon: "success" });
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:125", "上传失败:", err);
+              common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:129", "上传失败:", err);
               common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "上传失败，请重试", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:132", "拍照失败:", err);
+          common_vendor.index.__f__("error", "at pages/leaveApplication/leaveApplication.vue:136", "拍照失败:", err);
           common_vendor.index.showToast({ title: "拍照失败，请重试", icon: "none" });
         }
       });
