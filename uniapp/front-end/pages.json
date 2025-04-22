@@ -197,13 +197,6 @@
 			{
 				"navigationBarTitleText" : "查询成员"
 			}
-		},
-		{
-			"path" : "pages/OrgDelete/OrgDelete",
-			"style" : 
-			{
-				"navigationBarTitleText" : "删除组织"
-			}
 		}
 	],
 	"globalStyle": {
