@@ -28,8 +28,7 @@
     "pages/deleteMember/deleteMember",
     "pages/leaveApplication/leaveApplication",
     "pages/leaveApproval/leaveApproval",
-    "pages/checkMember_Plus/checkMember_Plus",
-    "pages/OrgDelete/OrgDelete"
+    "pages/checkMember_Plus/checkMember_Plus"
   ],
   "window": {
     "navigationBarTextStyle": "black",

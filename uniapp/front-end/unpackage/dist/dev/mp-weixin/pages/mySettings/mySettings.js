@@ -24,7 +24,7 @@ const _sfc_main = {
     // 同步全局数据
     syncGlobalData() {
       if (!this.$globalData) {
-        common_vendor.index.__f__("warn", "at pages/mySettings/mySettings.vue:61", "全局数据未初始化");
+        common_vendor.index.__f__("warn", "at pages/mySettings/mySettings.vue:69", "全局数据未初始化");
         return;
       }
       this.userData = {
@@ -46,22 +46,23 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _a, _b, _c, _d;
   return common_vendor.e({
-    a: common_vendor.t($data.userData.id),
-    b: common_vendor.t($data.userData.name),
-    c: common_vendor.t($data.userData.gender),
-    d: common_vendor.t($data.userData.contact_information),
-    e: (_a = $data.userData.manageInfo_name) == null ? void 0 : _a.length
+    a: $data.userData.gender === "女" ? "/static/Avatar/FEMALE.png" : "/static/Avatar/MALE.png",
+    b: common_vendor.t($data.userData.name || "未设置"),
+    c: common_vendor.t($data.userData.id || "未设置"),
+    d: common_vendor.t($data.userData.gender || "未设置"),
+    e: common_vendor.t($data.userData.contact_information || "未设置"),
+    f: (_a = $data.userData.manageInfo_name) == null ? void 0 : _a.length
   }, ((_b = $data.userData.manageInfo_name) == null ? void 0 : _b.length) ? {
-    f: common_vendor.f($data.userData.manageInfo_name, (item, index, i0) => {
+    g: common_vendor.f($data.userData.manageInfo_name, (item, index, i0) => {
       return {
         a: common_vendor.t(item),
         b: index
       };
     })
   } : {}, {
-    g: (_c = $data.userData.belongInfo_name) == null ? void 0 : _c.length
+    h: (_c = $data.userData.belongInfo_name) == null ? void 0 : _c.length
   }, ((_d = $data.userData.belongInfo_name) == null ? void 0 : _d.length) ? {
-    h: common_vendor.f($data.userData.belongInfo_name, (item, index, i0) => {
+    i: common_vendor.f($data.userData.belongInfo_name, (item, index, i0) => {
       return {
         a: common_vendor.t(item),
         b: index
