@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import com.scut.entities.*;
 import com.scut.mapper.ClassMemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -145,19 +147,27 @@ public class ClassMemberService {
         return detail;
     }
 
+    // ClassMemberService.java
     @Transactional
     public ClassMemberDeleteAll deleteAllClassInfo(String classId) {
-        // 显式校验班级存在性
-        String existingClass = classMemberMapper.getClassById(classId);
-        if (existingClass == null || existingClass.isEmpty()) {
-            throw new IllegalArgumentException("Class not found");
+        // 使用精确的COUNT查询校验存在性
+        if (classMemberMapper.countClassById(classId) == 0) {
+            log.error("班级[{}]不存在", classId);
+            throw new IllegalStateException("CLASS_NOT_FOUND");
         }
 
-        // 执行删除操作（保持原有逻辑）
-        int checkinRecordsDeleted = classMemberMapper.deleteAllCheckinRecords(classId);
+        // 获取删除前成员列表
+        List<String> memberIds = classMemberMapper.selectAllClassMemberIds(classId);
+
+        // 删除签到记录时合并操作
+        int checkinDeleted = classMemberMapper.deleteAllCheckinRecords(classId);
+
+        // 显式删除MEMBER角色成员
         int membersDeleted = classMemberMapper.deleteAllClassMembers(classId);
+
+        // 最后删除班级信息
         classMemberMapper.deleteClassInfo(classId);
 
-        return new ClassMemberDeleteAll(classId, membersDeleted, checkinRecordsDeleted);
+        return new ClassMemberDeleteAll(classId, memberIds, checkinDeleted);
     }
 }
