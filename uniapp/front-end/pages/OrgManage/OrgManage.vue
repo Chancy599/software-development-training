@@ -81,6 +81,7 @@
 				});
 				
 				try {
+					// 1. 删除班级及其成员数据
 					const res = await wx.cloud.callContainer({
 						config: {
 							env: 'prod-7glwxii4e6eb93d8'
@@ -93,10 +94,19 @@
 						method: 'GET'
 					});
 					
-					uni.hideLoading();
-					
 					if (res && res.data) {
 						const result = res.data;
+						
+						// 2. 删除管理员的归属记录
+						await this.deleteManageBelong();
+						
+						// 3. 删除所有成员的归属记录
+						if (result.deletedClassMemberIds && result.deletedClassMemberIds.length > 0) {
+							await this.deleteMembersBelong(result.deletedClassMemberIds);
+						}
+						
+						uni.hideLoading();
+						
 						uni.showModal({
 							title: '删除成功',
 							content: `已删除班级 ${result.deletedClassId}\n删除成员: ${result.membersDeleted}人\n删除签到记录: ${result.checkinRecordsDeleted}条`,
@@ -127,51 +137,60 @@
 					});
 				}
 			},
+			async deleteMembersBelong(memberIds) {
+				try {
+					// 并行执行所有删除请求
+					const deletePromises = memberIds.map(id => 
+						this.deleteBelong(id).catch(e => {
+							console.error(`删除成员 ${id} 归属记录失败:`, e);
+							return null; // 即使单个失败也不中断整个流程
+						})
+					);
+					
+					await Promise.all(deletePromises);
+					console.log('所有成员归属记录删除完成');
+				} catch (err) {
+					console.error('删除成员归属记录时出错:', err);
+					throw err;
+				}
+			},
 			async deleteManageBelong() {
-			  return new Promise((resolve, reject) => {
-			    wx.cloud.callContainer({
-			      config: {
-			        env: 'prod-7glwxii4e6eb93d8'
-			      },
-			      path: `/deleteManageBelong?id=${encodeURIComponent(this.$globalData.username)}&targetBelong=${encodeURIComponent(this.classId)}`,
-			      header: {
-			        'X-WX-SERVICE': 'userinfo',
-			        'content-type': 'application/json'
-			      },
-			      method: 'DELETE',
-			      success: (res) => {
-			        console.log('管理员归属删除成功:', res);
-			        resolve(res);
-			      },
-			      fail: (err) => {
-			        console.error('管理员归属删除失败:', err);
-			        reject(err);
-			      }
-			    });
-			  });
+				try {
+					await wx.cloud.callContainer({
+						config: {
+							env: 'prod-7glwxii4e6eb93d8'
+						},
+						path: `/deleteManageBelong?id=${encodeURIComponent(this.$globalData.username)}&targetBelong=${encodeURIComponent(this.classid)}`,
+						header: {
+							'X-WX-SERVICE': 'userinfo',
+							'content-type': 'application/json'
+						},
+						method: 'DELETE'
+					});
+					console.log('管理员归属删除成功');
+				} catch (err) {
+					console.error('管理员归属删除失败:', err);
+					throw err;
+				}
 			},
 			async deleteBelong(id) {
-			  return new Promise((resolve, reject) => {
-			    wx.cloud.callContainer({
-			      config: {
-			        env: 'prod-7glwxii4e6eb93d8'
-			      },
-			      path: `/deleteBelong?id=${encodeURIComponent(id)}&targetBelong=${encodeURIComponent(this.classId)}`,
-			      header: {
-			        'X-WX-SERVICE': 'userinfo',
-			        'content-type': 'application/json'
-			      },
-			      method: 'DELETE',
-			      success: (res) => {
-			        console.log(`学生 ${id} 归属删除成功:`, res);
-			        resolve(res);
-			      },
-			      fail: (err) => {
-			        console.error(`学生 ${id} 归属删除失败:`, err);
-			        reject(err);
-			      }
-			    });
-			  });
+				try {
+					await wx.cloud.callContainer({
+						config: {
+							env: 'prod-7glwxii4e6eb93d8'
+						},
+						path: `/deleteBelong?id=${encodeURIComponent(id)}&targetBelong=${encodeURIComponent(this.classid)}`,
+						header: {
+							'X-WX-SERVICE': 'userinfo',
+							'content-type': 'application/json'
+						},
+						method: 'DELETE'
+					});
+					console.log(`学生 ${id} 归属删除成功`);
+				} catch (err) {
+					console.error(`学生 ${id} 归属删除失败:`, err);
+					throw err;
+				}
 			}
 		}
 	}
