@@ -103,89 +103,135 @@ import com.example.clock_in.entity.list.ClassInfo;
 import com.example.clock_in.entity.list.ClassMember;
 import com.example.clock_in.entity.record.CheckinRecord;
 import com.example.clock_in.entity.users.UserInformation;
-import com.example.clock_in.repository.record.CheckinRecordRepository;
+import com.example.clock_in.model.enums.CheckinMethod;
 import com.example.clock_in.repository.list.ClassInfoRepository;
 import com.example.clock_in.repository.list.ClassMemberRepository;
+import com.example.clock_in.repository.record.CheckinRecordRepository;
 import com.example.clock_in.repository.users.UserRepository;
+import com.example.clock_in.service.strategy.CheckinStrategy;
+import com.example.clock_in.service.strategy.CheckinStrategyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class CheckinService {
+    private final CheckinStrategyFactory strategyFactory;
     private final ClassInfoRepository classInfoRepository;
     private final ClassMemberRepository classMemberRepository;
     private final CheckinRecordRepository checkinRecordRepository;
     private final UserRepository userRepository;
+    // 使用明确时区生成时间
+    private Timestamp getCurrentTimeInUTC8() {
+        return Timestamp.from(
+                ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+                        .toInstant()
+        );
+    }
 
+
+
+    //教师发起签到----------------------------------------------------------------------------------------------------
     @Transactional
-    public void startCheckinActivity(String classId, String code, int duration) {
-        // 获取班级信息（仅需classId，无需关联对象）
+    public void startCheckinActivity(
+            String classId,
+            CheckinMethod method,
+            Map<String, Object> params,  // 接收所有可能参数
+            int duration
+    ) {
+        // 根据方法选择策略
+        CheckinStrategy strategy = strategyFactory.getStrategy(method);
+
+        // === 通用流程 ===
         ClassInfo classInfo = classInfoRepository.findById(classId)
                 .orElseThrow(() -> new RuntimeException("Class not found"));
-
-        // 查询班级成员（ClassMember只包含userId，不包含User对象）
         List<ClassMember> members = classMemberRepository.findByIdClassId(classId);
+        Timestamp startTime = getCurrentTimeInUTC8();
 
-        // 批量查询用户信息（减少数据库访问）
-        List<String> userIds = members.stream()
-                .map(ClassMember::getUserId)
-                .toList();
-        List<UserInformation> users = userRepository.findAllById(userIds);
+        // === 策略专属校验 ===
+        strategy.validateParams(params);  // 执行参数校验（仅CIPHER/GPS会实际校验）
 
-        // 生成签到记录
-        // 生成签到记录（已添加角色过滤）
-        Timestamp startTime = new Timestamp(System.currentTimeMillis());
+        // === 生成记录 ===
         members.stream()
-                .filter(member -> member.getRole() == ClassMember.Role.MEMBER)  // 新增过滤条件
+                .filter(member -> member.getRole() == ClassMember.Role.MEMBER)
                 .forEach(member -> {
-                    CheckinRecord record = new CheckinRecord();
-                    // 保持原有ID直接赋值逻辑
-                    record.setClassId(classId);
-                    record.setUserId(member.getUserId());
-
-                    // 保持原有Transient字段处理
-                    record.setClassInfo(classInfo);
-                    record.setUser(users.stream()
-                            .filter(u -> u.getId().equals(member.getUserId()))
-                            .findFirst()
-                            .orElse(null));
-
-                    // 保持其他字段初始化
+                    CheckinRecord record = createBaseRecord(classId, classInfo, member);
+                    strategy.enrichRecord(record, params);  // 设置方法相关字段
                     record.setStartTime(startTime);
-                    record.setCheckinCode(code);
-                    record.setMethod(CheckinRecord.Method.CIPHER);
-                    record.setState(CheckinRecord.State.ABSENT);
                     record.setValidDuration(duration);
+                    record.setState(CheckinRecord.State.ABSENT);
                     checkinRecordRepository.save(record);
                 });
-//        Timestamp startTime = new Timestamp(System.currentTimeMillis());
-//        members.forEach(member -> {
-//            CheckinRecord record = new CheckinRecord();
-//            // 设置ID而非关联对象
-//            record.setClassId(classId);  // 直接设置classId
-//            record.setUserId(member.getUserId());  // 直接设置userId
-//
-//            // 兼容原有代码（Transient字段可忽略）
-//            record.setClassInfo(classInfo);  // 自动同步classId（如果有需要）
-//            record.setUser(users.stream()
-//                    .filter(u -> u.getId().equals(member.getUserId()))
-//                    .findFirst()
-//                    .orElse(null));  // 设置Transient的user对象
-//
-//            // 其他字段初始化
-//            record.setStartTime(startTime);
-//            record.setCheckinCode(code);
-//            record.setMethod(CheckinRecord.Method.CIPHER);
-//            record.setState(CheckinRecord.State.ABSENT);
-//            record.setValidDuration(duration);
-//            checkinRecordRepository.save(record);
-//        });
     }
+
+    private CheckinRecord createBaseRecord(String classId, ClassInfo classInfo, ClassMember member) {
+        CheckinRecord record = new CheckinRecord();
+        record.setClassId(classId);
+        record.setUserId(member.getUserId());
+        record.setClassInfo(classInfo);
+
+        // 直接使用 userRepository 查询用户
+        record.setUser(
+                userRepository.findById(member.getUserId()).orElse(null)
+        );
+
+        return record;
+    }
+//    @Transactional
+//    public void startCheckinActivity(String classId, String code, int duration) {
+//        // 获取班级信息（仅需classId，无需关联对象）
+//        ClassInfo classInfo = classInfoRepository.findById(classId)
+//                .orElseThrow(() -> new RuntimeException("Class not found"));
+//
+//        // 查询班级成员（ClassMember只包含userId，不包含User对象）
+//        List<ClassMember> members = classMemberRepository.findByIdClassId(classId);
+//
+//        // 批量查询用户信息（减少数据库访问）
+//        List<String> userIds = members.stream()
+//                .map(ClassMember::getUserId)
+//                .toList();
+//        List<UserInformation> users = userRepository.findAllById(userIds);
+//
+//        // 生成签到记录
+//        // 生成签到记录（已添加角色过滤）
+//        Timestamp startTime = getCurrentTimeInUTC8();  // 替换原生成方式
+//        members.stream()
+//                .filter(member -> member.getRole() == ClassMember.Role.MEMBER)  // 新增过滤条件
+//                .forEach(member -> {
+//                    CheckinRecord record = new CheckinRecord();
+//                    // 保持原有ID直接赋值逻辑
+//                    record.setClassId(classId);
+//                    record.setUserId(member.getUserId());
+//
+//                    // 保持原有Transient字段处理
+//                    record.setClassInfo(classInfo);
+//                    record.setUser(users.stream()
+//                            .filter(u -> u.getId().equals(member.getUserId()))
+//                            .findFirst()
+//                            .orElse(null));
+//
+//                    // 保持其他字段初始化
+//                    record.setStartTime(startTime);
+//                    record.setCheckinCode(code);
+//                    record.setMethod(CheckinRecord.Method.CIPHER);
+//                    record.setState(CheckinRecord.State.ABSENT);
+//                    record.setValidDuration(duration);
+//                    checkinRecordRepository.save(record);
+//                });
+//
+//    }
+
+
+
+    //学生响应签到----------------------------------------------------------------------------------------------------
 
     @Transactional
     public boolean verifyCheckin(String userId, String classId, String code) {
@@ -207,7 +253,7 @@ public class CheckinService {
         }
 
         // 更新状态
-        Timestamp actualTime = new Timestamp(System.currentTimeMillis());
+        Timestamp actualTime = getCurrentTimeInUTC8(); // 替换原生成方式
         latestRecord.setActualTime(actualTime);
 
         long endTime = latestRecord.getStartTime().getTime() + latestRecord.getValidDuration() * 60000;

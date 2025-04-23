@@ -21,23 +21,5 @@ public class ClassController {
             @RequestBody List<String> studentIds) {
         return ResponseEntity.ok(classService.createClass(className, managerId, studentIds));
 
-
-
-
-
-//        @PostMapping
-//        public ResponseEntity<ClassInfo> createClass(
-//                @RequestBody ClassCreateRequest request // 接收JSON并自动映射为对象
-//) {
-//            // 参数提取
-//            String managerId = request.getManagerId();
-//            String className = request.getClassName();
-//            List<String> studentIds = request.getStudentIds();
-//        // 调用Service层
-//        ClassInfo newClass = classService.createClass(managerId, className, studentIds);
-//
-//        // 返回201 Created响应
-//        return ResponseEntity.created(URI.create("/classes/" + newClass.getClassId()))
-//                .body(newClass);
     }
 }

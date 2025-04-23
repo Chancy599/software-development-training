@@ -1,1 +1,1 @@
-DELETE FROM  check_in_record.check_in_record
+DELETE FROM  check_in_record.checkin_record

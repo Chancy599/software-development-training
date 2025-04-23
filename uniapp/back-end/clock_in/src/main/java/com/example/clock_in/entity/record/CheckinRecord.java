@@ -1,63 +1,16 @@
-//package com.example.clock_in.entity.record;
-//
-//import com.example.clock_in.entity.list.ClassInfo;
-//import com.example.clock_in.entity.users.UserInformation;
-//import jakarta.persistence.*;
-//import lombok.Data;
-//import java.sql.Timestamp;
-//
-//
-//@Entity
-//@Table(name = "checkin_record")  //映射到对应数据库表
-//@Data
-//public class CheckinRecord {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "record_id")
-//    private Integer recordId;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "class_id")
-//    private ClassInfo classInfo;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private UserInformation user;
-//
-//    @Column(name = "start_time")
-//    private Timestamp startTime;
-//
-//    @Column(name = "cipher", length = 10)
-//    private String checkinCode;
-//
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "method")
-//    private Method method;
-//
-//    @Column(name = "actual_time")
-//    private Timestamp actualTime;
-//
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "state")
-//    private State state;
-//
-//    @Column(name = "valid_duration")
-//    private Integer validDuration;
-//
-//    public enum Method { CIPHER, QRCODE, GPS, FACE_SCAN }
-//    public enum State { IN_TIME, LATE, ABSENT, REQUEST_LEAVE }
-//}
-
 package com.example.clock_in.entity.record;
 
 import com.example.clock_in.entity.list.ClassInfo;
 import com.example.clock_in.entity.users.UserInformation;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.locationtech.jts.geom.Point;
+
 import java.sql.Timestamp;
 
+
 @Entity
-@Table(name = "check_in_record")
+@Table(name = "checkin_record")
 @Data
 public class CheckinRecord {
     @Id
@@ -87,6 +40,9 @@ public class CheckinRecord {
     @Column(name = "cipher", length = 10)
     private String checkinCode;
 
+    @Column(columnDefinition = "GEOMETRY",name="location")
+    private Point checkinLocation;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "method")
     private Method method;
@@ -101,6 +57,10 @@ public class CheckinRecord {
     @Column(name = "valid_duration")
     private Integer validDuration;
 
+    // 必须定义Setter方法
+    public void setLocation(Point location) {
+        this.checkinLocation = location;
+    }
     // 兼容原有代码的getter/setter（确保Service中调用时同步设置ID）
     public ClassInfo getClassInfo() {
         return classInfo;

@@ -1,1 +1,0 @@
-DELETE FROM  check_in_record.checkin_record
