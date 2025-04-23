@@ -3,6 +3,7 @@ package com.scut.controller;
 import com.scut.entities.*;
 import com.scut.service.ClassMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -86,14 +87,9 @@ public class ClassMemberController {
         try {
             ClassMemberDeleteAll result = classMemberService.deleteAllClassInfo(classId);
             return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            // 处理班级不存在的专用异常
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", e.getMessage()));
-        } catch (Exception e) {
-            // 处理其他异常
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Internal server error"));
+                    .body(Collections.singletonMap("error", "Class not found"));
         }
     }
 }

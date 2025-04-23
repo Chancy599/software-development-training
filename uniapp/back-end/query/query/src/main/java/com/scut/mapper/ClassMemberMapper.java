@@ -191,12 +191,18 @@ public interface ClassMemberMapper {
                                 @Param("userId") String userId);
 
     @Delete("DELETE FROM check_in_record.check_in_record WHERE class_id = #{classId}")
-    int deleteAllCheckinRecords(String classId);
-
-    @Delete("DELETE FROM check_in_list.class_info WHERE class_id = #{classId}")
-    int deleteClassInfo(String classId);
+    int deleteAllCheckinRecords(String classId);  // ① 先删记录
 
     @Delete("DELETE FROM check_in_list.class_member WHERE class_id = #{classId}")
-    int deleteAllClassMembers(String classId);
+    int deleteAllClassMembers(String classId);    // ② 再删成员
+
+    @Delete("DELETE FROM check_in_list.class_info WHERE class_id = #{classId}")
+    int deleteClassInfo(String classId);          // ③ 最后删班级
+
+    @Select("SELECT user_id FROM check_in_list.class_member WHERE class_id = #{classId} AND role = 'MEMBER'")
+    List<String> selectAllClassMemberIds(String classId);
+
+    @Select("SELECT COUNT(1) FROM check_in_list.class_info WHERE class_id = #{classId}")
+    int countClassById(@Param("classId") String classId);
 
 }
