@@ -42,10 +42,10 @@ const _sfc_main = {
     });
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:12", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:11", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:15", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:14", "App Hide");
   }
 };
 function createApp() {

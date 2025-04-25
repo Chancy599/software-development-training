@@ -101,24 +101,10 @@
 			}
 		},
 		{
-			"path" : "pages/Cipher_Launch/Cipher_Launch",
-			"style" : 
-			{
-				"navigationBarTitleText" : "暗号签到"
-			}
-		},
-		{
 			"path" : "pages/QRCode_Launch/QRCode_Launch",
 			"style" : 
 			{
 				"navigationBarTitleText" : "二维码签到"
-			}
-		},
-		{
-			"path" : "pages/Face_Launch/Face_Launch",
-			"style" : 
-			{
-				"navigationBarTitleText" : "刷脸签到"
 			}
 		},
 		{
