@@ -22,55 +22,51 @@
         <!-- 2x2网格布局 -->
         <view class="grid-container">
             <!-- 第一行 -->
-            <view class="grid-row">
+            <view class="grid-row" @click="onLocationClick">
                 <view class="grid-item">
                     <image class="grid-icon" src="/static/Method/GPS.png"></image>
                     <text class="grid-text">定位签到</text>
                 </view>
-                <view class="grid-item" @click="showCipherDialog">
+                <view class="grid-item" @click="onCipherClick">
                     <image class="grid-icon" src="/static/Method/Cipher.png"></image>
                     <text class="grid-text">暗号签到</text>
                 </view>
             </view>
             <!-- 第二行 -->
             <view class="grid-row">
-                <view class="grid-item">
+                <view class="grid-item" @click="onQRcodeClick">
                     <image class="grid-icon" src="/static/Method/QRCode.png"></image>
                     <text class="grid-text">二维码签到</text>
                 </view>
-                <view class="grid-item">
+                <view class="grid-item" @click="onFaceClick">
                     <image class="grid-icon" src="/static/Method/Face.png"></image>
                     <text class="grid-text">刷脸签到</text>
                 </view>
             </view>
         </view>
-        
-        <!-- 暗号输入弹窗 -->
-        <uni-popup ref="cipherPopup" type="dialog">
-            <uni-popup-dialog 
-                mode="input" 
-                title="输入签到暗号" 
-                placeholder="请输入任意暗号"
-                @confirm="confirmCipher"
-            ></uni-popup-dialog>
-        </uni-popup>
     </view>
+	<uni-popup ref="qrcodePopup" type="center">
+	  <view class="popup-content">
+	    <image :src="file_id" mode="aspectFit" class="popup-qrcode" show-menu-by-longpress />
+	    <button class="save-btn" @click="saveImage">保存二维码</button>
+	  </view>
+	</uni-popup>
 </template>
 
 <script>
 import uniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue'
-import uniPopupDialog from '@dcloudio/uni-ui/lib/uni-popup-dialog/uni-popup-dialog.vue'
-
 export default {
-    components: { 
-        uniPopup, 
-        uniPopupDialog 
-    },
+	components: {
+		uniPopup
+	},
     data() {
         return {
             selectedName: '',
             classid: '',
-            duration: ''
+            duration: '',
+			cipher: '',
+			start_time:'',
+			file_id: ''
         }
     },
     methods: {
@@ -78,34 +74,6 @@ export default {
             const index = e.detail.value;
             this.selectedName = this.$globalData.manageInfo_name[index];
             this.classid = this.$globalData.manage_information[index];
-        },
-        validateDuration(e) {
-            let value = parseInt(e.detail.value);
-            if (isNaN(value)) {
-                this.duration = '';
-                return;
-            }
-            if (value < 1) {
-                this.duration = 1;
-                uni.showToast({
-                    title: '时长不能小于1分钟',
-                    icon: 'none'
-                });
-            }
-        },
-        showCipherDialog() {
-            if (!this.validateSelection()) return;
-            this.$refs.cipherPopup.open();
-        },
-        confirmCipher(value) {
-            if (!value || value.trim() === '') {
-                uni.showToast({
-                    title: '暗号不能为空',
-                    icon: 'none'
-                });
-                return;
-            }
-            this.launchSignIn('cipher', value);
         },
         validateSelection() {
             if (!this.selectedName || !this.duration) {
@@ -117,34 +85,194 @@ export default {
             }
             return true;
         },
-        launchSignIn(methodType, cipher) {
-            const params = {
-                classId: this.classid,
-                duration: this.duration,
-                signMethod: methodType,
-                cipher: methodType === 'cipher' ? cipher : null
-            };
-            
-            uni.showLoading({ title: '正在发起签到...' });
-            
-            uni.request({
-                url: '你的签到API地址',
-                method: 'POST',
-                data: params,
+		onLocationClick() {
+		    if (!this.validateSelection()) return;
+		    uni.navigateTo({
+		        url: `/pages/Location_Launch/Location_Launch?classid=${this.classid}&duration=${this.duration}`
+		    });
+		},
+        onCipherClick() {
+            if (!this.validateSelection()) return;
+            uni.showModal({
+                title: '暗号签到',
+                editable: true,
+                placeholderText: '请输入签到暗号',
                 success: (res) => {
-                    uni.hideLoading();
-                    if (res.data.code === 200) {
-                        uni.showToast({ title: '签到发起成功' });
-                    } else {
-                        uni.showToast({ title: res.data.message || '签到失败', icon: 'none' });
+                    if (res.confirm && res.content) {
+                        this.cipher = res.content;
+                        this.startCipherSignIn();
                     }
-                },
-                fail: (err) => {
-                    uni.hideLoading();
-                    uni.showToast({ title: '网络错误', icon: 'none' });
                 }
             });
-        }
+        },
+        startCipherSignIn() {
+            uni.showToast({
+                title: '暗号签到已发起',
+                icon: 'success'
+            });
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
+				},
+				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER&cipher=${encodeURIComponent(this.cipher)}`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+        },
+		onFaceClick() {
+			if (!this.validateSelection()) return;
+			uni.showModal({
+				title: '刷脸签到',
+				content: '是否确认发起刷脸签到？',
+				success: (res) => {
+					if (res.confirm) {
+						this.startFaceSignIn();
+					} else {
+						uni.showToast({
+							title: '已取消操作',
+							icon: 'none'
+						});
+					}
+				}
+			});
+		},
+		startFaceSignIn() {
+			console.log('班级ID:', this.classid);
+			console.log('时长:', this.duration);
+			uni.showToast({
+				title: '刷脸签到已发起',
+				icon: 'success'
+			});
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
+				},
+				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
+		onQRCodeClick() {
+			if (!this.validateSelection()) return;
+			uni.showModal({
+				title: '刷脸签到',
+				content: '是否确认发起二维码签到？',
+				success: (res) => {
+					if (res.confirm) {
+						this.startQRCodeSignIn();
+					} else {
+						uni.showToast({
+							title: '已取消操作',
+							icon: 'none'
+						});
+					}
+				}
+			});
+		},
+		startQRCodeSignIn() {
+			console.log('班级ID:', this.classid);
+			console.log('时长:', this.duration);
+			uni.showToast({
+				title: '二维码签到已发起',
+				icon: 'success'
+			});
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
+				},
+				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					this.start_time = res.start_timestamp;
+					this.generate_qrcode();
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
+		generate_qrcode() {
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
+				},
+				path: `/generate_qrcode`,
+				header: {
+					'X-WX-SERVICE': 'qrcode',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				data: {
+					class_id: this.classid,
+					start_time: this.start_time
+				},
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					this.file_id = res.data.file_id;
+					this.$refs.qrcodePopup.open(); // 弹出二维码弹窗
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
+		saveImage() {
+		    wx.cloud.downloadFile({
+		        fileID: this.file_id,
+		        success: (res) => {
+		            wx.saveImageToPhotosAlbum({
+		                filePath: res.tempFilePath,
+		                success: () => {
+		                    uni.showToast({
+		                        title: '保存成功',
+		                        icon: 'success'
+		                    });
+		                },
+		                fail: (err) => {
+		                    console.error('保存失败:', err);
+		                    uni.showToast({
+		                        title: '保存失败，请检查权限',
+		                        icon: 'none'
+		                    });
+		                }
+		            });
+		        },
+		        fail: (err) => {
+		            console.error('下载失败:', err);
+		            uni.showToast({
+		                title: '下载失败',
+		                icon: 'none'
+		            });
+		        }
+		    });
+		}
     }
 }
 </script>
@@ -242,5 +370,30 @@ export default {
     font-size: 32rpx;
     color: #333;
     font-weight: 500;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 40rpx 30rpx;
+    border-radius: 20rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup-qrcode {
+    width: 400rpx;
+    height: 400rpx;
+    border-radius: 20rpx;
+    margin-bottom: 30rpx;
+    border: 1px solid #eee;
+}
+
+.save-btn {
+    background-color: #2979ff;
+    color: white;
+    padding: 20rpx 40rpx;
+    border-radius: 12rpx;
+    font-size: 28rpx;
 }
 </style>
