@@ -1,1 +1,1 @@
-<view><map latitude="{{a}}" longitude="{{b}}" markers="{{c}}" bindtap="{{d}}" style="width:100%;height:500px"></map><view><text>纬度: {{e}}</text></view><view><text>经度: {{f}}</text></view><button bindtap="{{g}}">使用当前位置</button><button bindtap="{{h}}">发起签到</button></view>
+<view><map latitude="{{a}}" longitude="{{b}}" markers="{{c}}" bindtap="{{d}}" style="width:100%;height:500px"></map><button bindtap="{{e}}">使用当前位置</button><button bindtap="{{f}}">发起签到</button></view>

@@ -43,7 +43,7 @@
 			{
 				"navigationBarTitleText" : "定位签到"
 			}
-		}
+		},
 		{
 			"path" : "pages/Organization_Records/Organization_Records",
 			"style" : 
@@ -64,7 +64,7 @@
 			{
 				"navigationBarTitleText" : "我的签到"
 			}
-		}
+		},
 		{
 			"path" : "pages/Face_Check_In/Face_Check_In",
 			"style" : 

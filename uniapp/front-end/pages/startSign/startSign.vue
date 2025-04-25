@@ -22,8 +22,8 @@
         <!-- 2x2网格布局 -->
         <view class="grid-container">
             <!-- 第一行 -->
-            <view class="grid-row" @click="onLocationClick">
-                <view class="grid-item">
+            <view class="grid-row">
+                <view class="grid-item" @click="onLocationClick">
                     <image class="grid-icon" src="/static/Method/GPS.png"></image>
                     <text class="grid-text">定位签到</text>
                 </view>
@@ -45,28 +45,18 @@
             </view>
         </view>
     </view>
-	<uni-popup ref="qrcodePopup" type="center">
-	  <view class="popup-content">
-	    <image :src="file_id" mode="aspectFit" class="popup-qrcode" show-menu-by-longpress />
-	    <button class="save-btn" @click="saveImage">保存二维码</button>
-	  </view>
-	</uni-popup>
 </template>
 
 <script>
-import uniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue'
 export default {
-	components: {
-		uniPopup
-	},
     data() {
         return {
             selectedName: '',
             classid: '',
             duration: '',
-			cipher: '',
-			start_time:'',
-			file_id: ''
+            cipher: '',
+            start_time: '',
+            file_id: ''
         }
     },
     methods: {
@@ -85,12 +75,12 @@ export default {
             }
             return true;
         },
-		onLocationClick() {
-		    if (!this.validateSelection()) return;
-		    uni.navigateTo({
-		        url: `/pages/Location_Launch/Location_Launch?classid=${this.classid}&duration=${this.duration}`
-		    });
-		},
+        onLocationClick() {
+            if (!this.validateSelection()) return;
+            uni.navigateTo({
+                url: `/pages/Location_Launch/Location_Launch?classid=${this.classid}&duration=${this.duration}`
+            });
+        },
         onCipherClick() {
             if (!this.validateSelection()) return;
             uni.showModal({
@@ -110,169 +100,178 @@ export default {
                 title: '暗号签到已发起',
                 icon: 'success'
             });
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
-				},
-				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER&cipher=${encodeURIComponent(this.cipher)}`,
-				header: {
-					'X-WX-SERVICE': 'clockin',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				success: (res) => {
-					console.log('后端返回数据:', res);
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-				}
-			});
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER&cipher=${encodeURIComponent(this.cipher)}`,
+                header: {
+                    'X-WX-SERVICE': 'clockin',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+                }
+            });
         },
-		onFaceClick() {
-			if (!this.validateSelection()) return;
-			uni.showModal({
-				title: '刷脸签到',
-				content: '是否确认发起刷脸签到？',
-				success: (res) => {
-					if (res.confirm) {
-						this.startFaceSignIn();
-					} else {
-						uni.showToast({
-							title: '已取消操作',
-							icon: 'none'
-						});
-					}
-				}
-			});
-		},
-		startFaceSignIn() {
-			console.log('班级ID:', this.classid);
-			console.log('时长:', this.duration);
-			uni.showToast({
-				title: '刷脸签到已发起',
-				icon: 'success'
-			});
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
-				},
-				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER`,
-				header: {
-					'X-WX-SERVICE': 'clockin',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				success: (res) => {
-					console.log('后端返回数据:', res);
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-				}
-			});
-		},
-		onQRCodeClick() {
-			if (!this.validateSelection()) return;
-			uni.showModal({
-				title: '刷脸签到',
-				content: '是否确认发起二维码签到？',
-				success: (res) => {
-					if (res.confirm) {
-						this.startQRCodeSignIn();
-					} else {
-						uni.showToast({
-							title: '已取消操作',
-							icon: 'none'
-						});
-					}
-				}
-			});
-		},
-		startQRCodeSignIn() {
-			console.log('班级ID:', this.classid);
-			console.log('时长:', this.duration);
-			uni.showToast({
-				title: '二维码签到已发起',
-				icon: 'success'
-			});
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
-				},
-				path: `/classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
-				header: {
-					'X-WX-SERVICE': 'clockin',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				success: (res) => {
-					console.log('后端返回数据:', res);
-					this.start_time = res.start_timestamp;
-					this.generate_qrcode();
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-				}
-			});
-		},
-		generate_qrcode() {
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
-				},
-				path: `/generate_qrcode`,
-				header: {
-					'X-WX-SERVICE': 'qrcode',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				data: {
-					class_id: this.classid,
-					start_time: this.start_time
-				},
-				success: (res) => {
-					console.log('后端返回数据:', res);
-					this.file_id = res.data.file_id;
-					this.$refs.qrcodePopup.open(); // 弹出二维码弹窗
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-				}
-			});
-		},
-		saveImage() {
-		    wx.cloud.downloadFile({
-		        fileID: this.file_id,
-		        success: (res) => {
-		            wx.saveImageToPhotosAlbum({
-		                filePath: res.tempFilePath,
-		                success: () => {
-		                    uni.showToast({
-		                        title: '保存成功',
-		                        icon: 'success'
-		                    });
-		                },
-		                fail: (err) => {
-		                    console.error('保存失败:', err);
-		                    uni.showToast({
-		                        title: '保存失败，请检查权限',
-		                        icon: 'none'
-		                    });
-		                }
-		            });
-		        },
-		        fail: (err) => {
-		            console.error('下载失败:', err);
-		            uni.showToast({
-		                title: '下载失败',
-		                icon: 'none'
-		            });
-		        }
-		    });
-		}
+        onFaceClick() {
+            if (!this.validateSelection()) return;
+            uni.showModal({
+                title: '刷脸签到',
+                content: '是否确认发起刷脸签到？',
+                success: (res) => {
+                    if (res.confirm) {
+                        this.startFaceSignIn();
+                    } else {
+                        uni.showToast({
+                            title: '已取消操作',
+                            icon: 'none'
+                        });
+                    }
+                }
+            });
+        },
+        startFaceSignIn() {
+            uni.showToast({
+                title: '刷脸签到已发起',
+                icon: 'success'
+            });
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=FACE_SCAN`,
+                header: {
+                    'X-WX-SERVICE': 'clockin',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+                }
+            });
+        },
+        onQRcodeClick() {
+            if (!this.validateSelection()) return;
+            uni.showModal({
+                title: '二维码签到',
+                content: '是否确认发起二维码签到？',
+                success: (res) => {
+                    if (res.confirm) {
+                        this.startQRCodeSignIn();
+                    } else {
+                        uni.showToast({
+                            title: '已取消操作',
+                            icon: 'none'
+                        });
+                    }
+                }
+            });
+        },
+        startQRCodeSignIn() {
+            uni.showToast({
+                title: '二维码签到已发起',
+                icon: 'success'
+            });
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
+                header: {
+                    'X-WX-SERVICE': 'clockin',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                    this.start_time = res.start_timestamp;
+                    this.generate_qrcode();
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+                }
+            });
+        },
+        generate_qrcode() {
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/generate_qrcode`,
+                header: {
+                    'X-WX-SERVICE': 'qrcode',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                data: {
+                    class_id: this.classid,
+                    start_time: this.start_time
+                },
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                    this.file_id = res.data.file_id;
+                    this.showQRCodeModal();
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+                }
+            });
+        },
+        showQRCodeModal() {
+            uni.showModal({
+                title: '签到二维码',
+                content: '请让学生扫描此二维码完成签到',
+                confirmText: '保存二维码',
+                showCancel: true,
+                success: (res) => {
+                    if (res.confirm) {
+                        this.saveImage();
+                    }
+                }
+            });
+        },
+        saveImage() {
+            wx.cloud.downloadFile({
+                fileID: this.file_id,
+                success: (res) => {
+                    wx.saveImageToPhotosAlbum({
+                        filePath: res.tempFilePath,
+                        success: () => {
+                            uni.showToast({
+                                title: '保存成功',
+                                icon: 'success'
+                            });
+                        },
+                        fail: (err) => {
+                            console.error('保存失败:', err);
+                            uni.showToast({
+                                title: '保存失败，请检查权限',
+                                icon: 'none'
+                            });
+                        }
+                    });
+                },
+                fail: (err) => {
+                    console.error('下载失败:', err);
+                    uni.showToast({
+                        title: '下载失败',
+                        icon: 'none'
+                    });
+                }
+            });
+        }
     }
 }
 </script>
@@ -370,30 +369,5 @@ export default {
     font-size: 32rpx;
     color: #333;
     font-weight: 500;
-}
-
-.popup-content {
-    background-color: #fff;
-    padding: 40rpx 30rpx;
-    border-radius: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.popup-qrcode {
-    width: 400rpx;
-    height: 400rpx;
-    border-radius: 20rpx;
-    margin-bottom: 30rpx;
-    border: 1px solid #eee;
-}
-
-.save-btn {
-    background-color: #2979ff;
-    color: white;
-    padding: 20rpx 40rpx;
-    border-radius: 12rpx;
-    font-size: 28rpx;
 }
 </style>

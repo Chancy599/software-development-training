@@ -9,17 +9,12 @@ if (!Math) {
   "./pages/startSign/startSign.js";
   "./pages/mySettings/mySettings.js";
   "./pages/Location_Check_In/Location_Check_In.js";
-  "./pages/QRCode_Check_In/QRCode_Check_In.js";
   "./pages/Organization_Records/Organization_Records.js";
   "./pages/Member_Records/Member_Records.js";
   "./pages/My_Records/My_Records.js";
-  "./pages/Cipher_Check_In/Cipher_Check_In.js";
   "./pages/Face_Check_In/Face_Check_In.js";
   "./pages/Check_Record/Check_Record.js";
   "./pages/Location_Launch/Location_Launch.js";
-  "./pages/Cipher_Launch/Cipher_Launch.js";
-  "./pages/QRCode_Launch/QRCode_Launch.js";
-  "./pages/Face_Launch/Face_Launch.js";
   "./pages/UncheckedList/UncheckedList.js";
   "./pages/OrgCreate/OrgCreate.js";
   "./pages/OrgManage/OrgManage.js";

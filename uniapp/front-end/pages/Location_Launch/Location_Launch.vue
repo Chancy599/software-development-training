@@ -7,8 +7,6 @@
             @tap="handleMapTap"
             style="width: 100%; height: 500px;"
         ></map>
-        <view><text>纬度: {{ latitude }}</text></view>
-        <view><text>经度: {{ longitude }}</text></view>
         <button @click="getCurrentLocation">使用当前位置</button>
         <button @click="Launch">发起签到</button>
     </view>
@@ -18,12 +16,16 @@
 export default {
     data() {
         return {
+			classid:'',
+			duration:'',
             latitude: 0,
             longitude: 0,
             markers: []
         };
     },
     onLoad() {
+		this.classid = decodeURIComponent(options.classid || '');
+		this.duration = decodeURIComponent(options.duration || '');
         this.getCurrentLocation();
     },
     methods: {
@@ -57,7 +59,31 @@ export default {
                 longitude: this.longitude,
                 title: '签到位置'
             }];
-        }
+        },
+		Launch() {
+			uni.showToast({
+			    title: '定位签到已发起',
+			    icon: 'success'
+			});
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
+				},
+				path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=GPS&longitude=${encodeURIComponent(this.longitude)}&latitude=${encodeURIComponent(this.latitude)}`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		}
     }
 };
 </script>

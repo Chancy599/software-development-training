@@ -14,7 +14,7 @@ ENV_ID = "prod-7glwxii4e6eb93d8"  # 你的微信云托管环境 ID
 def get_access_token():
     """获取微信小程序的 access_token"""
     url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={APP_ID}&secret={APP_SECRET}"
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     result = response.json()
     if "access_token" in result:
         return result["access_token"]
@@ -28,7 +28,7 @@ def get_upload_url(access_token, file_path):
         "env": ENV_ID,
         "path": file_path
     }
-    response = requests.post(url, json=payload)
+    response = requests.post(url, json=payload, verify=False)
     result = response.json()
     if "url" in result:
         return result
@@ -44,7 +44,7 @@ def upload_file(upload_info, file_data):
         "x-cos-meta-fileid": (None, upload_info["cos_file_id"]),
         "file": ("qrcode.png", file_data)
     }
-    response = requests.post(upload_info["url"], files=files)
+    response = requests.post(upload_info["url"], files=files, verify=False)
     if response.status_code == 204:
         return upload_info["file_id"]
     else:

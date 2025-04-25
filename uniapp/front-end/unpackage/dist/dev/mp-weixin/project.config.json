@@ -21,17 +21,7 @@
   "libVersion": "3.8.1",
   "appid": "wx2492d91b878e5ccc",
   "projectname": "front-end",
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/startSign/startSign",
-          "pathName": "pages/startSign/startSign",
-          "query": ""
-        }
-      ]
-    }
-  },
+  "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
