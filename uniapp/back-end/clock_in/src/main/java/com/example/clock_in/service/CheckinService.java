@@ -138,10 +138,9 @@ public class CheckinService {
     }
 
 
-
     //教师发起签到----------------------------------------------------------------------------------------------------
     @Transactional
-    public void startCheckinActivity(
+    public Timestamp startCheckinActivity(
             String classId,
             CheckinMethod method,
             Map<String, Object> params,  // 接收所有可能参数
@@ -154,11 +153,14 @@ public class CheckinService {
         ClassInfo classInfo = classInfoRepository.findById(classId)
                 .orElseThrow(() -> new RuntimeException("Class not found"));
         List<ClassMember> members = classMemberRepository.findByIdClassId(classId);
-        Timestamp startTime = getCurrentTimeInUTC8();
+
 
         // === 策略专属校验 ===
         strategy.validateParams(params);  // 执行参数校验（仅CIPHER/GPS会实际校验）
 
+
+
+        Timestamp startTime = getCurrentTimeInUTC8();
         // === 生成记录 ===
         members.stream()
                 .filter(member -> member.getRole() == ClassMember.Role.MEMBER)
@@ -170,6 +172,7 @@ public class CheckinService {
                     record.setState(CheckinRecord.State.ABSENT);
                     checkinRecordRepository.save(record);
                 });
+        return startTime;
     }
 
     private CheckinRecord createBaseRecord(String classId, ClassInfo classInfo, ClassMember member) {
@@ -185,48 +188,52 @@ public class CheckinService {
 
         return record;
     }
+
+//    //教师发起签到----------------------------------------------------------------------------------------------------
 //    @Transactional
-//    public void startCheckinActivity(String classId, String code, int duration) {
-//        // 获取班级信息（仅需classId，无需关联对象）
+//    public void startCheckinActivity(
+//            String classId,
+//            CheckinMethod method,
+//            Map<String, Object> params,  // 接收所有可能参数
+//            int duration
+//    ) {
+//        // 根据方法选择策略
+//        CheckinStrategy strategy = strategyFactory.getStrategy(method);
+//
+//        // === 通用流程 ===
 //        ClassInfo classInfo = classInfoRepository.findById(classId)
 //                .orElseThrow(() -> new RuntimeException("Class not found"));
-//
-//        // 查询班级成员（ClassMember只包含userId，不包含User对象）
 //        List<ClassMember> members = classMemberRepository.findByIdClassId(classId);
+//        Timestamp startTime = getCurrentTimeInUTC8();
 //
-//        // 批量查询用户信息（减少数据库访问）
-//        List<String> userIds = members.stream()
-//                .map(ClassMember::getUserId)
-//                .toList();
-//        List<UserInformation> users = userRepository.findAllById(userIds);
+//        // === 策略专属校验 ===
+//        strategy.validateParams(params);  // 执行参数校验（仅CIPHER/GPS会实际校验）
 //
-//        // 生成签到记录
-//        // 生成签到记录（已添加角色过滤）
-//        Timestamp startTime = getCurrentTimeInUTC8();  // 替换原生成方式
+//        // === 生成记录 ===
 //        members.stream()
-//                .filter(member -> member.getRole() == ClassMember.Role.MEMBER)  // 新增过滤条件
+//                .filter(member -> member.getRole() == ClassMember.Role.MEMBER)
 //                .forEach(member -> {
-//                    CheckinRecord record = new CheckinRecord();
-//                    // 保持原有ID直接赋值逻辑
-//                    record.setClassId(classId);
-//                    record.setUserId(member.getUserId());
-//
-//                    // 保持原有Transient字段处理
-//                    record.setClassInfo(classInfo);
-//                    record.setUser(users.stream()
-//                            .filter(u -> u.getId().equals(member.getUserId()))
-//                            .findFirst()
-//                            .orElse(null));
-//
-//                    // 保持其他字段初始化
+//                    CheckinRecord record = createBaseRecord(classId, classInfo, member);
+//                    strategy.enrichRecord(record, params);  // 设置方法相关字段
 //                    record.setStartTime(startTime);
-//                    record.setCheckinCode(code);
-//                    record.setMethod(CheckinRecord.Method.CIPHER);
-//                    record.setState(CheckinRecord.State.ABSENT);
 //                    record.setValidDuration(duration);
+//                    record.setState(CheckinRecord.State.ABSENT);
 //                    checkinRecordRepository.save(record);
 //                });
+//    }
 //
+//    private CheckinRecord createBaseRecord(String classId, ClassInfo classInfo, ClassMember member) {
+//        CheckinRecord record = new CheckinRecord();
+//        record.setClassId(classId);
+//        record.setUserId(member.getUserId());
+//        record.setClassInfo(classInfo);
+//
+//        // 直接使用 userRepository 查询用户
+//        record.setUser(
+//                userRepository.findById(member.getUserId()).orElse(null)
+//        );
+//
+//        return record;
 //    }
 
 

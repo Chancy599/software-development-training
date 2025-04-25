@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table(name = "checkin_record")
+@Table(name = "check_in_record")
 @Data
 public class CheckinRecord {
     @Id
