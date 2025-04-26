@@ -154,18 +154,17 @@ const _sfc_main = {
           common_vendor.wx$1.cloud.getTempFileURL({
             fileList: [this.file_id],
             success: (res2) => {
-              common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:209", "获取临时地址:", res2);
               this.qrImageUrl = res2.fileList[0].tempFileURL;
               this.showQRCodeModalView = true;
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:214", "获取临时地址失败:", err);
-              common_vendor.index.showToast({ title: "图片加载失败", icon: "none" });
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:213", "获取临时链接失败:", err);
+              common_vendor.index.showToast({ title: "二维码加载失败", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:220", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:219", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
@@ -174,8 +173,9 @@ const _sfc_main = {
       common_vendor.wx$1.cloud.downloadFile({
         fileID: this.file_id,
         success: (res) => {
-          common_vendor.wx$1.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
+          const tempFilePath = res.tempFilePath;
+          common_vendor.index.saveImageToPhotosAlbum({
+            filePath: tempFilePath,
             success: () => {
               common_vendor.index.showToast({ title: "保存成功", icon: "success" });
             },
