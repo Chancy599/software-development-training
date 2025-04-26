@@ -126,7 +126,7 @@ const _sfc_main = {
         method: "POST",
         success: (res) => {
           common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:178", "后端返回数据:", res);
-          this.start_time = res.start_timestamp;
+          this.start_time = res.data.start_timestamp;
           this.generate_qrcode();
         },
         fail: (err) => {
@@ -138,7 +138,7 @@ const _sfc_main = {
     generate_qrcode() {
       common_vendor.wx$1.cloud.callContainer({
         config: { env: "prod-7glwxii4e6eb93d8" },
-        path: `/generate_qrcode`,
+        path: "/generate_qrcode",
         header: {
           "X-WX-SERVICE": "qrcode",
           "content-type": "application/json"
@@ -151,25 +151,31 @@ const _sfc_main = {
         success: (res) => {
           common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:202", "后端返回数据:", res);
           this.file_id = res.data.file_id;
+          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:204", "生成的 file_id:", this.file_id);
           common_vendor.wx$1.cloud.getTempFileURL({
             fileList: [this.file_id],
             success: (res2) => {
+              common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:210", "获取临时链接成功:", res2);
               this.qrImageUrl = res2.fileList[0].tempFileURL;
               this.showQRCodeModalView = true;
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:213", "获取临时链接失败:", err);
-              common_vendor.index.showToast({ title: "二维码加载失败", icon: "none" });
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:215", "获取临时链接失败:", err);
+              common_vendor.index.showToast({ title: "二维码生成失败", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:219", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:221", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
     },
     saveImage() {
+      if (!this.file_id) {
+        common_vendor.index.showToast({ title: "暂无可保存的图片", icon: "none" });
+        return;
+      }
       common_vendor.wx$1.cloud.downloadFile({
         fileID: this.file_id,
         success: (res) => {
@@ -180,13 +186,35 @@ const _sfc_main = {
               common_vendor.index.showToast({ title: "保存成功", icon: "success" });
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:235", "保存失败:", err);
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:241", "保存失败:", err);
               common_vendor.index.showToast({ title: "保存失败，请检查权限", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:241", "下载失败:", err);
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:247", "下载失败:", err);
+          common_vendor.index.showToast({ title: "下载失败", icon: "none" });
+        }
+      });
+    },
+    downloadAndSaveImage() {
+      common_vendor.wx$1.cloud.downloadFile({
+        fileID: this.file_id,
+        success: (res) => {
+          const tempFilePath = res.tempFilePath;
+          common_vendor.index.saveImageToPhotosAlbum({
+            filePath: tempFilePath,
+            success: () => {
+              common_vendor.index.showToast({ title: "保存成功", icon: "success" });
+            },
+            fail: (err) => {
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:263", "保存失败:", err);
+              common_vendor.index.showToast({ title: "保存失败，请检查权限", icon: "none" });
+            }
+          });
+        },
+        fail: (err) => {
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:269", "下载失败:", err);
           common_vendor.index.showToast({ title: "下载失败", icon: "none" });
         }
       });

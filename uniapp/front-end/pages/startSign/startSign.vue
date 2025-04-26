@@ -176,7 +176,7 @@ export default {
                 method: 'POST',
                 success: (res) => {
                     console.log('后端返回数据:', res);
-                    this.start_time = res.start_timestamp;
+                    this.start_time = res.data.start_timestamp;
                     this.generate_qrcode();
                 },
                 fail: (err) => {
@@ -188,7 +188,7 @@ export default {
 		generate_qrcode() {
 			wx.cloud.callContainer({
 				config: { env: 'prod-7glwxii4e6eb93d8' },
-				path: `/generate_qrcode`,
+				path: '/generate_qrcode',
 				header: {
 					'X-WX-SERVICE': 'qrcode',
 					'content-type': 'application/json'
@@ -201,17 +201,19 @@ export default {
 				success: (res) => {
 					console.log('后端返回数据:', res);
 					this.file_id = res.data.file_id;
+					 console.log('生成的 file_id:', this.file_id);
 
-					// 获取临时链接显示二维码
+					// 拿 file_id 换真实临时链接
 					wx.cloud.getTempFileURL({
 						fileList: [this.file_id],
 						success: (res) => {
+							console.log('获取临时链接成功:', res);
 							this.qrImageUrl = res.fileList[0].tempFileURL;
-							this.showQRCodeModalView = true;  // 显示模态框
+							this.showQRCodeModalView = true; // 显示模态框
 						},
 						fail: (err) => {
 							console.error('获取临时链接失败:', err);
-							uni.showToast({ title: '二维码加载失败', icon: 'none' });
+							uni.showToast({ title: '二维码生成失败', icon: 'none' });
 						}
 					});
 				},
@@ -222,6 +224,10 @@ export default {
 			});
 		},
 		saveImage() {
+			if (!this.file_id) {
+				uni.showToast({ title: '暂无可保存的图片', icon: 'none' });
+				return;
+			}
 			wx.cloud.downloadFile({
 				fileID: this.file_id,
 				success: (res) => {
@@ -242,7 +248,29 @@ export default {
 					uni.showToast({ title: '下载失败', icon: 'none' });
 				}
 			});
-		}
+		},
+        downloadAndSaveImage() {
+            wx.cloud.downloadFile({
+                fileID: this.file_id,
+                success: (res) => {
+                    const tempFilePath = res.tempFilePath;
+                    uni.saveImageToPhotosAlbum({
+                        filePath: tempFilePath,
+                        success: () => {
+                            uni.showToast({ title: '保存成功', icon: 'success' });
+                        },
+                        fail: (err) => {
+                            console.error('保存失败:', err);
+                            uni.showToast({ title: '保存失败，请检查权限', icon: 'none' });
+                        }
+                    });
+                },
+                fail: (err) => {
+                    console.error('下载失败:', err);
+                    uni.showToast({ title: '下载失败', icon: 'none' });
+                }
+            });
+        }
     }
 }
 </script>

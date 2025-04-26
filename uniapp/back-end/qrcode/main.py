@@ -3,6 +3,10 @@ import qrcode
 from datetime import datetime
 from io import BytesIO
 from flask import Flask, request, jsonify
+import urllib3
+
+# 禁用不安全请求警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
@@ -97,9 +101,13 @@ def generate_qrcode():
 
         file_id = generate_qrcode_and_upload(class_id, start_time)
 
+        # 调整 file_id 格式
+        prefix = "cloud://prod-7glwxii4e6eb93d8.7072-prod-7glwxii4e6eb93d8-1349374885"
+        adjusted_file_id = f"{prefix}/cloud:/{file_id.split('cloud://')[1]}"
+
         return jsonify({
             "message": "二维码生成并上传成功",
-            "file_id": file_id
+            "file_id": adjusted_file_id
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
