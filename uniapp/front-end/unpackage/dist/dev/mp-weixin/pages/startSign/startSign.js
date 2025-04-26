@@ -9,7 +9,9 @@ const _sfc_main = {
       duration: "",
       cipher: "",
       start_time: "",
-      file_id: ""
+      file_id: "",
+      qrImageUrl: "",
+      showQRCodeModalView: false
     };
   },
   methods: {
@@ -32,7 +34,7 @@ const _sfc_main = {
       if (!this.validateSelection())
         return;
       common_vendor.index.navigateTo({
-        url: `/pages/Location_Launch/Location_Launch?classid=${this.classid}&duration=${this.duration}`
+        url: `/pages/Location_Launch/Location_Launch?classid=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}`
       });
     },
     onCipherClick() {
@@ -51,26 +53,19 @@ const _sfc_main = {
       });
     },
     startCipherSignIn() {
-      common_vendor.index.showToast({
-        title: "暗号签到已发起",
-        icon: "success"
-      });
+      common_vendor.index.showToast({ title: "暗号签到已发起", icon: "success" });
       common_vendor.wx$1.cloud.callContainer({
-        config: {
-          env: "prod-7glwxii4e6eb93d8"
-        },
+        config: { env: "prod-7glwxii4e6eb93d8" },
         path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=CIPHER&cipher=${encodeURIComponent(this.cipher)}`,
         header: {
           "X-WX-SERVICE": "clockin",
           "content-type": "application/json"
         },
         method: "POST",
-        success: (res) => {
-          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:114", "后端返回数据:", res);
-        },
+        success: (res) => common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:121", "后端返回数据:", res),
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:117", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:123", "请求失败:", err);
+          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
     },
@@ -81,38 +76,27 @@ const _sfc_main = {
         title: "刷脸签到",
         content: "是否确认发起刷脸签到？",
         success: (res) => {
-          if (res.confirm) {
+          if (res.confirm)
             this.startFaceSignIn();
-          } else {
-            common_vendor.index.showToast({
-              title: "已取消操作",
-              icon: "none"
-            });
-          }
+          else
+            common_vendor.index.showToast({ title: "已取消操作", icon: "none" });
         }
       });
     },
     startFaceSignIn() {
-      common_vendor.index.showToast({
-        title: "刷脸签到已发起",
-        icon: "success"
-      });
+      common_vendor.index.showToast({ title: "刷脸签到已发起", icon: "success" });
       common_vendor.wx$1.cloud.callContainer({
-        config: {
-          env: "prod-7glwxii4e6eb93d8"
-        },
+        config: { env: "prod-7glwxii4e6eb93d8" },
         path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=FACE_SCAN`,
         header: {
           "X-WX-SERVICE": "clockin",
           "content-type": "application/json"
         },
         method: "POST",
-        success: (res) => {
-          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:155", "后端返回数据:", res);
-        },
+        success: (res) => common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:149", "后端返回数据:", res),
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:158", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:151", "请求失败:", err);
+          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
     },
@@ -123,26 +107,17 @@ const _sfc_main = {
         title: "二维码签到",
         content: "是否确认发起二维码签到？",
         success: (res) => {
-          if (res.confirm) {
+          if (res.confirm)
             this.startQRCodeSignIn();
-          } else {
-            common_vendor.index.showToast({
-              title: "已取消操作",
-              icon: "none"
-            });
-          }
+          else
+            common_vendor.index.showToast({ title: "已取消操作", icon: "none" });
         }
       });
     },
     startQRCodeSignIn() {
-      common_vendor.index.showToast({
-        title: "二维码签到已发起",
-        icon: "success"
-      });
+      common_vendor.index.showToast({ title: "二维码签到已发起", icon: "success" });
       common_vendor.wx$1.cloud.callContainer({
-        config: {
-          env: "prod-7glwxii4e6eb93d8"
-        },
+        config: { env: "prod-7glwxii4e6eb93d8" },
         path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
         header: {
           "X-WX-SERVICE": "clockin",
@@ -150,21 +125,19 @@ const _sfc_main = {
         },
         method: "POST",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:196", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:178", "后端返回数据:", res);
           this.start_time = res.start_timestamp;
           this.generate_qrcode();
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:201", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:183", "请求失败:", err);
+          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
     },
     generate_qrcode() {
       common_vendor.wx$1.cloud.callContainer({
-        config: {
-          env: "prod-7glwxii4e6eb93d8"
-        },
+        config: { env: "prod-7glwxii4e6eb93d8" },
         path: `/generate_qrcode`,
         header: {
           "X-WX-SERVICE": "qrcode",
@@ -176,26 +149,24 @@ const _sfc_main = {
           start_time: this.start_time
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:222", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:202", "后端返回数据:", res);
           this.file_id = res.data.file_id;
-          this.showQRCodeModal();
+          common_vendor.wx$1.cloud.getTempFileURL({
+            fileList: [this.file_id],
+            success: (res2) => {
+              common_vendor.index.__f__("log", "at pages/startSign/startSign.vue:209", "获取临时地址:", res2);
+              this.qrImageUrl = res2.fileList[0].tempFileURL;
+              this.showQRCodeModalView = true;
+            },
+            fail: (err) => {
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:214", "获取临时地址失败:", err);
+              common_vendor.index.showToast({ title: "图片加载失败", icon: "none" });
+            }
+          });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:227", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
-        }
-      });
-    },
-    showQRCodeModal() {
-      common_vendor.index.showModal({
-        title: "签到二维码",
-        content: "请让学生扫描此二维码完成签到",
-        confirmText: "保存二维码",
-        showCancel: true,
-        success: (res) => {
-          if (res.confirm) {
-            this.saveImage();
-          }
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:220", "请求失败:", err);
+          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
     },
@@ -206,33 +177,24 @@ const _sfc_main = {
           common_vendor.wx$1.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
             success: () => {
-              common_vendor.index.showToast({
-                title: "保存成功",
-                icon: "success"
-              });
+              common_vendor.index.showToast({ title: "保存成功", icon: "success" });
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:258", "保存失败:", err);
-              common_vendor.index.showToast({
-                title: "保存失败，请检查权限",
-                icon: "none"
-              });
+              common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:235", "保存失败:", err);
+              common_vendor.index.showToast({ title: "保存失败，请检查权限", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:267", "下载失败:", err);
-          common_vendor.index.showToast({
-            title: "下载失败",
-            icon: "none"
-          });
+          common_vendor.index.__f__("error", "at pages/startSign/startSign.vue:241", "下载失败:", err);
+          common_vendor.index.showToast({ title: "下载失败", icon: "none" });
         }
       });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
+  return common_vendor.e({
     a: common_vendor.t($data.selectedName || "请点击选择班级"),
     b: this.$globalData.manageInfo_name,
     c: common_vendor.o((...args) => $options.onPickerChange && $options.onPickerChange(...args)),
@@ -245,8 +207,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     j: common_assets._imports_2$1,
     k: common_vendor.o((...args) => $options.onQRcodeClick && $options.onQRcodeClick(...args)),
     l: common_assets._imports_3$1,
-    m: common_vendor.o((...args) => $options.onFaceClick && $options.onFaceClick(...args))
-  };
+    m: common_vendor.o((...args) => $options.onFaceClick && $options.onFaceClick(...args)),
+    n: $data.showQRCodeModalView
+  }, $data.showQRCodeModalView ? {
+    o: $data.qrImageUrl,
+    p: common_vendor.o((...args) => $options.saveImage && $options.saveImage(...args)),
+    q: common_vendor.o(($event) => $data.showQRCodeModalView = false)
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

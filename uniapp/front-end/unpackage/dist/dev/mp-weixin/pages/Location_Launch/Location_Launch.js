@@ -10,7 +10,7 @@ const _sfc_main = {
       markers: []
     };
   },
-  onLoad() {
+  onLoad(options) {
     this.classid = decodeURIComponent(options.classid || "");
     this.duration = decodeURIComponent(options.duration || "");
     this.getCurrentLocation();
@@ -58,7 +58,7 @@ const _sfc_main = {
           env: "prod-7glwxii4e6eb93d8"
           // 云托管环境ID
         },
-        path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=GPS&longitude=${encodeURIComponent(this.longitude)}&latitude=${encodeURIComponent(this.latitude)}`,
+        path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${this.duration}&method=GPS&longitude=${this.longitude}&latitude=${this.latitude}`,
         header: {
           "X-WX-SERVICE": "clockin",
           "content-type": "application/json"

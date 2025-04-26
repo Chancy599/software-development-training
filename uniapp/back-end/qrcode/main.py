@@ -57,7 +57,7 @@ def generate_qrcode_and_upload(class_id, start_time):
     except ValueError:
         raise Exception("传入的 start_time 格式不正确，请使用 'YYYY-MM-DD HH:MM:SS' 格式")
 
-    file_name = f"QRCode/{class_id}/{start_time_obj}.png"
+    file_name = f"QRCode/{class_id}/{start_time_obj.strftime('%Y%m%d%H%M%S')}.png"
 
     qr_data = {
         "class_id": class_id,

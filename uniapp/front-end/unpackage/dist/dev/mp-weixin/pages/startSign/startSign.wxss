@@ -80,3 +80,49 @@
     color: #333;
     font-weight: 500;
 }
+
+/* 模态视图样式 */
+.qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.qr-modal-content {
+    background: #fff;
+    padding: 40rpx;
+    border-radius: 16rpx;
+    text-align: center;
+    width: 80%;
+}
+.qr-img {
+    width: 100%;
+    max-width: 500rpx;
+    margin-bottom: 30rpx;
+}
+.qr-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 20rpx;
+}
+.qr-btn {
+    flex: 1;
+    padding: 20rpx 0;
+    font-size: 28rpx;
+    border-radius: 10rpx;
+    border: none;
+}
+.qr-btn.save {
+    background-color: #007aff;
+    color: #fff;
+}
+.qr-btn.cancel {
+    background-color: #f1f1f1;
+    color: #333;
+}
