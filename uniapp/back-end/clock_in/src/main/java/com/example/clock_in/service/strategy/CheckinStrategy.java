@@ -10,4 +10,8 @@ public interface CheckinStrategy {
 
     //补充记录字段
     void enrichRecord(CheckinRecord record, Map<String, Object> params);
+
+    default boolean verify(CheckinRecord record, Map<String, Object> params) {
+        return true;
+    }
 }

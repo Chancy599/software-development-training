@@ -21,4 +21,11 @@ public class CipherCheckinStrategy implements CheckinStrategy {
         record.setCheckinCode((String) params.get("cipher"));  // 设置暗号
         record.setMethod(CheckinRecord.Method.CIPHER);
     }
+
+
+    @Override
+    public boolean verify(CheckinRecord record, Map<String, Object> params) {
+        String inputCode = (String) params.get("cipher");
+        return inputCode != null && inputCode.equals(record.getCheckinCode());
+    }
 }
