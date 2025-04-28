@@ -84,6 +84,10 @@ public class CheckinRecord {
         }
     }
 
+    public Point getLocation() {
+        return this.checkinLocation;
+    }
+
     public enum Method { CIPHER, QRCODE, GPS, FACE_SCAN }
     public enum State { IN_TIME, LATE, ABSENT, REQUEST_LEASE }
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement // 启用事务管理
@@ -36,6 +37,11 @@ public class RecordDataSourceConfig {
                 .dataSource(dataSource())
                 .packages("com.example.clock_in.entity.record")
                 .persistenceUnit("record")
+                // 添加方言配置（关键）
+                .properties(Map.of(
+                        "hibernate.dialect", "org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect", // 移除版本号
+                        "hibernate.jdbc.time_zone", "Asia/Shanghai"
+                ))
                 .build();
     }
 
