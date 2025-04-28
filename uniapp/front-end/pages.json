@@ -66,13 +66,6 @@
 			}
 		},
 		{
-			"path" : "pages/Face_Check_In/Face_Check_In",
-			"style" : 
-			{
-				"navigationBarTitleText" : "刷脸签到"
-			}
-		},
-		{
 			"path" : "pages/Check_Record/Check_Record",
 			"style" : 
 			{

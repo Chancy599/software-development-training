@@ -27,72 +27,209 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				uncheckedList: []
-			}
-		},
-		onLoad() {
-			this.Check_In();
-		},
-		methods: {
-			Check_In() {
-				wx.cloud.callContainer({
-					config: {
-						env: 'prod-7glwxii4e6eb93d8'
-					},
-					path: `/EnterClassToSelectUser/GetUncheckedList?userId=${encodeURIComponent(this.$globalData.username)}`,
-					header: {
-						'X-WX-SERVICE': 'query',
-						'content-type': 'application/json'
-					},
-					method: 'GET',
-					success: (res) => {
-						console.log('后端返回数据:', res);
-						if (Array.isArray(res.data) && res.data.length > 0) {
-							this.uncheckedList = res.data;
-						} else {
-							this.uncheckedList = [];
-							uni.showToast({ title: '暂无未签到课程', icon: 'none' });
-						}
-					},
-					fail: (err) => {
-						console.error('请求失败:', err);
-						uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+export default {
+	data() {
+		return {
+			uncheckedList: []
+		}
+	},
+	onLoad() {
+		this.Check_In();
+	},
+	methods: {
+		Check_In() {
+			wx.cloud.callContainer({
+				config: { env: 'prod-7glwxii4e6eb93d8' },
+				path: `/EnterClassToSelectUser/GetUncheckedList?userId=${encodeURIComponent(this.$globalData.username)}`,
+				header: {
+					'X-WX-SERVICE': 'query',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (Array.isArray(res.data) && res.data.length > 0) {
+						this.uncheckedList = res.data;
+					} else {
+						this.uncheckedList = [];
+						uni.showToast({ title: '暂无未签到课程', icon: 'none' });
 					}
-				});
-			},
-			onLeave(item) {
-				uni.navigateTo({ 
-					url: `/pages/leaveApplication/leaveApplication?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}`
-					});
-			},
-			onSignIn(item) {
-				const method = item.method;
-
-				const methodToPage = {
-					GPS: '/pages/Location_Check_In/Location_Check_In',
-					CIPHER: '/pages/Cipher_Check_In/Cipher_Check_In',
-					FACE_SCAN: '/pages/Face_Check_In/Face_Check_In',
-					QRCODE: '/pages/QRCode_Check_In/QRCode_Check_In'
-				};
-
-				const targetPage = methodToPage[method];
-
-				if (targetPage) {
-					uni.navigateTo({
-						url: `${targetPage}?classId=${item.classId}&startTime=${encodeURIComponent(item.startTime)}`
-					});
-				} else {
-					uni.showToast({
-						title: '未知的签到方式',
-						icon: 'none'
-					});
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
 				}
+			});
+		},
+		onLeave(item) {
+			uni.navigateTo({ 
+				url: `/pages/leaveApplication/leaveApplication?classId=${encodeURIComponent(item.classId)}&startTime=${encodeURIComponent(item.startTime)}`
+			});
+		},
+		onSignIn(item) {
+			if (item.method === 'CIPHER') {
+				this.onCipherClick(item.classId, item.startTime);
 			}
+			else if (item.method === 'GPS') {
+				uni.navigateTo({
+					url: `/pages/Location_Check_In/Location_Check_In?classId=${encodeURIComponent(item.classId)}&startTime=${encodeURIComponent(item.startTime)}`
+				});
+			} 
+			else if (item.method === 'QRCODE') {
+				this.onQRCodeSignIn(item.classId, item.startTime);
+			} 
+			else if (item.method === 'FACE_SCAN') {
+				this.onFaceScanSignIn(item.classId)
+			} 
+			else {
+				// 未知签到方式
+				uni.showToast({ title: '暂不支持该签到方式', icon: 'none' });
+			}
+		},
+		onCipherClick(classId, startTime) {
+			uni.showModal({
+				title: '暗号签到',
+				editable: true,
+				placeholderText: '请输入签到暗号',
+				success: (res) => {
+					if (res.confirm && res.content) {
+						this.startCipherSignIn(classId, startTime,res.content);
+					}
+				}
+			});
+		},
+		startCipherSignIn(classId, startTime, cipher) {
+			wx.cloud.callContainer({
+				config: { env: 'prod-7glwxii4e6eb93d8' },
+				path: `/api/checkins/verify?userId=${encodeURIComponent(this.$globalData.username)}&classId=${encodeURIComponent(classId)}&startTime=${encodeURIComponent(startTime)}&method=CIPHER&cipher=${encodeURIComponent(cipher)}`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('暗号签到返回:', res);
+					if(res.data === true) {
+						uni.showToast({ title: '签到成功', icon: 'success' });
+						this.commit(classId, startTime);
+					}
+					this.Check_In(); // 签到成功后刷新列表
+				},
+				fail: (err) => {
+					console.error('签到失败:', err);
+					uni.showToast({ title: '签到失败，请稍后重试', icon: 'none' });
+				}
+			});
+		},
+		onQRCodeSignIn(classId, startTime) {
+			uni.scanCode({
+				scanType: ['qrCode'], // 只扫二维码
+				success: (res) => {
+					try {
+						const qrData = JSON.parse(res.result); // 尝试解析为JSON
+						console.log('二维码内容（JSON对象）:', qrData);
+						
+						if(qrData.class_id === classId && qrData.start_time === startTime) {
+							uni.showToast({ title: '扫码成功', icon: 'success' });
+							this.commit(classId, startTime);
+						}
+
+					} catch (error) {
+						console.error('二维码不是有效JSON:', error);
+						uni.showToast({ title: '二维码格式错误', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					console.error('扫码失败:', err);
+					uni.showToast({ title: '扫码失败', icon: 'none' });
+				}
+			});
+		},
+		onFaceScanSignIn(classId) {
+			uni.chooseImage({
+				count: 1,
+				sourceType: ['camera'], // 使用相机拍照
+				success: (chooseRes) => {
+					const tempFilePath = chooseRes.tempFilePaths[0];
+					const fileName = `FaceRecognition/temp.jpg`;
+					
+					// 上传到微信云存储
+					wx.cloud.uploadFile({
+						cloudPath: fileName, // 存储路径
+						filePath: tempFilePath, // 本地路径
+						success: (res) => {
+							console.log('上传成功:', res.fileID);
+							this.photoUrl = res.fileID; // 显示照片
+							uni.showToast({ title: '照片上传成功', icon: 'success' });
+							this.startFaceRecognition(classId);
+						},
+						fail: (err) => {
+							console.error('上传失败:', err);
+							uni.showToast({ title: '上传失败，请重试', icon: 'none' });
+						}
+					});
+				},
+				fail: (err) => {
+					console.error('拍照失败:', err);
+					uni.showToast({ title: '拍照失败，请重试', icon: 'none' });
+				}
+			});
+		},
+		startFaceRecognition(classId) {
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8'
+				},
+				path: `/FaceCompare?userId=${encodeURIComponent(this.$globalData.username)}&classId=${encodeURIComponent(classId)}`,
+				header: {
+					'X-WX-SERVICE': 'facerecognition',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (res.data) {
+						uni.showToast({ title: '验证成功', icon: 'suthis.ccess', duration: 1000 });;
+						this.commit(classId, startTime);
+					} else {
+						uni.showToast({ title: '验证失败', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
+		commit(classId, startTime) {
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8'
+				},
+				path: `//api/checkins/commit?userId=${encodeURIComponent(this.$globalData.username)}&classId=${encodeURIComponent(classId)}&startTime=${encodeURIComponent(startTime)}`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (res.data && res.data.state) {
+						if (res.data.state === 'IN_TIME') {
+							uni.showToast({ title: '准时', icon: 'success', duration: 1000 });
+						} else if (res.data.state === 'LATE') {
+							uni.showToast({ title: '迟到', icon: 'none', duration: 1000 });
+						}
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
 		}
 	}
+}
 </script>
 
 <style>
