@@ -68,13 +68,15 @@ def generate_qrcode_and_upload(class_id, start_time):
         "start_time": start_time
     }
 
+    qr_content = json.dumps(qr_data, ensure_ascii=False)
+
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
         box_size=10,
         border=4
     )
-    qr.add_data(qr_data)
+    qr.add_data(qr_content)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
 
