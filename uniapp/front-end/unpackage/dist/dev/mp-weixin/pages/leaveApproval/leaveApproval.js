@@ -59,13 +59,47 @@ const _sfc_main = {
       }
     },
     // 审批操作
-    approve(reasonId) {
+    async approve(item) {
       common_vendor.index.showLoading({ title: "处理中...", mask: true });
-      this.DeleteReason(reasonId);
+      try {
+        await this.DeleteReason(item.reason_id);
+        const res = await common_vendor.wx$1.cloud.callContainer({
+          config: {
+            env: "prod-7glwxii4e6eb93d8"
+          },
+          path: `/UpdateState`,
+          header: {
+            "X-WX-SERVICE": "reason",
+            "content-type": "application/json"
+          },
+          method: "PUT",
+          data: {
+            sender_id: item.sender_id,
+            class_id: item.class_id,
+            start_time: item.start_time
+          }
+        });
+        if (res.data === true) {
+          common_vendor.index.showToast({ title: "审批成功", icon: "success", duration: 1e3 });
+          this.loadData();
+        } else {
+          common_vendor.index.showToast({ title: "审批失败", icon: "none", duration: 1e3 });
+        }
+      } catch (err) {
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:157", "请求失败:", err);
+        common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+      }
     },
-    reject(reasonId) {
+    async reject(item) {
       common_vendor.index.showLoading({ title: "处理中...", mask: true });
-      this.DeleteReason(reasonId);
+      try {
+        await this.DeleteReason(item.reason_id);
+        common_vendor.index.showToast({ title: "已拒绝", icon: "success" });
+        this.loadData();
+      } catch (err) {
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:169", "拒绝失败:", err);
+        common_vendor.index.showToast({ title: "操作失败", icon: "none" });
+      }
     },
     async DeleteReason(reasonId) {
       try {
@@ -78,20 +112,10 @@ const _sfc_main = {
           },
           method: "DELETE"
         });
-        common_vendor.index.__f__("log", "at pages/leaveApproval/leaveApproval.vue:151", "后端返回数据:", res);
-        common_vendor.index.hideLoading();
-        if (res.data === true) {
-          common_vendor.index.showToast({
-            icon: "success"
-          });
-          this.loadData();
-        } else {
-          common_vendor.index.showToast({ title: "操作失败", icon: "none" });
-        }
+        return res.data === true;
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:164", "请求失败:", err);
-        common_vendor.index.hideLoading();
-        common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:188", "请求失败:", err);
+        throw err;
       }
     }
   }
@@ -121,8 +145,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: item.photo_path,
         g: common_vendor.o(($event) => $options.previewCloudImage(item.photo_path), item.reason_id)
       } : {}, {
-        h: common_vendor.o(($event) => $options.approve(item.reason_id), item.reason_id),
-        i: common_vendor.o(($event) => $options.reject(item.reason_id), item.reason_id),
+        h: common_vendor.o(($event) => $options.approve(item), item.reason_id),
+        i: common_vendor.o(($event) => $options.reject(item), item.reason_id),
         j: item.reason_id
       });
     })

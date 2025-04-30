@@ -12,7 +12,6 @@ if (!Math) {
   "./pages/Organization_Records/Organization_Records.js";
   "./pages/Member_Records/Member_Records.js";
   "./pages/My_Records/My_Records.js";
-  "./pages/Face_Check_In/Face_Check_In.js";
   "./pages/Check_Record/Check_Record.js";
   "./pages/Location_Launch/Location_Launch.js";
   "./pages/UncheckedList/UncheckedList.js";
