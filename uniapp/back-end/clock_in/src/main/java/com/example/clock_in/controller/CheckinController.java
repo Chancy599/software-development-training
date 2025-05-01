@@ -4,6 +4,8 @@ import com.example.clock_in.entity.record.CheckinRecord;
 import com.example.clock_in.model.enums.CheckinMethod;
 import com.example.clock_in.service.CheckinService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,8 @@ public class CheckinController {
     @Autowired
     private CheckinService checkinServiceProxy; // 通过代理调用
 
-
+    // 声明日志对象
+    private static final Logger log = LoggerFactory.getLogger(CheckinController.class);
 
     @PostMapping("/start")
     public ResponseEntity<Map<String, Object>>startCheckin(
@@ -66,26 +69,52 @@ public class CheckinController {
 
 
 
-
+//// 统一验证接口
 //    @PostMapping("/verify")
-//    public ResponseEntity<Boolean> verifyCheckin(
+//    public ResponseEntity<?> verifyCheckin(
 //            @RequestParam String userId,
 //            @RequestParam String classId,
-//            @RequestParam String code) {
-//        return ResponseEntity.ok(checkinService.verifyCheckin(userId, classId, code));
+//            @RequestParam CheckinMethod method ,
+//            @RequestParam Map<String, String> params) {
+//
+//        try {
+//            Map<String, Object> convertedParams = convertParams(params, method);
+//            boolean result = checkinService.verifyCheckin(userId, classId, method, convertedParams);
+//            return ResponseEntity.ok(Collections.singletonMap("success", result));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 签到提交接口
+//    @PostMapping("/commit")
+//    public ResponseEntity<?> commitCheckin(
+//            @RequestParam String userId,
+//            @RequestParam String classId) {
+//
+//        try {
+//            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId);
+//            return ResponseEntity.ok(buildResult(record));
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(Collections.singletonMap("error", e.getMessage()));
+//        }
 //
 //    }
+
+
 // 统一验证接口
 @PostMapping("/verify")
 public ResponseEntity<?> verifyCheckin(
         @RequestParam String userId,
         @RequestParam String classId,
-        @RequestParam CheckinMethod method ,
+        @RequestParam("startTime")  Timestamp startTime,  // 保持Timestamp类型
+        @RequestParam CheckinMethod method,
         @RequestParam Map<String, String> params) {
 
     try {
         Map<String, Object> convertedParams = convertParams(params, method);
-        boolean result = checkinService.verifyCheckin(userId, classId, method, convertedParams);
+        boolean result = checkinService.verifyCheckin(userId, classId, startTime, method, convertedParams);
         return ResponseEntity.ok(Collections.singletonMap("success", result));
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
@@ -96,19 +125,21 @@ public ResponseEntity<?> verifyCheckin(
     @PostMapping("/commit")
     public ResponseEntity<?> commitCheckin(
             @RequestParam String userId,
-            @RequestParam String classId) {
+            @RequestParam String classId,
+            @RequestParam Timestamp startTime) { // 新增参数
 
         try {
-            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId);
+            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId, startTime);
             return ResponseEntity.ok(buildResult(record));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
-
-
-
     }
+
+
+
+
 
     private Map<String, Object> buildResult(CheckinRecord record) {
         Map<String, Object> result = new LinkedHashMap<>();

@@ -198,57 +198,105 @@ public class CheckinService {
 
 
 
-    // 学生验证签到（新增验证模块）
-    @Transactional(readOnly = true)
+//    // 学生验证签到（验证模块）
+//    @Transactional(transactionManager = "recordTransactionManager")//多个表来作实体类的时候一定要对应好啊!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//    public boolean verifyCheckin(
+//            String userId,
+//            String classId,
+//            CheckinMethod method,
+//            Map<String, Object> params
+//    ) {
+//        // 获取最新签到记录
+//        CheckinRecord record = checkinRecordRepository
+//                .findTopByClassIdAndUserIdOrderByStartTimeDesc(classId, userId)
+//                .orElseThrow(() -> new RuntimeException("无有效签到记录"));
+//
+//        // 获取对应策略
+//        CheckinStrategy strategy = strategyFactory.getStrategy(method);
+//
+//        // 参数校验与验证
+//        strategy.validateParams(params);
+//        return strategy.verify(record, params);
+//    }
+//
+//
+//
+//
+//
+//    //修改数据库中个人的签到状态
+//    @Transactional(transactionManager = "recordTransactionManager")  //多个表来作实体类的时候一定要对应好啊!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//    public CheckinRecord commitCheckin(String userId, String classId) {
+//        CheckinRecord record = checkinRecordRepository
+//                .findTopByClassIdAndUserIdOrderByStartTimeDesc(classId, userId)
+//                .orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, "无有效签到记录"
+//                ));
+//
+//        // 校验是否已提交
+//        if (record.getState() != CheckinRecord.State.ABSENT) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.CONFLICT, "签到已提交"
+//            );
+//        }
+//
+//        // 获取数据库当前时间（UTC+8时区）
+//        Timestamp dbCurrentTime = getCurrentTimeInUTC8();
+//
+//        // 计算有效时间范围
+//        boolean isValid = validateCheckinTime(record, dbCurrentTime);
+//
+//        // 更新状态
+//        record.setState(isValid ? CheckinRecord.State.IN_TIME : CheckinRecord.State.LATE);
+//        record.setActualTime(dbCurrentTime);
+//
+//        return record; // 自动脏检查更新
+//    }
+
+
+    // 学生验证签到（验证模块）
+    @Transactional(transactionManager = "recordTransactionManager")
     public boolean verifyCheckin(
             String userId,
             String classId,
+            Timestamp startTime, // 新增参数
             CheckinMethod method,
             Map<String, Object> params
     ) {
-        // 获取最新签到记录
+        // 根据时间戳查询指定签到记录
         CheckinRecord record = checkinRecordRepository
-                .findTopByClassIdAndUserIdOrderByStartTimeDesc(classId, userId)
-                .orElseThrow(() -> new RuntimeException("无有效签到记录"));
+                .findByClassIdAndUserIdAndStartTime(classId, userId, startTime)
+                .orElseThrow(() -> new RuntimeException("未找到指定时间的签到记录"));
 
-        // 获取对应策略
         CheckinStrategy strategy = strategyFactory.getStrategy(method);
-
-        // 参数校验与验证
         strategy.validateParams(params);
         return strategy.verify(record, params);
     }
 
-
-
-
+    // 修改数据库中个人的签到状态
     @Transactional(transactionManager = "recordTransactionManager")
-    public CheckinRecord commitCheckin(String userId, String classId) {
+    public CheckinRecord commitCheckin(String userId, String classId, Timestamp startTime) {
         CheckinRecord record = checkinRecordRepository
-                .findTopByClassIdAndUserIdOrderByStartTimeDesc(classId, userId)
+                .findByClassIdAndUserIdAndStartTime(classId, userId, startTime)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "无有效签到记录"
+                        HttpStatus.NOT_FOUND, "未找到指定时间的签到记录"
                 ));
 
-        // 校验是否已提交
         if (record.getState() != CheckinRecord.State.ABSENT) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "签到已提交"
             );
         }
 
-        // 获取数据库当前时间（UTC+8时区）
         Timestamp dbCurrentTime = getCurrentTimeInUTC8();
-
-        // 计算有效时间范围
         boolean isValid = validateCheckinTime(record, dbCurrentTime);
 
-        // 更新状态
         record.setState(isValid ? CheckinRecord.State.IN_TIME : CheckinRecord.State.LATE);
         record.setActualTime(dbCurrentTime);
 
-        return record; // 自动脏检查更新
+        return record;
     }
+
+
 
     // 独立校验方法
     private boolean validateCheckinTime(CheckinRecord record, Timestamp currentTime) {
@@ -267,50 +315,4 @@ public class CheckinService {
         return (currentMillis - startMillis) <= validMillis;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-//    //学生响应签到----------------------------------------------------------------------------------------------------
-//
-//    @Transactional
-//    public boolean verifyCheckin(String userId, String classId, String code) {
-//        // 直接使用ID查询用户和班级（无需关联对象）
-//        UserInformation user = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        // 查询签到记录（使用classId和userId）
-//        List<CheckinRecord> records = checkinRecordRepository.findByClassIdAndUserId(classId, userId);
-//
-//        // 处理最新记录
-//        CheckinRecord latestRecord = records.stream()
-//                .max(Comparator.comparing(CheckinRecord::getStartTime))
-//                .orElseThrow(() -> new RuntimeException("No active checkin found"));
-//
-//        // 验证暗号
-//        if (!latestRecord.getCheckinCode().equals(code)) {
-//            return false;
-//        }
-//
-//        // 更新状态
-//        Timestamp actualTime = getCurrentTimeInUTC8(); // 替换原生成方式
-//        latestRecord.setActualTime(actualTime);
-//
-//        long endTime = latestRecord.getStartTime().getTime() + latestRecord.getValidDuration() * 60000;
-//        latestRecord.setState(
-//                actualTime.getTime() <= endTime ?
-//                        CheckinRecord.State.IN_TIME :
-//                        CheckinRecord.State.LATE
-//        );
-//
-//        checkinRecordRepository.save(latestRecord);
-//        return true;
-//    }
 }
