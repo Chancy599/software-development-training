@@ -128,6 +128,12 @@ export default {
         // 审批操作
         async approve(item) {
             uni.showLoading({ title: '处理中...', mask: true });
+			console.log('审批请求体:', {
+			    sender_id: item.sender_id,
+			    class_id: this.class_id,
+			    start_time: item.start_time
+			});
+
             try {
                 await this.DeleteReason(item.reason_id);
                 const res = await wx.cloud.callContainer({
@@ -142,10 +148,11 @@ export default {
                     method: 'PUT',
                     data: {
                         sender_id: item.sender_id,
-                        class_id: item.class_id,
+                        class_id: this.class_id,
                         start_time: item.start_time
                     }
                 });
+				console.log('后端返回数据:', res);
                 
                 if (res.data === true) {
                     uni.showToast({ title: '审批成功', icon: 'success', duration: 1000 });

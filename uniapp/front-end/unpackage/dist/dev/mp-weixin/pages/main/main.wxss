@@ -1,39 +1,81 @@
 
+/* 全局容器 */
 .menu-container {
-    padding: 16px;
-    background-color: #f8f9fa;
+    padding: 40rpx;
     min-height: 100vh;
+    background: linear-gradient(180deg, #f5f7fa 0%, #e4e9f0 100%); /* 与注册页面一致的渐变背景 */
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 32rpx; /* 行间距 */
 }
+
+/* 菜单行 */
 .menu-row {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 32rpx; /* 卡片间距 */
 }
+
+/* 菜单项 */
 .menu-item {
     width: 48%;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    border-radius: 24rpx; /* 更大的圆角 */
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1); /* 柔和阴影 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 32rpx;
+    transition: all 0.3s ease; /* 动画过渡 */
 }
 .menu-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8rpx); /* 悬停时上移 */
+    box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.15); /* 增强阴影 */
+    background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%); /* 微妙渐变 */
 }
+
+/* 图标 */
 .menu-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 8px;
+    width: 96rpx; /* 增大图标 */
+    height: 96rpx;
+    margin-bottom: 16rpx;
+    transition: transform 0.3s ease;
 }
+.menu-item:hover .menu-icon {
+    transform: scale(1.1); /* 图标轻微放大 */
+}
+
+/* 文本 */
 .menu-text {
-    font-size: 14px;
+    font-size: 32rpx; /* 增大字体 */
     font-weight: 500;
     color: #333333;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 600rpx) {
+.menu-container {
+        padding: 32rpx;
+        gap: 24rpx;
+}
+.menu-row {
+        gap: 24rpx;
+}
+.menu-item {
+        padding: 24rpx;
+        border-radius: 16rpx;
+}
+.menu-icon {
+        width: 80rpx;
+        height: 80rpx;
+}
+.menu-text {
+        font-size: 28rpx;
+}
+}
+
+/* 无障碍支持 */
+.menu-item:active {
+    background: #f0faff; /* 点击反馈 */
 }

@@ -41,7 +41,7 @@ const _sfc_main = {
         }
       });
     },
-    executeDelete(studentIds) {
+    executeDelete(id) {
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
@@ -53,7 +53,7 @@ const _sfc_main = {
         },
         method: "POST",
         data: {
-          studentIds
+          studentIds: id
         },
         success: (res) => {
           common_vendor.index.__f__("log", "at pages/deleteMember/deleteMember.vue:92", "删除结果:", res);

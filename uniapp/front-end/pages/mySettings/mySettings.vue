@@ -2,11 +2,7 @@
     <view class="container">
         <view class="profile-card">
             <view class="avatar-section">
-                <image 
-                    class="avatar" 
-                    :src="userData.gender === '女' ? '/static/Avatar/FEMALE.png' : '/static/Avatar/MALE.png'"
-                    mode="aspectFill"
-                />
+                <image class="avatar" src="/static/user.png" mode="aspectFill"></image>
                 <text class="name">{{ userData.name || '未设置' }}</text>
             </view>
             <view class="info-section">

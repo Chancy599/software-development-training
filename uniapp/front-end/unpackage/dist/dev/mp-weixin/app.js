@@ -21,7 +21,6 @@ if (!Math) {
   "./pages/Member_Records_Plus/Member_Records_Plus.js";
   "./pages/addMember/addMember.js";
   "./pages/checkMember/checkMember.js";
-  "./pages/deleteMember/deleteMember.js";
   "./pages/leaveApplication/leaveApplication.js";
   "./pages/leaveApproval/leaveApproval.js";
   "./pages/checkMember_Plus/checkMember_Plus.js";

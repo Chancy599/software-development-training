@@ -5,8 +5,8 @@ const _sfc_main = {
     return {
       classid: "",
       duration: "",
-      latitude: 0,
-      longitude: 0,
+      latitude: "",
+      longitude: "",
       markers: []
     };
   },

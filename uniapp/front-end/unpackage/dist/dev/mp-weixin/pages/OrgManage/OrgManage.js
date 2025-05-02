@@ -18,7 +18,7 @@ const _sfc_main = {
         common_vendor.index.showToast({
           title: "请先选择班级",
           icon: "none",
-          duration: 2e3
+          duration: 1500
         });
         return;
       }
@@ -31,7 +31,7 @@ const _sfc_main = {
         common_vendor.index.showToast({
           title: "请先选择要删除的班级",
           icon: "none",
-          duration: 2e3
+          duration: 1500
         });
         return;
       }
@@ -93,7 +93,7 @@ const _sfc_main = {
         }
       } catch (err) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:149", "删除失败:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:139", "删除失败:", err);
         common_vendor.index.showModal({
           title: "删除失败",
           content: err.message || "网络异常，请稍后重试",
@@ -105,14 +105,14 @@ const _sfc_main = {
       try {
         const deletePromises = memberIds.map(
           (id) => this.deleteBelong(id).catch((e) => {
-            common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:162", `删除成员 ${id} 归属记录失败:`, e);
+            common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:151", `删除成员 ${id} 归属记录失败:`, e);
             return null;
           })
         );
         await Promise.all(deletePromises);
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:168", "所有成员归属记录删除完成");
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:156", "所有成员归属记录删除完成");
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:170", "删除成员归属记录时出错:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:158", "删除成员归属记录时出错:", err);
         throw err;
       }
     },
@@ -129,9 +129,9 @@ const _sfc_main = {
           },
           method: "DELETE"
         });
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:187", "管理员归属删除成功");
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:175", "管理员归属删除成功");
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:189", "管理员归属删除失败:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:177", "管理员归属删除失败:", err);
         throw err;
       }
     },
@@ -148,24 +148,32 @@ const _sfc_main = {
           },
           method: "DELETE"
         });
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:206", `学生 ${id} 归属删除成功`);
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:194", `学生 ${id} 归属删除成功`);
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:208", `学生 ${id} 归属删除失败:`, err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:196", `学生 ${id} 归属删除失败:`, err);
         throw err;
       }
     }
   }
 };
+if (!Array) {
+  const _component_uni_icons = common_vendor.resolveComponent("uni-icons");
+  _component_uni_icons();
+}
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.t($data.selectedName || "请点击选择班级"),
-    b: this.$globalData.manageInfo_name,
-    c: common_vendor.o((...args) => $options.onPickerChange && $options.onPickerChange(...args)),
-    d: common_vendor.o(($event) => $options.navigateTo("addMember")),
-    e: common_vendor.o(($event) => $options.navigateTo("checkMember")),
-    f: common_vendor.o(($event) => $options.navigateTo("deleteMember")),
-    g: common_vendor.o(($event) => $options.navigateTo("leaveApproval")),
-    h: common_vendor.o((...args) => $options.handleDeleteOrg && $options.handleDeleteOrg(...args))
+    b: common_vendor.p({
+      type: "right",
+      size: "20",
+      color: "#007AFF"
+    }),
+    c: this.$globalData.manageInfo_name,
+    d: common_vendor.o((...args) => $options.onPickerChange && $options.onPickerChange(...args)),
+    e: common_vendor.o(($event) => $options.navigateTo("addMember")),
+    f: common_vendor.o(($event) => $options.navigateTo("checkMember")),
+    g: common_vendor.o((...args) => $options.handleDeleteOrg && $options.handleDeleteOrg(...args)),
+    h: common_vendor.o(($event) => $options.navigateTo("leaveApproval"))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

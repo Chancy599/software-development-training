@@ -1,44 +1,79 @@
 
 .container {
-  padding: 15px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
-.header {
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 15px;
-}
-.title {
-  font-size: 18px;
-  font-weight: bold;
+.page-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
 }
 .member-list {
-  margin-top: 10px;
+    margin-top: 12px;
 }
 .member-item {
-  padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.member-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 .member-info {
-  display: flex;
-  margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 .member-id {
-  width: 120px;
-  color: #666;
+    color: #666;
+    font-size: 14px;
 }
 .member-name {
-  flex: 1;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
 }
 .detail-btn {
-  background-color: #007aff;
-  color: white;
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  width: 100px;
+    background-color: #007aff;
+    color: white;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.detail-btn:hover {
+    background-color: #005ecb;
+}
+.delete-btn {
+    background-color: #ff3b30;
+    color: white;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.delete-btn:hover {
+    background-color: #d32f2f;
 }
 .loading, .empty {
-  text-align: center;
-  padding: 50px 0;
-  color: #999;
+    text-align: center;
+    padding: 60px 0;
+    color: #999;
+    font-size: 16px;
 }

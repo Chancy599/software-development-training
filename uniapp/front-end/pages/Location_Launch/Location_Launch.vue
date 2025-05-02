@@ -18,8 +18,8 @@ export default {
         return {
 			classid:'',
 			duration:'',
-            latitude: 0,
-            longitude: 0,
+            latitude: '',
+            longitude: '',
             markers: []
         };
     },

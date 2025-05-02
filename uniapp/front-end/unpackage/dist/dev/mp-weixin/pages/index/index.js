@@ -7,10 +7,7 @@ const _sfc_main = {
       title: "打卡君"
     };
   },
-  onLoad() {
-  },
   methods: {
-    // 点击事件处理
     handleClick() {
       common_vendor.index.showToast({
         title: "即将跳转...",
@@ -19,7 +16,6 @@ const _sfc_main = {
       setTimeout(() => {
         common_vendor.index.navigateTo({
           url: "/pages/login/login"
-          //目前暂时跳转到主菜单
         });
       }, 1e3);
     }

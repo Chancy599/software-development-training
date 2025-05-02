@@ -129,13 +129,6 @@
 			}
 		},
 		{
-			"path" : "pages/deleteMember/deleteMember",
-			"style" : 
-			{
-				"navigationBarTitleText" : "删除成员"
-			}
-		},
-		{
 			"path" : "pages/leaveApplication/leaveApplication",
 			"style" : 
 			{
