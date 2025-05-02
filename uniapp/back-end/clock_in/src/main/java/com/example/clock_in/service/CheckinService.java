@@ -118,6 +118,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -131,10 +132,11 @@ public class CheckinService {
     private final UserRepository userRepository;
     // 使用明确时区生成时间
     private Timestamp getCurrentTimeInUTC8() {
-        return Timestamp.from(
-                ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
-                        .toInstant()
-        );
+        // 获取当前时间并截断到秒（毫秒置零）
+        ZonedDateTime utc8Time = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+                .truncatedTo(ChronoUnit.SECONDS); // 关键修改
+
+        return Timestamp.from(utc8Time.toInstant());
     }
 
 
