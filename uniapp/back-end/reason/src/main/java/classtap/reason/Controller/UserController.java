@@ -27,4 +27,9 @@ public class UserController {
     boolean DeleteReason(int reason_id){
         return userService.DeleteReason(reason_id);
     }
+
+    @PutMapping("/UpdateState")
+    boolean UpdateState(@RequestBody Reason reason){
+        return userService.UpdateState(reason);
+    }
 }
