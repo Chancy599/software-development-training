@@ -4,7 +4,7 @@ const _sfc_main = {
   data() {
     return {
       classid: "",
-      studentIdsInput: "",
+      studentInput: "",
       showResult: false,
       result: {
         successAddedCount: 0,
@@ -20,7 +20,7 @@ const _sfc_main = {
   },
   methods: {
     addMember() {
-      const studentIds = this.studentIdsInput.trim().split(/\s+/).filter((id) => id);
+      const studentIds = this.studentInput.trim().split(/\s+/).filter((id) => id);
       if (studentIds.length === 0) {
         common_vendor.index.showToast({
           title: "请输入至少一个学生ID",
@@ -46,7 +46,7 @@ const _sfc_main = {
           studentIds
         },
         success: async (res) => {
-          common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:82", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:68", "后端返回数据:", res);
           this.result = {
             successAddedCount: res.data.successAddedCount || 0,
             conflictCount: res.data.conflictCount || 0,
@@ -61,9 +61,9 @@ const _sfc_main = {
           try {
             const updatePromises = successIds.map((id) => this.updateBelong(id));
             await Promise.all(updatePromises);
-            common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:104", "所有学生归属更新完成");
+            common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:90", "所有学生归属更新完成");
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:106", "部分学生归属更新失败:", error);
+            common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:92", "部分学生归属更新失败:", error);
           }
           common_vendor.index.hideLoading();
           if (this.result.successAddedCount > 0) {
@@ -81,7 +81,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:127", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:113", "请求失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showToast({
             title: "添加失败: " + (err.errMsg || "网络异常"),
@@ -104,11 +104,11 @@ const _sfc_main = {
           },
           method: "PUT",
           success: (res) => {
-            common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:150", `学生 ${id} 归属更新成功:`, res);
+            common_vendor.index.__f__("log", "at pages/addMember/addMember.vue:136", `学生 ${id} 归属更新成功:`, res);
             resolve(res);
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:154", `学生 ${id} 归属更新失败:`, err);
+            common_vendor.index.__f__("error", "at pages/addMember/addMember.vue:140", `学生 ${id} 归属更新失败:`, err);
             reject(err);
           }
         });
@@ -117,23 +117,11 @@ const _sfc_main = {
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return common_vendor.e({
-    a: $data.studentIdsInput,
-    b: common_vendor.o(($event) => $data.studentIdsInput = $event.detail.value),
-    c: common_vendor.o((...args) => $options.addMember && $options.addMember(...args)),
-    d: $data.showResult
-  }, $data.showResult ? common_vendor.e({
-    e: common_vendor.t($data.result.successAddedCount),
-    f: $data.result.conflictCount > 0
-  }, $data.result.conflictCount > 0 ? {
-    g: common_vendor.t($data.result.conflictCount),
-    h: common_vendor.t($data.result.conflictIds.join(", "))
-  } : {}, {
-    i: $data.result.unFoundCount > 0
-  }, $data.result.unFoundCount > 0 ? {
-    j: common_vendor.t($data.result.unFoundCount),
-    k: common_vendor.t($data.result.unFoundIds.join(", "))
-  } : {}) : {});
+  return {
+    a: $data.studentInput,
+    b: common_vendor.o(($event) => $data.studentInput = $event.detail.value),
+    c: common_vendor.o((...args) => $options.addMember && $options.addMember(...args))
+  };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

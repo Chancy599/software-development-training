@@ -1,29 +1,15 @@
 <template>
 	<view class="container">
-		<view class="input-area">
+		<view class="input-group">
 			<text>学生学号：</text>
 			<textarea 
-				v-model="studentIdsInput" 
-				placeholder="例如：STU001 STU002 STU003"
+				v-model="studentInput" 
+				placeholder="例如：STU001 STU002 STU003" 
 				auto-height 
-			></textarea>
+				:style="{ minHeight: '100rpx' }"
+			/>
 		</view>
 		<button type="primary" @click="addMember" class="submit-btn">添加成员</button>
-		
-		<!-- 结果显示区域 -->
-		<view class="result-area" v-if="showResult">
-			<view class="result-item success">
-				<text>成功添加：{{result.successAddedCount}}人</text>
-			</view>
-			<view class="result-item conflict" v-if="result.conflictCount > 0">
-				<text>已存在学生：{{result.conflictCount}}人</text>
-				<text class="id-list">{{result.conflictIds.join(', ')}}</text>
-			</view>
-			<view class="result-item not-found" v-if="result.unFoundCount > 0">
-				<text>未找到学生：{{result.unFoundCount}}人</text>
-				<text class="id-list">{{result.unFoundIds.join(', ')}}</text>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -32,7 +18,7 @@
 		data() {
 			return {
 				classid: '',
-				studentIdsInput: '',
+				studentInput: '',
 				showResult: false,
 				result: {
 					successAddedCount: 0,
@@ -49,7 +35,7 @@
 		methods: {
 			addMember() {
 				// 处理输入：去除首尾空格，分割为数组，过滤空值
-				const studentIds = this.studentIdsInput.trim()
+				const studentIds = this.studentInput.trim()
 					.split(/\s+/) // 按空格分割
 					.filter(id => id); // 过滤空值
 				
@@ -165,38 +151,49 @@
 	.container {
 		padding: 20px;
 	}
-	.input-area {
-		margin-bottom: 20px;
+	
+	.input-group {
+	  margin-bottom: 40rpx;
+	  display: flex;
+	  flex-direction: column;
+	  width: 100%;
+	  box-sizing: border-box;
 	}
+	
+	.input-group text {
+	  display: block;
+	  margin-bottom: 15rpx;
+	  font-size: 32rpx;
+	  color: #222;
+	  font-weight: 600;
+	}
+	
+	.input-group input,
+	.input-group textarea {
+	  width: 100%;
+	  padding: 25rpx;
+	  border: 2rpx solid #ccc;
+	  border-radius: 10rpx;
+	  background-color: #fff;
+	  font-size: 28rpx;
+	  line-height: 40rpx; /* 增加行高，确保文字垂直居中且显示完整 */
+	  transition: border-color 0.3s ease;
+	  box-sizing: border-box;
+	  overflow-x: auto;
+	  word-break: break-all;
+	}
+	
+	.input-group input {
+	  height: 100rpx; /* 显式设置 input 高度，确保单行文字显示完整 */
+	}
+	
+	.input-group input:focus,
+	.input-group textarea:focus {
+	  border-color: #007aff;
+	  outline: none;
+	}
+	
 	.submit-btn {
 		margin-top: 20px;
-	}
-	.result-area {
-		margin-top: 30px;
-		border-top: 1px solid #eee;
-		padding-top: 20px;
-	}
-	.result-item {
-		margin-bottom: 15px;
-		padding: 10px;
-		border-radius: 5px;
-	}
-	.result-item.success {
-		background-color: #f0f9eb;
-		color: #67c23a;
-	}
-	.result-item.conflict {
-		background-color: #fdf6ec;
-		color: #e6a23c;
-	}
-	.result-item.not-found {
-		background-color: #fef0f0;
-		color: #f56c6c;
-	}
-	.id-list {
-		display: block;
-		margin-top: 5px;
-		font-size: 14px;
-		color: #666;
 	}
 </style>

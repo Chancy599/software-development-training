@@ -99,16 +99,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.word,
     b: common_vendor.o(($event) => $data.word = $event.detail.value),
-    c: common_vendor.p({
+    c: $data.photo_path
+  }, $data.photo_path ? {
+    d: $data.photo_path
+  } : {}, {
+    e: common_vendor.p({
       type: "camera",
       size: "16"
     }),
-    d: common_vendor.t($data.photo_path ? "重新上传" : "拍照上传"),
-    e: common_vendor.o((...args) => $options.takePhoto && $options.takePhoto(...args)),
-    f: $data.photo_path
-  }, $data.photo_path ? {
-    g: $data.photo_path
-  } : {}, {
+    f: common_vendor.t($data.photo_path ? "重新上传" : "拍照上传"),
+    g: common_vendor.o((...args) => $options.takePhoto && $options.takePhoto(...args)),
     h: common_vendor.o((...args) => $options.AddReason && $options.AddReason(...args)),
     i: !$data.word || !$data.photo_path
   });

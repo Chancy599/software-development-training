@@ -22,11 +22,11 @@
       <!-- 照片上传 -->
       <view class="form-item">
         <text class="label">证明材料：</text>
-        <button @click="takePhoto" class="upload-btn">
-          <uni-icons type="camera" size="16"></uni-icons>
-          {{ photo_path ? '重新上传' : '拍照上传' }}
-        </button>
         <image v-if="photo_path" :src="photo_path" class="preview-image"></image>
+		<button @click="takePhoto" class="upload-btn">
+		  <uni-icons type="camera" size="16"></uni-icons>
+		  {{ photo_path ? '重新上传' : '拍照上传' }}
+		</button>
       </view>
     </view>
     

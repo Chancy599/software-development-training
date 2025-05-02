@@ -46,7 +46,7 @@ const _sfc_main = {
         this.studentInput = "";
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:88", "创建班级失败:", error);
+        common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:89", "创建班级失败:", error);
         common_vendor.index.showToast({
           title: "操作失败：" + (error.errMsg || "服务器错误"),
           icon: "none",
@@ -85,11 +85,11 @@ const _sfc_main = {
           },
           method: "PUT",
           success: (res) => {
-            common_vendor.index.__f__("log", "at pages/OrgCreate/OrgCreate.vue:129", "管理员归属更新成功:", res);
+            common_vendor.index.__f__("log", "at pages/OrgCreate/OrgCreate.vue:130", "管理员归属更新成功:", res);
             resolve(res);
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:133", "管理员归属更新失败:", err);
+            common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:134", "管理员归属更新失败:", err);
             reject(err);
           }
         });
@@ -108,11 +108,11 @@ const _sfc_main = {
           },
           method: "PUT",
           success: (res) => {
-            common_vendor.index.__f__("log", "at pages/OrgCreate/OrgCreate.vue:153", `学生 ${id} 归属更新成功:`, res);
+            common_vendor.index.__f__("log", "at pages/OrgCreate/OrgCreate.vue:154", `学生 ${id} 归属更新成功:`, res);
             resolve(res);
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:157", `学生 ${id} 归属更新失败:`, err);
+            common_vendor.index.__f__("error", "at pages/OrgCreate/OrgCreate.vue:158", `学生 ${id} 归属更新失败:`, err);
             reject(err);
           }
         });

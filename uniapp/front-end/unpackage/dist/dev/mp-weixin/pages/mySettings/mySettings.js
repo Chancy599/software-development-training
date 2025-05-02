@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -24,7 +25,7 @@ const _sfc_main = {
     // 同步全局数据
     syncGlobalData() {
       if (!this.$globalData) {
-        common_vendor.index.__f__("warn", "at pages/mySettings/mySettings.vue:69", "全局数据未初始化");
+        common_vendor.index.__f__("warn", "at pages/mySettings/mySettings.vue:65", "全局数据未初始化");
         return;
       }
       this.userData = {
@@ -46,7 +47,7 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _a, _b, _c, _d;
   return common_vendor.e({
-    a: $data.userData.gender === "女" ? "/static/Avatar/FEMALE.png" : "/static/Avatar/MALE.png",
+    a: common_assets._imports_0$4,
     b: common_vendor.t($data.userData.name || "未设置"),
     c: common_vendor.t($data.userData.id || "未设置"),
     d: common_vendor.t($data.userData.gender || "未设置"),

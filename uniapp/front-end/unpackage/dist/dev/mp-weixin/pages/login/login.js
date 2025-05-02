@@ -6,19 +6,24 @@ const _sfc_main = {
     return {
       title: "欢迎登录",
       username: "",
-      password: ""
+      password: "",
+      isLoggingIn: false
     };
   },
   methods: {
     handleLogin() {
+      if (this.isLoggingIn)
+        return;
       const { username, password } = this;
       if (!username || !password) {
         common_vendor.index.showToast({
           title: "请输入账号和密码",
-          icon: "none"
+          icon: "none",
+          position: "top"
         });
         return;
       }
+      this.isLoggingIn = true;
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
@@ -35,19 +40,43 @@ const _sfc_main = {
           password
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:63", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:78", "后端返回数据:", res);
           if (res.data === true) {
-            common_vendor.index.showToast({ title: "登录成功", icon: "success", duration: 1e3 });
+            common_vendor.index.showToast({
+              title: "登录成功",
+              icon: "success",
+              duration: 1e3,
+              mask: true
+            });
             this.$globalData.username = username;
             this.fetchUserInfo();
-            common_vendor.index.navigateTo({ url: "/pages/main/main" });
+            setTimeout(() => {
+              common_vendor.index.navigateTo({
+                url: "/pages/main/main",
+                animationType: "slide-in-right",
+                animationDuration: 300
+              });
+            }, 1e3);
           } else {
-            common_vendor.index.showToast({ title: "账号或密码错误", icon: "none", duration: 1e3 });
+            common_vendor.index.showToast({
+              title: "账号或密码错误",
+              icon: "none",
+              duration: 1500,
+              position: "top"
+            });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:81", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/login/login.vue:112", "请求失败:", err);
+          common_vendor.index.showToast({
+            title: "网络异常，请稍后重试",
+            icon: "none",
+            duration: 1500,
+            position: "top"
+          });
+        },
+        complete: () => {
+          this.isLoggingIn = false;
         }
       });
     },
@@ -65,7 +94,7 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:102", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:141", "后端返回数据:", res);
           if (res.data) {
             this.$globalData.name = res.data.name || "";
             this.$globalData.gender = res.data.gender || "";
@@ -75,23 +104,36 @@ const _sfc_main = {
             this.$globalData.belongInfo_name = res.data.belongInfo_name || [];
             this.$globalData.manageInfo_name = res.data.manageInfo_name || [];
           } else {
-            common_vendor.index.showToast({ title: "获取用户信息失败", icon: "none" });
+            common_vendor.index.showToast({
+              title: "获取用户信息失败",
+              icon: "none",
+              position: "top"
+            });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:117", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/login/login.vue:160", "请求失败:", err);
+          common_vendor.index.showToast({
+            title: "网络异常，请稍后重试",
+            icon: "none",
+            duration: 1500,
+            position: "top"
+          });
         }
       });
     },
     // 注册链接
     handleRegister() {
-      common_vendor.index.navigateTo({ url: "/pages/register/register" });
+      common_vendor.index.navigateTo({
+        url: "/pages/register/register",
+        animationType: "slide-in-right",
+        animationDuration: 300
+      });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
+  return common_vendor.e({
     a: common_vendor.t($data.title),
     b: common_assets._imports_0,
     c: $data.username,
@@ -99,8 +141,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $data.password,
     f: common_vendor.o(($event) => $data.password = $event.detail.value),
     g: common_vendor.o((...args) => $options.handleRegister && $options.handleRegister(...args)),
-    h: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args))
-  };
+    h: common_vendor.t($data.isLoggingIn ? "登录中..." : "登录"),
+    i: $data.isLoggingIn
+  }, $data.isLoggingIn ? {} : {}, {
+    j: $data.isLoggingIn,
+    k: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args)),
+    l: !$data.isLoggingIn ? 1 : ""
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

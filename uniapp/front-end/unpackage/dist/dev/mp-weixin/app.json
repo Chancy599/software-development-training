@@ -19,7 +19,6 @@
     "pages/Member_Records_Plus/Member_Records_Plus",
     "pages/addMember/addMember",
     "pages/checkMember/checkMember",
-    "pages/deleteMember/deleteMember",
     "pages/leaveApplication/leaveApplication",
     "pages/leaveApproval/leaveApproval",
     "pages/checkMember_Plus/checkMember_Plus"
