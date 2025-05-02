@@ -1,5 +1,7 @@
 package com.example.clock_in.controller;
 
+import com.example.clock_in.dto.CommitCheckinRequest;
+import com.example.clock_in.dto.VerifyCheckinRequest;
 import com.example.clock_in.entity.record.CheckinRecord;
 import com.example.clock_in.model.enums.CheckinMethod;
 import com.example.clock_in.service.CheckinService;
@@ -9,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.ZoneId;
@@ -69,52 +68,54 @@ public class CheckinController {
 
 
 
+
+
 //// 统一验证接口
-//    @PostMapping("/verify")
-//    public ResponseEntity<?> verifyCheckin(
-//            @RequestParam String userId,
-//            @RequestParam String classId,
-//            @RequestParam CheckinMethod method ,
-//            @RequestParam Map<String, String> params) {
+//@PostMapping("/verify")
+//public ResponseEntity<?> verifyCheckin(
+//        @RequestParam String userId,
+//        @RequestParam String classId,
+//        @RequestParam("startTime")  Timestamp startTime,  // 保持Timestamp类型
+//        @RequestParam CheckinMethod method,
+//        @RequestParam Map<String, String> params) {
 //
-//        try {
-//            Map<String, Object> convertedParams = convertParams(params, method);
-//            boolean result = checkinService.verifyCheckin(userId, classId, method, convertedParams);
-//            return ResponseEntity.ok(Collections.singletonMap("success", result));
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
-//        }
+//    try {
+//        Map<String, Object> convertedParams = convertParams(params, method);
+//        boolean result = checkinService.verifyCheckin(userId, classId, startTime, method, convertedParams);
+//        return ResponseEntity.ok(Collections.singletonMap("success", result));
+//    } catch (IllegalArgumentException e) {
+//        return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
 //    }
+//}
 //
 //    // 签到提交接口
 //    @PostMapping("/commit")
 //    public ResponseEntity<?> commitCheckin(
 //            @RequestParam String userId,
-//            @RequestParam String classId) {
+//            @RequestParam String classId,
+//            @RequestParam Timestamp startTime) { // 新增参数
 //
 //        try {
-//            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId);
+//            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId, startTime);
 //            return ResponseEntity.ok(buildResult(record));
 //        } catch (RuntimeException e) {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND)
 //                    .body(Collections.singletonMap("error", e.getMessage()));
 //        }
-//
 //    }
-
-
+//
 // 统一验证接口
 @PostMapping("/verify")
-public ResponseEntity<?> verifyCheckin(
-        @RequestParam String userId,
-        @RequestParam String classId,
-        @RequestParam("startTime")  Timestamp startTime,  // 保持Timestamp类型
-        @RequestParam CheckinMethod method,
-        @RequestParam Map<String, String> params) {
-
+public ResponseEntity<?> verifyCheckin(@RequestBody VerifyCheckinRequest request) {
     try {
-        Map<String, Object> convertedParams = convertParams(params, method);
-        boolean result = checkinService.verifyCheckin(userId, classId, startTime, method, convertedParams);
+        Map<String, Object> convertedParams = convertParams(request.getParams(), request.getMethod());
+        boolean result = checkinService.verifyCheckin(
+                request.getUserId(),
+                request.getClassId(),
+                request.getStartTime(),
+                request.getMethod(),
+                convertedParams
+        );
         return ResponseEntity.ok(Collections.singletonMap("success", result));
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
@@ -123,21 +124,19 @@ public ResponseEntity<?> verifyCheckin(
 
     // 签到提交接口
     @PostMapping("/commit")
-    public ResponseEntity<?> commitCheckin(
-            @RequestParam String userId,
-            @RequestParam String classId,
-            @RequestParam Timestamp startTime) { // 新增参数
-
+    public ResponseEntity<?> commitCheckin(@RequestBody CommitCheckinRequest request) {
         try {
-            CheckinRecord record = checkinServiceProxy.commitCheckin(userId, classId, startTime);
+            CheckinRecord record = checkinServiceProxy.commitCheckin(
+                    request.getUserId(),
+                    request.getClassId(),
+                    request.getStartTime()
+            );
             return ResponseEntity.ok(buildResult(record));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
-
-
 
 
 
