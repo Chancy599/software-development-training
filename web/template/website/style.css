@@ -144,7 +144,7 @@
   position: relative;
 }
 .hero-newsletter {
-  height: 340px;
+  height: 370px;
   width: 100%; /* 或 max-width: 1920px; 根据你需求 */
   
   background: url(hero-newsletter0.png) center;
@@ -224,7 +224,7 @@
   flex-wrap: wrap;
   align-content: flex-start;
   width: 500px;
-  height: 250px;
+  height: 260px;
   min-width: 240px;
   min-height: 110.95px;
   position: absolute;
@@ -240,7 +240,7 @@
   padding: var(--var-sds-size-space-600, 24px);
   flex-shrink: 0;
   width: 500px;
-  height: 250px;
+  height: 260px;
   position: absolute;
   left: 967px;
   top: 1000px;
@@ -254,7 +254,7 @@
   padding: var(--var-sds-size-space-600, 24px);
   flex-shrink: 0;
   width: 500px;
-  height: 250px;
+  height: 260px;
   position: absolute;
   left: 25px;
   top: 1000px;
@@ -328,7 +328,7 @@
 .footer {
   background: var(--var-sds-color-background-default-default, #ffffff);
   border-top: 1px solid var(--var-sds-color-border-default-default, #d9d9d9);
-  padding: 10px 20px 30px 20px;
+  padding: 0px 20px 10px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -339,42 +339,12 @@
   overflow: hidden;
 }
 
-.footer .text2 .div3 {
-	font-family: "MiSans";  /* 更换字体 */
-  font-weight: 400;  
-  transition: font-weight 0.3s ease;
-  cursor: pointer;
-}
-
-.footer .text2 .div3:hover {
-  font-weight: 500;  /* 悬停加粗一个层级 */
-}
-
-.footer .text3 .div4 {
-  font-family: "MiSans";  /* 更换字体 */
-  font-weight: 400;
-  transition: font-weight 0.3s ease;
-  cursor: pointer;
-}
-
-.footer .text3 .div4:hover {
-  font-weight: 500;  /* 悬停加粗一个层级 */
-}
-}
-.title3 {
-  width: 64px;
-  height: 62px;
-  position: absolute;
-  left: 899px;
-  top: 463px;
-}
-
 .powered-by-2025 {
   color: #807e7e;
   text-align: center;
-	font-family: ".萍方-简";
-  font-size: 16px;
-  line-height: 60%;
+  font-family: ".萍方-简";
+  font-size: 12px;
+  line-height: 20%;
   font-weight:400;
 }
 
@@ -551,7 +521,7 @@
   flex-wrap: wrap; /* 允许换行 */
   justify-content: center; /* 居中排列 */
   gap: 35px; /* 卡片间距 */
-  padding: 20px 20px; /* 保持左右边距 */
+  padding: 10px 20px 15px; /* 保持左右边距 */
   max-width: 100%; /* 不限制最大宽度 */
   box-sizing: border-box;
 }
