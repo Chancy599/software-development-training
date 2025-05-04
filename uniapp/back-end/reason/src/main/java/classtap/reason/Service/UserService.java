@@ -32,4 +32,8 @@ public class UserService {
 
         return userMapper.DeleteReason(reason_id);
     }
+
+    public boolean UpdateState(Reason reason){
+        return userMapper.UpdateState(reason);
+    }
 }

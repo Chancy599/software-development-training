@@ -1,10 +1,7 @@
 package classtap.reason.Mapper;
 
 import classtap.reason.Entity.Reason;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -27,6 +24,9 @@ public interface UserMapper {
 
     @Select("SELECT name FROM users_information.users_information WHERE id=#{sender_id}")
     String GetName(String sender_id);
+
+    @Update("UPDATE check_in_record.check_in_record SET state = 'REQUEST_LEAVE',start_time = #{start_time} WHERE user_id = #{sender_id} AND class_id = #{class_id} AND start_time = #{start_time}")
+    boolean UpdateState(Reason reason);
 
 
 
