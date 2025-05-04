@@ -12,7 +12,6 @@
             </view>
 
             <view v-else-if="reasons.length === 0" class="empty-state">
-                <image src="/static/empty.png" mode="aspectFit"></image>
                 <text>暂无待审批的请假申请</text>
             </view>
 
@@ -128,12 +127,6 @@ export default {
         // 审批操作
         async approve(item) {
             uni.showLoading({ title: '处理中...', mask: true });
-			console.log('审批请求体:', {
-			    sender_id: item.sender_id,
-			    class_id: this.class_id,
-			    start_time: item.start_time
-			});
-
             try {
                 await this.DeleteReason(item.reason_id);
                 const res = await wx.cloud.callContainer({
@@ -206,16 +199,6 @@ export default {
     height: 100vh;
     box-sizing: border-box;
     background-color: #f8f8f8;
-}
-
-.header {
-    margin-bottom: 20px;
-}
-
-.title {
-    font-size: 18px;
-    font-weight: bold;
-    display: block;
 }
 
 .list-scroll {

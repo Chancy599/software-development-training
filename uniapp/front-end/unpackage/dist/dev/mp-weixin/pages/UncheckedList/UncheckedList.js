@@ -6,7 +6,7 @@ const _sfc_main = {
       uncheckedList: []
     };
   },
-  onLoad() {
+  onShow() {
     this.Check_In();
   },
   methods: {
@@ -49,70 +49,78 @@ const _sfc_main = {
       } else if (item.method === "QRCODE") {
         this.onQRCodeSignIn(item.classId, item.startTime);
       } else if (item.method === "FACE_SCAN") {
-        this.onFaceScanSignIn(item.classId);
+        this.onFaceScanSignIn(item.classId, item.startTime);
       } else {
         common_vendor.index.showToast({ title: "暂不支持该签到方式", icon: "none" });
       }
     },
-    onCipherClick(classId, startTime2) {
+    onCipherClick(classId, startTime) {
       common_vendor.index.showModal({
         title: "暗号签到",
         editable: true,
         placeholderText: "请输入签到暗号",
         success: (res) => {
           if (res.confirm && res.content) {
-            this.startCipherSignIn(classId, startTime2, res.content);
+            this.startCipherSignIn(classId, startTime, res.content);
           }
         }
       });
     },
-    startCipherSignIn(classId, startTime2, cipher) {
+    startCipherSignIn(classId, startTime, cipher) {
       common_vendor.wx$1.cloud.callContainer({
         config: { env: "prod-7glwxii4e6eb93d8" },
-        path: `/api/checkins/verify?userId=${encodeURIComponent(this.$globalData.username)}&classId=${encodeURIComponent(classId)}&startTime=${encodeURIComponent(startTime2)}&method=CIPHER&cipher=${encodeURIComponent(cipher)}`,
+        path: `/api/checkins/verify`,
         header: {
           "X-WX-SERVICE": "clockin",
           "content-type": "application/json"
         },
+        data: {
+          userId: this.$globalData.username,
+          classId,
+          startTime,
+          method: "CIPHER",
+          params: {
+            cipher
+          }
+        },
         method: "POST",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:111", "暗号签到返回:", res);
-          if (res.data === true) {
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:120", "暗号签到返回:", res);
+          if (res.data.success === true) {
             common_vendor.index.showToast({ title: "签到成功", icon: "success" });
-            this.commit(classId, startTime2);
+            this.commit(classId, startTime);
           }
           this.Check_In();
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:119", "签到失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:128", "签到失败:", err);
           common_vendor.index.showToast({ title: "签到失败，请稍后重试", icon: "none" });
         }
       });
     },
-    onQRCodeSignIn(classId, startTime2) {
+    onQRCodeSignIn(classId, startTime) {
       common_vendor.index.scanCode({
         scanType: ["qrCode"],
         // 只扫二维码
         success: (res) => {
           try {
             const qrData = JSON.parse(res.result);
-            common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:130", "二维码内容（JSON对象）:", qrData);
-            if (qrData.class_id === classId && qrData.start_time === startTime2) {
+            if (qrData.class_id === classId && qrData.start_time === startTime) {
               common_vendor.index.showToast({ title: "扫码成功", icon: "success" });
-              this.commit(classId, startTime2);
+              this.commit(classId, startTime);
             }
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:138", "二维码不是有效JSON:", error);
+            common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:146", "二维码不是有效JSON:", error);
             common_vendor.index.showToast({ title: "二维码格式错误", icon: "none" });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:143", "扫码失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:151", "扫码失败:", err);
           common_vendor.index.showToast({ title: "扫码失败", icon: "none" });
         }
       });
     },
-    onFaceScanSignIn(classId) {
+    onFaceScanSignIn(classId, startTime) {
       common_vendor.index.chooseImage({
         count: 1,
         sourceType: ["camera"],
@@ -126,24 +134,24 @@ const _sfc_main = {
             filePath: tempFilePath,
             // 本地路径
             success: (res) => {
-              common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:161", "上传成功:", res.fileID);
+              common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:169", "上传成功:", res.fileID);
               this.photoUrl = res.fileID;
               common_vendor.index.showToast({ title: "照片上传成功", icon: "success" });
-              this.startFaceRecognition(classId);
+              this.startFaceRecognition(classId, startTime);
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:167", "上传失败:", err);
+              common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:175", "上传失败:", err);
               common_vendor.index.showToast({ title: "上传失败，请重试", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:173", "拍照失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:181", "拍照失败:", err);
           common_vendor.index.showToast({ title: "拍照失败，请重试", icon: "none" });
         }
       });
     },
-    startFaceRecognition(classId) {
+    startFaceRecognition(classId, startTime) {
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
@@ -155,7 +163,7 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:190", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:198", "后端返回数据:", res);
           if (res.data) {
             common_vendor.index.showToast({ title: "验证成功", icon: "suthis.ccess", duration: 1e3 });
             this.commit(classId, startTime);
@@ -164,24 +172,29 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:199", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:207", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
     },
-    commit(classId, startTime2) {
+    commit(classId, startTime) {
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
         },
-        path: `//api/checkins/commit?userId=${encodeURIComponent(this.$globalData.username)}&classId=${encodeURIComponent(classId)}&startTime=${encodeURIComponent(startTime2)}`,
+        path: `/api/checkins/commit`,
         header: {
           "X-WX-SERVICE": "clockin",
           "content-type": "application/json"
         },
-        method: "GET",
+        method: "POST",
+        data: {
+          userId: this.$globalData.username,
+          classId,
+          startTime
+        },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:216", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:229", "后端返回数据:", res);
           if (res.data && res.data.state) {
             if (res.data.state === "IN_TIME") {
               common_vendor.index.showToast({ title: "准时", icon: "success", duration: 1e3 });
@@ -191,7 +204,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:226", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:239", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });
