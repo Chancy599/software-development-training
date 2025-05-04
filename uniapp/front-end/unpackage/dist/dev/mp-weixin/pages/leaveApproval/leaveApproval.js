@@ -1,6 +1,5 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -29,7 +28,7 @@ const _sfc_main = {
         });
         this.reasons = res.data || [];
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:94", "加载失败:", err);
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:93", "加载失败:", err);
         common_vendor.index.showToast({
           title: "加载失败: " + (err.errMsg || "网络错误"),
           icon: "none"
@@ -49,7 +48,7 @@ const _sfc_main = {
           urls: [res.fileList[0].tempFileURL]
         });
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:118", "预览失败:", err);
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:117", "预览失败:", err);
         common_vendor.index.showToast({
           title: "文件加载失败",
           icon: "none"
@@ -61,11 +60,6 @@ const _sfc_main = {
     // 审批操作
     async approve(item) {
       common_vendor.index.showLoading({ title: "处理中...", mask: true });
-      common_vendor.index.__f__("log", "at pages/leaveApproval/leaveApproval.vue:131", "审批请求体:", {
-        sender_id: item.sender_id,
-        class_id: this.class_id,
-        start_time: item.start_time
-      });
       try {
         await this.DeleteReason(item.reason_id);
         const res = await common_vendor.wx$1.cloud.callContainer({
@@ -84,7 +78,7 @@ const _sfc_main = {
             start_time: item.start_time
           }
         });
-        common_vendor.index.__f__("log", "at pages/leaveApproval/leaveApproval.vue:155", "后端返回数据:", res);
+        common_vendor.index.__f__("log", "at pages/leaveApproval/leaveApproval.vue:148", "后端返回数据:", res);
         if (res.data === true) {
           common_vendor.index.showToast({ title: "审批成功", icon: "success", duration: 1e3 });
           this.loadData();
@@ -92,7 +86,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "审批失败", icon: "none", duration: 1e3 });
         }
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:164", "请求失败:", err);
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:157", "请求失败:", err);
         common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
       }
     },
@@ -103,7 +97,7 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "已拒绝", icon: "success" });
         this.loadData();
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:176", "拒绝失败:", err);
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:169", "拒绝失败:", err);
         common_vendor.index.showToast({ title: "操作失败", icon: "none" });
       }
     },
@@ -120,7 +114,7 @@ const _sfc_main = {
         });
         return res.data === true;
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:195", "请求失败:", err);
+        common_vendor.index.__f__("error", "at pages/leaveApproval/leaveApproval.vue:188", "请求失败:", err);
         throw err;
       }
     }
@@ -137,10 +131,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.p({
       status: "loading"
     })
-  } : $data.reasons.length === 0 ? {
-    d: common_assets._imports_0$5
-  } : {
-    e: common_vendor.f($data.reasons, (item, index, i0) => {
+  } : $data.reasons.length === 0 ? {} : {
+    d: common_vendor.f($data.reasons, (item, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(item.sender_name),
         b: common_vendor.t(item.sender_id),

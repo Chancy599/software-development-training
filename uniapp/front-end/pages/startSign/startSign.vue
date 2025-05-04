@@ -46,15 +46,23 @@
         </view>
 
         <!-- 二维码模态视图 -->
-        <view v-if="showQRCodeModalView" class="qr-modal">
-            <view class="qr-modal-content">
-                <image :src="qrImageUrl" class="qr-img" mode="widthFix" />
-                <view class="qr-actions">
-                    <button class="qr-btn save" @click="saveImage">保存图片</button>
-                    <button class="qr-btn cancel" @click="showQRCodeModalView = false">关闭</button>
-                </view>
-            </view>
-        </view>
+		<view v-if="showQRCodeModalView" class="qr-modal">
+			<view class="qr-modal-content">
+				<!-- 如果二维码地址存在则显示二维码图像，否则显示加载中提示 -->
+				<image 
+					v-if="qrImageUrl" 
+					:src="qrImageUrl" 
+					class="qr-img" 
+					mode="widthFix" 
+				/>
+				<view v-else class="qr-loading">二维码生成中，请稍候...</view>
+
+				<view class="qr-actions">
+					<button class="qr-btn save" @click="saveImage" :disabled="!qrImageUrl">保存图片</button>
+					<button class="qr-btn cancel" @click="showQRCodeModalView = false">关闭</button>
+				</view>
+			</view>
+		</view>
     </view>
 </template>
 
@@ -164,27 +172,34 @@ export default {
                 }
             });
         },
-        startQRCodeSignIn() {
-            uni.showToast({ title: '二维码签到已发起', icon: 'success' });
-            wx.cloud.callContainer({
-                config: { env: 'prod-7glwxii4e6eb93d8' },
-                path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
-                header: {
-                    'X-WX-SERVICE': 'clockin',
-                    'content-type': 'application/json'
-                },
-                method: 'POST',
-                success: (res) => {
-                    console.log('后端返回数据:', res);
-                    this.start_time = res.data.start_timestamp;
-                    this.generate_qrcode();
-                },
-                fail: (err) => {
-                    console.error('请求失败:', err);
-                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
-                }
-            });
-        },
+		startQRCodeSignIn() {
+			if (!this.validateSelection()) return;
+
+			this.showQRCodeModalView = true; // 立即显示模态框
+			this.qrImageUrl = ''; // 清空旧图像，防止闪烁
+
+			uni.showToast({ title: '二维码签到已发起', icon: 'success' });
+
+			wx.cloud.callContainer({
+				config: { env: 'prod-7glwxii4e6eb93d8' },
+				path: `/api/checkins/start?classId=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&method=QRCODE`,
+				header: {
+					'X-WX-SERVICE': 'clockin',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					this.start_time = res.data.start_timestamp;
+					this.generate_qrcode(); // 异步请求二维码
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
+					this.showQRCodeModalView = false; // 出错时关闭
+				}
+			});
+		},
 		generate_qrcode() {
 			wx.cloud.callContainer({
 				config: { env: 'prod-7glwxii4e6eb93d8' },
@@ -420,5 +435,12 @@ export default {
 .qr-btn.cancel {
     background-color: #f1f1f1;
     color: #333;
+}
+
+.qr-loading {
+    font-size: 28rpx;
+    color: #888;
+    margin-bottom: 30rpx;
+    text-align: center;
 }
 </style>
