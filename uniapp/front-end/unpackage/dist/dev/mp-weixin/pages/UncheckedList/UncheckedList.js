@@ -25,11 +25,10 @@ const _sfc_main = {
             this.uncheckedList = res.data;
           } else {
             this.uncheckedList = [];
-            common_vendor.index.showToast({ title: "暂无未签到课程", icon: "none" });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:59", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:58", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none" });
         }
       });
@@ -85,16 +84,14 @@ const _sfc_main = {
         },
         method: "POST",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:120", "暗号签到返回:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:119", "暗号签到返回:", res);
           if (res.data.success === true) {
-            common_vendor.index.showToast({ title: "签到成功", icon: "success" });
             this.commit(classId, startTime);
           }
           this.Check_In();
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:128", "签到失败:", err);
-          common_vendor.index.showToast({ title: "签到失败，请稍后重试", icon: "none" });
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:126", "签到失败:", err);
         }
       });
     },
@@ -110,13 +107,11 @@ const _sfc_main = {
               this.commit(classId, startTime);
             }
           } catch (error) {
-            common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:146", "二维码不是有效JSON:", error);
-            common_vendor.index.showToast({ title: "二维码格式错误", icon: "none" });
+            common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:143", "二维码不是有效JSON:", error);
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:151", "扫码失败:", err);
-          common_vendor.index.showToast({ title: "扫码失败", icon: "none" });
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:147", "扫码失败:", err);
         }
       });
     },
@@ -134,20 +129,17 @@ const _sfc_main = {
             filePath: tempFilePath,
             // 本地路径
             success: (res) => {
-              common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:169", "上传成功:", res.fileID);
+              common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:164", "上传成功:", res.fileID);
               this.photoUrl = res.fileID;
-              common_vendor.index.showToast({ title: "照片上传成功", icon: "success" });
               this.startFaceRecognition(classId, startTime);
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:175", "上传失败:", err);
-              common_vendor.index.showToast({ title: "上传失败，请重试", icon: "none" });
+              common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:169", "上传失败:", err);
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:181", "拍照失败:", err);
-          common_vendor.index.showToast({ title: "拍照失败，请重试", icon: "none" });
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:174", "拍照失败:", err);
         }
       });
     },
@@ -163,17 +155,15 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:198", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:190", "后端返回数据:", res);
           if (res.data) {
-            common_vendor.index.showToast({ title: "验证成功", icon: "suthis.ccess", duration: 1e3 });
             this.commit(classId, startTime);
           } else {
             common_vendor.index.showToast({ title: "验证失败", icon: "none" });
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:207", "请求失败:", err);
-          common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:198", "请求失败:", err);
         }
       });
     },
@@ -194,17 +184,28 @@ const _sfc_main = {
           startTime
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:229", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/UncheckedList/UncheckedList.vue:219", "后端返回数据:", res);
           if (res.data && res.data.state) {
             if (res.data.state === "IN_TIME") {
-              common_vendor.index.showToast({ title: "准时", icon: "success", duration: 1e3 });
+              common_vendor.index.showModal({
+                title: "签到成功",
+                content: "您已准时签到！",
+                showCancel: false
+              });
             } else if (res.data.state === "LATE") {
-              common_vendor.index.showToast({ title: "迟到", icon: "none", duration: 1e3 });
+              common_vendor.index.showModal({
+                title: "签到提示",
+                content: "您已迟到，请下次注意时间！",
+                showCancel: false
+              });
             }
           }
+          setTimeout(() => {
+            common_vendor.index.navigateBack();
+          }, 1e3);
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:239", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/UncheckedList/UncheckedList.vue:240", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

@@ -29,7 +29,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "定位成功", icon: "success" });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:55", "获取位置失败:", err);
+          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:67", "获取位置失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showModal({
             title: "定位失败",
@@ -77,7 +77,7 @@ const _sfc_main = {
           setTimeout(() => common_vendor.index.navigateBack(), 1500);
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:103", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:115", "请求失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showModal({
             title: "发起失败",
@@ -90,14 +90,19 @@ const _sfc_main = {
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
+  return common_vendor.e({
     a: $data.latitude,
     b: $data.longitude,
     c: $data.markers,
     d: common_vendor.o((...args) => $options.handleMapTap && $options.handleMapTap(...args)),
-    e: common_vendor.o((...args) => $options.getCurrentLocation && $options.getCurrentLocation(...args)),
-    f: common_vendor.o((...args) => $options.Launch && $options.Launch(...args))
-  };
+    e: $data.latitude && $data.longitude
+  }, $data.latitude && $data.longitude ? {
+    f: common_vendor.t($data.latitude.toFixed(6)),
+    g: common_vendor.t($data.longitude.toFixed(6))
+  } : {}, {
+    h: common_vendor.o((...args) => $options.getCurrentLocation && $options.getCurrentLocation(...args)),
+    i: common_vendor.o((...args) => $options.Launch && $options.Launch(...args))
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
