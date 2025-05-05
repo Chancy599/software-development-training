@@ -42,10 +42,10 @@
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 90px;
-  height: 79px;
+  width: 70px;
+  height: 58px;
   position: relative;
-  aspect-ratio: 90/79;
+  aspect-ratio: 70/58;
 }
 
 .navigation-pill-list {
@@ -92,6 +92,7 @@
 .navigation-pill-list .navigation-pill .title {
 	font-family: "MiSans";  /* 更换字体 */
   font-weight: 400;  
+	font-size:15px;
   transition: font-weight 0.3s ease;
   cursor: pointer;
 }
@@ -106,14 +107,14 @@
   border-style: solid;
   border-color: var(--var-sds-color-border-brand-default, #2c2c2c);
   border-width: 0px;
-  padding: var(--var-sds-size-space-200, 9px);
+  padding: var(--var-sds-size-space-200, 7px);
   display: flex;
   flex-direction: row;
   gap: var(--var-sds-size-space-200, 8px);
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 94px;
+  width: 70px;
   position: relative;
   overflow: hidden;
 	transition: background-color 0.3s ease-out, color 0.3s ease-out, transform 0.3s ease-out;
@@ -128,6 +129,7 @@
   font-family: "MiSans";  /* 更换字体 */
   font-weight: 550;  
   cursor: pointer;
+	font-size:15px;
 }
 
 .navigation-pill-list .navigation-pill .title:hover {
