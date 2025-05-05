@@ -266,13 +266,50 @@
 }
 
 .info {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  position: relative;
-  overflow: visible;
+  position: absolute;
+  opacity:28%;
+  width: 250px;
+  height: 250px;
+  bottom: -10px; /* 可微调边距 */
+  right: 0px;  /* 可微调边距 */
+}
+.info2 {
+  position: absolute;
+  opacity:28%;
+  width: 280px;
+  height: 280px;
+  bottom: -30px; /* 可微调边距 */
+  right: -20px;  /* 可微调边距 */
+}
+.info4 {
+  position: absolute;
+  opacity:28%;
+  width: 380px;
+  height: 255px;
+  bottom: -20px; /* 可微调边距 */
+  right: -55px;  /* 可微调边距 *//
 }
 .body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-400, 16px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+}
+.body2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--var-sds-size-space-400, 16px);
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+}
+.body3 {
   display: flex;
   flex-direction: column;
   gap: var(--var-sds-size-space-400, 16px);
@@ -459,27 +496,8 @@
   justify-content: flex-start;
 }
 
-.info2 {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  left: 24px;
-  top: 24px;
-  overflow: visible;
-}
-.body2 {
-  display: flex;
-  flex-direction: column;
-  gap: var(--var-sds-size-space-400, 16px);
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 856px;
-  height: 153px;
-  min-width: 160px;
-  position: absolute;
-  left: 80px;
-  top: 24px;
-}
+
+
 .div5 {
   color: var(--var-sds-color-text-default-secondary, #757575);
   text-align: left;
@@ -498,6 +516,7 @@
   position: relative;
   overflow: visible;
 }
+
 .frame-2 {
   border-radius: 8px;
   flex-shrink: 0;
@@ -508,14 +527,7 @@
   top: 1554px;
 }
 
-.info4 {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  left: 24px;
-  top: 24px;
-  overflow: visible;
-}
+
 
 .card-grid {
 	width: 100%;
