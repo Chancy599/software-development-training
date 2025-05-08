@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>签到数据分析报告</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    #buttons { margin-top: 1.5em; }
+    button { margin-right: 10px; padding: 0.5em 1em; font-size: 1em; }
+  </style>
+</head>
+<body>
+  <div id="report"></div>
+
+  <div id="buttons">
+    <button onclick="downloadMarkdown()">导出为 Markdown (.md)</button>
+    <button onclick="downloadPDF()">导出为 PDF</button>
+  </div>
+
+  <script>
+    // 模拟后端返回的 Markdown 数据
+    const data = {
+      response: `# 班级签到数据分析报告
+
+## 1. 各班级准时签到率分析  
+- **Math 101**：总人数50人，准时签到40人，准时签到率为80.0%。  
+- **Physics 201**：总人数45人，准时签到35人，准时签到率为77.78%。  
+- **Chemistry 101**：总人数60人，准时签到55人，准时签到率为91.67%。  
+
+## 2. 班级表现对比  
+- Chemistry 101表现最佳，准时签到率高达91.67%，显著高于其他两个班级。  
+- Math 101和Physics 201的准时签到率较为接近，分别为80.0%和77.78%，但均低于Chemistry 101。  
+- Physics 201的准时签到率为三个班级中最低，可能存在考勤管理或课程安排方面的问题。  
+
+## 3. 改进建议  
+- **调整课程时间**：针对Physics 201和Math 101，建议调查学生迟到原因，如课程时间安排是否与其他课程冲突或是否过于紧凑，必要时调整上课时间以提高准时率。  
+- **加强考勤管理**：对于准时率较低的Physics 201，可考虑引入更严格的考勤制度或激励机制，如将出勤率与平时成绩挂钩。  
+- **推广优秀经验**：分析Chemistry 101的高准时率原因，如教师管理方式、课程吸引力等，并将有效经验推广至其他班级。`
+    };
+
+    // 渲染 Markdown
+    const reportDiv = document.getElementById("report");
+    reportDiv.innerHTML = marked.parse(data.response);
+
+    // 导出为 Markdown 文件
+    function downloadMarkdown() {
+      const blob = new Blob([data.response], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "签到数据分析报告.md";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 导出为 PDF 文件（使用浏览器打印功能）
+    function downloadPDF() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
