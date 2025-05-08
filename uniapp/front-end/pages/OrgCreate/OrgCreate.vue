@@ -77,7 +77,7 @@
           });
 		  
 		  // 更新全局变量
-		  this.$globalData.manager_information.push(this.classId);
+		  this.$globalData.manage_information.push(this.classId);
 		  this.$globalData.manageInfo_name.push(this.className);
           
           // 清空表单

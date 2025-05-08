@@ -90,51 +90,62 @@ export default {
                 }
             });
         },
-        handleRegister() {
-            const { username, realName, password, genderIndex, contact } = this;
-            if (!username || !realName || !password || !contact) {
-                uni.showToast({ title: '请填写完整信息', icon: 'none' });
-                return;
-            }
-            const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
-            wx.cloud.callContainer({
-                config: {
-                    env: 'prod-7glwxii4e6eb93d8'
-                },
-                path: `/register`,
-                header: {
-                    'X-WX-SERVICE': 'userinfo',
-                    'content-type': 'application/json'
-                },
-                method: 'POST',
-                data: {
-                    id: username,
-                    name: realName,
-                    password: password,
-                    gender: gender,
-                    contact_information: contact
-                },
-                success: (res) => {
-                    console.log('后端返回数据:', res);
-                    if (res.data === true) {
-                        uni.showToast({ title: '注册成功', icon: 'success' });
-                        uni.navigateTo({ url: '/pages/login/login' });
-                    } else {
-                        uni.showToast({ title: '账号已存在', icon: 'none', duration: 1000 });
-                    }
-                },
-                fail: (err) => {
-                    console.error('请求失败:', err);
-                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-                }
-            });
-        },
+		handleRegister() {
+			const { username, realName, password, genderIndex, contact, photoUrl } = this;
+
+			// 校验是否填写完整
+			if (!username || !realName || !password || !contact) {
+				uni.showToast({ title: '请填写完整信息', icon: 'none' });
+				return;
+			}
+
+			// 新增校验：必须上传照片
+			if (!photoUrl) {
+				uni.showToast({ title: '请拍照上传人脸', icon: 'none' });
+				return;
+			}
+
+			const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
+
+			wx.cloud.callContainer({
+				config: {
+					env: 'prod-7glwxii4e6eb93d8'
+				},
+				path: `/register`,
+				header: {
+					'X-WX-SERVICE': 'userinfo',
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				data: {
+					id: username,
+					name: realName,
+					password: password,
+					gender: gender,
+					contact_information: contact
+				},
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (res.data === true) {
+						uni.showToast({ title: '注册成功', icon: 'success' });
+						uni.navigateTo({ url: '/pages/login/login' });
+					} else {
+						uni.showToast({ title: '账号已存在', icon: 'none', duration: 1000 });
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+				}
+			});
+		},
         handleLogin() {
             uni.navigateTo({ url: '/pages/login/login' });
         }
     }
 };
 </script>
+
 <style>
 /* 全局容器 */
 .content {
