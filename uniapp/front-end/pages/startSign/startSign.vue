@@ -44,6 +44,10 @@
                 </view>
             </view>
         </view>
+		
+		<view class="auto-link" @click="autoSign">
+			<text>懒人模式</text>
+		</view>
 
         <!-- 二维码模态视图 -->
 		<view v-if="showQRCodeModalView" class="qr-modal">
@@ -285,7 +289,54 @@ export default {
                     uni.showToast({ title: '下载失败', icon: 'none' });
                 }
             });
-        }
+        },
+		autoSign() {
+			if (!this.classid) {
+				uni.showToast({ title: '请先选择班级', icon: 'none' });
+				return;
+			}
+			wx.cloud.callContainer({
+				config: { env: 'prod-7glwxii4e6eb93d8' },
+				path: `/template/${encodeURIComponent(this.classid)}`,
+				header: {
+					'X-WX-SERVICE': 'query',
+					'content-type': 'application/json'
+				},
+				method: 'GET',
+				success: (res) => {
+					console.log('后端返回数据:', res);
+					if (res.data.isLastRecordExist) {
+						this.duration = res.data.validDuration;
+						const method = res.data.method;
+						switch (method) {
+							case 'CIPHER':
+								this.onCipherClick();
+								break;
+							case 'GPS':
+								uni.navigateTo({
+									url: `/pages/Location_Launch/Location_Launch?classid=${encodeURIComponent(this.classid)}&duration=${encodeURIComponent(this.duration)}&latitude=${encodeURIComponent(res.data.latitude)}&longitude=${encodeURIComponent(res.data.longitude)}`
+								});
+								break;
+							case 'QRCODE':
+								this.onQRcodeClick();
+								break;
+							case 'FACE_SCAN':
+								this.onFaceClick();
+								break;
+							default:
+								console.warn('未知的处理方法:', method);
+								uni.showToast({ title: '未知的签到方式', icon: 'none' });
+						}
+					} else {
+						uni.showToast({ title: '上次没有签到哦~', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
+				}
+			});
+		}
     }
 }
 </script>
@@ -383,6 +434,20 @@ export default {
     font-size: 32rpx;
     color: #333;
     font-weight: 500;
+}
+
+.auto-link {
+    margin: 20rpx 0 50rpx;
+    color: #007aff; /* 使用蓝色，常见于链接 */
+    font-size: 28rpx; /* 适中的字体大小 */
+    text-align: right; /* 右对齐 */
+    width: 100%;
+    cursor: pointer; /* 鼠标悬停时变为手型 */
+    text-decoration: underline; /* 给文本加上下划线 */
+}
+
+.auto-link:hover {
+    color: #005bb5; /* 悬浮时变深蓝色 */
 }
 
 /* 模态视图样式 */

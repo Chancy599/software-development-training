@@ -13,7 +13,14 @@ const _sfc_main = {
   onLoad(options) {
     this.classid = decodeURIComponent(options.classid || "");
     this.duration = decodeURIComponent(options.duration || "");
-    this.getCurrentLocation();
+    const longitude = decodeURIComponent(options.longitude || "");
+    const latitude = decodeURIComponent(options.latitude || "");
+    if (longitude && latitude) {
+      this.longitude = longitude;
+      this.latitude = latitude;
+    } else {
+      this.getCurrentLocation();
+    }
   },
   methods: {
     getCurrentLocation() {
@@ -29,7 +36,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "定位成功", icon: "success" });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:67", "获取位置失败:", err);
+          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:76", "获取位置失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showModal({
             title: "定位失败",
@@ -77,7 +84,7 @@ const _sfc_main = {
           setTimeout(() => common_vendor.index.navigateBack(), 1500);
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:115", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/Location_Launch/Location_Launch.vue:124", "请求失败:", err);
           common_vendor.index.hideLoading();
           common_vendor.index.showModal({
             title: "发起失败",
