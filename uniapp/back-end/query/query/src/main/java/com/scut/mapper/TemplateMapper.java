@@ -9,7 +9,7 @@ public interface TemplateMapper {
     @Select("SELECT " +
             "method, " +
             "valid_duration, " +
-            "ASTEXT(location) AS location " + // MySQL 5.7兼容写法
+            "ST_AsText(location) AS location " + // 修正函数名
             "FROM check_in_record " +
             "WHERE class_id = #{classId} " +
             "ORDER BY start_time DESC LIMIT 1")
