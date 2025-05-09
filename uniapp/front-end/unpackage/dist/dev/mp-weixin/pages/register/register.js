@@ -50,9 +50,13 @@ const _sfc_main = {
       });
     },
     handleRegister() {
-      const { username, realName, password, genderIndex, contact } = this;
+      const { username, realName, password, genderIndex, contact, photoUrl } = this;
       if (!username || !realName || !password || !contact) {
         common_vendor.index.showToast({ title: "请填写完整信息", icon: "none" });
+        return;
+      }
+      if (!photoUrl) {
+        common_vendor.index.showToast({ title: "请拍照上传人脸", icon: "none" });
         return;
       }
       const gender = genderIndex === 0 ? "MALE" : "FEMALE";
@@ -74,7 +78,7 @@ const _sfc_main = {
           contact_information: contact
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/register/register.vue:118", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/register/register.vue:128", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "注册成功", icon: "success" });
             common_vendor.index.navigateTo({ url: "/pages/login/login" });
@@ -83,7 +87,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/register/register.vue:127", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/register/register.vue:137", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

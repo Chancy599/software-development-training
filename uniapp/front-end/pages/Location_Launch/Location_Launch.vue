@@ -45,11 +45,20 @@ export default {
             markers: []
         };
     },
-    onLoad(options) {
-        this.classid = decodeURIComponent(options.classid || '');
-        this.duration = decodeURIComponent(options.duration || '');
-        this.getCurrentLocation();
-    },
+	onLoad(options) {
+		this.classid = decodeURIComponent(options.classid || '');
+		this.duration = decodeURIComponent(options.duration || '');
+
+		const longitude = decodeURIComponent(options.longitude || '');
+		const latitude = decodeURIComponent(options.latitude || '');
+
+		if (longitude && latitude) {
+			this.longitude = longitude;
+			this.latitude = latitude;
+		} else {
+			this.getCurrentLocation();
+		}
+	},
     methods: {
         getCurrentLocation() {
             uni.showLoading({ title: '获取位置中...', mask: true });

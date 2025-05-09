@@ -39,7 +39,7 @@ const _sfc_main = {
           icon: "success",
           duration: 2e3
         });
-        this.$globalData.manager_information.push(this.classId);
+        this.$globalData.manage_information.push(this.classId);
         this.$globalData.manageInfo_name.push(this.className);
         this.className = "";
         this.classId = "";
