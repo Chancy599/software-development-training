@@ -1,5 +1,4 @@
 package com.scut.controller;
-
 import com.scut.service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

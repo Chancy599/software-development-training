@@ -1,6 +1,6 @@
 package com.scut.entities;
 
-import jakarta.persistence.*; // 关键修正：Spring Boot 3.x 使用 jakarta.persistence
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,36 +11,95 @@ public class Template {
     private Long id;
 
     @Column(name = "class_id")
-    private String classId; // 修正字段名
+    private String classId;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
-    private String cipher;
-    private String location;
     private String method;
+
+    // 修改核心字段：存储WKT格式字符串
+    @Column(columnDefinition = "text") // 映射MySQL的TEXT类型
+    private String location;  // 存储格式示例：POINT(113.34 23.12)
 
     @Column(name = "valid_duration")
     private Integer validDuration;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // 移除单独的latitude/longitude字段
+    // 增加解析方法（不需要持久化到数据库）
 
-    public String getClassId() { return classId; }
-    public void setClassId(String classId) { this.classId = classId; }
+    public Double getLongitude() {
+        return parsePoint()[0];
+    }
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public Double getLatitude() {
+        return parsePoint()[1];
+    }
 
-    public String getCipher() { return cipher; }
-    public void setCipher(String cipher) { this.cipher = cipher; }
+    private Double[] parsePoint() {
+        if (this.location == null || !location.startsWith("POINT")) {
+            return new Double[]{null, null};
+        }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+        try {
+            // 解析WKT格式：POINT(经度 纬度)
+            String cleanStr = location.replace("POINT(", "").replace(")", "");
+            String[] parts = cleanStr.split(" ");
+            return new Double[]{
+                    Double.parseDouble(parts[0]), // 经度
+                    Double.parseDouble(parts[1])  // 纬度
+            };
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid location format: " + location);
+        }
+    }
 
-    public String getMethod() { return method; }
-    public void setMethod(String method) { this.method = method; }
+    // 保留其他getter/setter
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getValidDuration() { return validDuration; }
-    public void setValidDuration(Integer validDuration) { this.validDuration = validDuration; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Integer getValidDuration() {
+        return validDuration;
+    }
+
+    public void setValidDuration(Integer validDuration) {
+        this.validDuration = validDuration;
+    }
 }
