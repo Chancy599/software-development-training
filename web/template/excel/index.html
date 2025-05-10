@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库操作管理系统</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="header">
+  <div class="block" style="background: url(block0.png) center; background-size: cover; background-repeat: no-repeat;">
+  </div>
+
+  <div class="navigation-pill-list">
+    <div class="navigation-pill" onclick="window.open('../home/index.html', '_self')">
+      <div class="title" >主页</div>
+    </div>
+  </div>
+
+  <!-- 用户头像（初始隐藏） -->
+  <!-- 用户头像（初始隐藏） -->
+<div id="userAvatar" class="user-avatar" onclick="toggleLogoutModal()" style="display: none;">
+  <img src="user-avatar.png" alt="用户头像" class="avatar-img" />
+</div>
+
+
+  <!-- 登录按钮（初始显示） -->
+  <div id="loginButton" class="button" onclick="showLogin()">
+    <div class="div">登录</div>
+  </div>
+</div>
+
+<!-- 退出登录模态框 -->
+<div id="logoutModal" class="logout-modal" style="opacity: 0; pointer-events: none;">
+  <div class="logout-content">
+    <h3>确认退出登录？</h3>
+    <div class="logout-buttons">
+      <button class="cancel-button" onclick="toggleLogoutModal()">取消</button>
+      <button class="confirm-button" onclick="logout()">退出</button>
+    </div>
+  </div>
+</div>
+
+
+    
+    <main id="mainContent">
+        <div class="welcome-section">
+            <h1>数据库操作管理系统</h1>
+            <p class="subtitle">简单高效地管理你的班级信息和考勤记录，只需几步即可完成导入与导出操作</p>
+        </div>
+        
+        <div class="cards-container">
+            <div class="card import-card" onclick="showExpandedView('import')">
+                <div class="card-icon">📥</div>
+                <div class="card-title">导入Excel</div>
+                <div class="card-description">快速创建你的新班级</div>
+            </div>
+            
+            <div class="card export-card" onclick="showExpandedView('export')">
+                <div class="card-icon">📤</div>
+                <div class="card-title">导出Excel</div>
+                <div class="card-description">在本地管理班级和签到记录</div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Expanded view with side panel -->
+    <div id="expandedView" class="expanded-view">
+        <div class="expanded-content">
+            <div id="expandedCard" class="expanded-card">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            
+            <div class="side-panel" id="sidePanel">
+                <div class="panel-header">
+                    <h2 id="panelTitle">操作选项</h2>
+                    <span class="close-panel" onclick="closeExpandedView()">&times;</span>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label class="form-label">功能选择</label>
+                        <select class="form-select" id="functionSelect">
+                            <option value="" disabled selected>请选择功能</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">起始时间</label>
+                        <input type="date" class="form-input" id="startDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">附加选项</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includePhotos">
+                                <label for="includePhotos">包含照片</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeDetails">
+                                <label for="includeDetails">包含详细信息</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-footer">
+                    <button class="action-button" id="actionButton">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 遮罩 + 登录框 -->
+    <div class="login-popup" id="loginPopup">
+      <div class="login-content">
+        <span class="close-btn" onclick="hideLogin()">×</span>
+        <img src="block0.png" alt="Logo" class="logo">
+        <input type="text" id="userid" placeholder="账号">
+        <input type="password" id="password" placeholder="密码">
+        <button id="loginButton" onclick="submitLogin()">登录</button>
+      </div>
+    </div>
+    
+    <!-- 消息框 -->
+    <div id="messageBox" class="message-box">
+      <img id="messageImage" src="" style="width:24px;height:24px;">
+      <span id="messageText">提示内容</span>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

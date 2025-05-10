@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./vars.css" />
   <link rel="stylesheet" href="./style.css" />
-  <title>Document</title>
+  <title>主页</title>
 
   <style>
     a, button, input, select, h1, h2, h3, h4, h5, * {
@@ -86,19 +86,39 @@
 </head>
 <body>
   <div class="examples-waitlist">
-    <div class="header">
-      <div class="block" style="background: url(block0.png) center; background-size: cover; background-repeat: no-repeat;">
-       
-      </div>
-      <div class="navigation-pill-list">
-        <div class="navigation-pill">
-          <div class="title">主页</div>
-        </div>
-      </div>
-      <div class="button" onclick="showLogin()">
-  <div class="div" >登录</div>
-	</div>
+<div class="header">
+  <div class="block" style="background: url(block0.png) center; background-size: cover; background-repeat: no-repeat;">
+  </div>
+
+  <div class="navigation-pill-list">
+    <div class="navigation-pill">
+      <div class="title">主页</div>
     </div>
+  </div>
+
+<!-- 用户头像（初始隐藏） -->
+<div id="userAvatar" class="user-avatar" onclick="toggleLogoutModal()" style="display: none;">
+  <img src="user-avatar.png" alt="用户头像" class="avatar-img" />
+</div>
+
+  <!-- 登录按钮 -->
+  <div id="loginButton" class="button" onclick="showLogin()">
+    <div class="div">登录</div>
+  </div>
+</div>
+
+<!-- 退出登录模态框 -->
+<div id="logoutModal" class="logout-modal" style="opacity: 0; pointer-events: none;">
+  <div class="logout-content">
+    <h3>确认退出登录？</h3>
+    <div class="logout-buttons">
+      <button class="cancel-button" onclick="toggleLogoutModal()">取消</button>
+      <button class="confirm-button" onclick="logout()">退出</button>
+    </div>
+  </div>
+</div>
+
+
 	
 <!-- 遮罩 + 登录框 -->
 <div class="login-popup" id="loginPopup">
@@ -127,12 +147,12 @@
 
     <!-- 新增卡片容器 -->
     <div class="card-grid" id="card-grid">
-	 <div class="component-3" onclick="window.open('mcp/mcp.html', '_self')">
+	 <div class="component-3" onclick="window.open('../mcp/mcp.html', '_self')">
         
         <div class="body3">
           <div class="text">
             <div class="ai">勤云慧管</div>
-            <div class="div5">前所未有的管理助手</div>
+            <div class="div5">前所未有的智能管理助手</div>
           </div>
 		  
           <div class="button-group"></div>
@@ -153,8 +173,8 @@
       </div>
 
       
-	  <div class="component-2">
-        
+	  <div class="component-2" onclick="window.open('../excel/index.html', '_self')">
+     
         <div class="body2">
           <div class="text">
             <div class="ai">数据库操作</div>
@@ -182,8 +202,10 @@
   
   
   
-  <script>
-  
+<script>
+  // 存储用户 ID
+	let currentUserId = "";
+
   document.addEventListener('DOMContentLoaded', function () {
     const button = document.querySelector('.button3');
     const target = document.getElementById('card-grid');
@@ -263,6 +285,8 @@ async function submitLogin() {
       if (result === "True") {
         hideLogin(); // ✅ 隐藏登录浮窗
         showMessage(true);
+		currentUserId = id; // 保存用户 ID
+		loginSuccess()
       } else {
         showMessage(false);
       }
@@ -275,6 +299,45 @@ async function submitLogin() {
   }
 }
 
+// 显示或隐藏退出登录模态框
+function toggleLogoutModal() {
+  const modal = document.getElementById('logoutModal');
+  const isVisible = modal.style.opacity === '1';
+
+  // 显示模态框时，确保有动画效果
+  if (isVisible) {
+    modal.style.opacity = '0';
+    modal.style.pointerEvents = 'none';
+  } else {
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'auto';
+  }
+}
+
+
+// 登录成功时调用此函数
+function loginSuccess() {
+  localStorage.setItem('user', currentUserId);
+
+
+  document.getElementById('loginButton').style.display = 'none';
+  document.getElementById('userAvatar').style.display = 'flex';
+}
+
+// 退出登录并刷新页面
+function logout() {
+  localStorage.removeItem('user');
+  location.reload();
+}
+
+// 页面加载时检查登录状态
+window.onload = function () {
+  const user = localStorage.getItem('user');
+  if (user) {
+    currentUserId = user; // ✅ 正确赋值
+    loginSuccess();       // ✅ 调用无参数版本
+  }
+};
 
 </script>
 </body>

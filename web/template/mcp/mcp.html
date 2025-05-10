@@ -37,22 +37,58 @@
             
             <div class="chat-input">
                 <textarea id="userInput" placeholder="在这里输入您的问题..."></textarea>
+                <button id="recordBtn" class="record-btn">按住说话</button>
                 <div class="button-group">
-                    <button id="voiceButton" onclick="triggerFileInput()" class="voice-btn">
+                    <button id="voiceButton" class="voice-btn">
                         <i class="fas fa-microphone"></i>
                     </button>
                     <button id="sendButton" onclick="sendMessage()" class="send-btn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
-                <input type="file" id="audioUpload" accept="audio/*" style="display: none;" onchange="handleAudioUpload(this)">
+                
             </div>
         </div>
     </div>
 
     <script>
+        // 声明全局变量
+        let mediaRecorder;
+        let audioChunks = [];
+        let isVoiceMode = false;
+        
+        // 获取元素
+        const userInput = document.getElementById('userInput');
+        const voiceButton = document.getElementById('voiceButton');
+        const recordBtn = document.getElementById('recordBtn');
+        const sendButton = document.getElementById('sendButton');
+        const chatInput = document.querySelector('.chat-input');
+        
+        // 按钮状态切换
+        voiceButton.addEventListener('click', toggleVoiceMode);
+        
+        function toggleVoiceMode() {
+            isVoiceMode = !isVoiceMode;
+            
+            if (isVoiceMode) {
+                // 切换到语音模式
+                userInput.style.display = 'none';
+                recordBtn.style.display = 'flex';
+                voiceButton.innerHTML = '<i class="fas fa-keyboard"></i>';
+                voiceButton.title = '切换到文字输入';
+                chatInput.classList.add('voice-mode');
+            } else {
+                // 切换到文字模式
+                userInput.style.display = 'block';
+                recordBtn.style.display = 'none';
+                voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                voiceButton.title = '切换到语音输入';
+                chatInput.classList.remove('voice-mode');
+            }
+        }
+
         // 添加按下回车键发送消息的功能
-        document.getElementById('userInput').addEventListener('keypress', function(event) {
+        userInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 sendMessage();
@@ -61,13 +97,13 @@
 
         async function sendMessage() {
             // 获取用户输入
-            const userInput = document.getElementById('userInput').value.trim();
+            const userInputText = userInput.value.trim();
             
             // 如果用户没有输入内容，则返回
-            if (!userInput) return;
+            if (!userInputText) return;
             
             // 清空输入框
-            document.getElementById('userInput').value = '';
+            userInput.value = '';
             
             // 显示用户消息
             const chatMessages = document.getElementById('chatMessages');
@@ -78,7 +114,7 @@
                         <span>你</span>
                     </div>
                     <div class="message-content">
-                        ${userInput}
+                        ${userInputText}
                     </div>
                 </div>
             `;
@@ -97,7 +133,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ message: userInput })
+                    body: JSON.stringify({ message: userInputText })
                 });
                 
                 if (!response.ok) {
@@ -148,9 +184,108 @@
             }
         }
 
-        // 触发文件选择
-        function triggerFileInput() {
-            document.getElementById('audioUpload').click();
+        // 语音按钮相关功能
+        recordBtn.addEventListener('mousedown', startRecording);
+        recordBtn.addEventListener('mouseup', stopRecording);
+        recordBtn.addEventListener('mouseleave', stopRecording); // 鼠标移出按钮时也停止录音
+        
+        // 为移动设备添加触摸事件
+        recordBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // 防止触摸事件的默认行为
+            startRecording();
+        });
+        recordBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            stopRecording();
+        });
+
+        async function startRecording() {
+            audioChunks = [];
+            recordBtn.classList.add('recording');
+            recordBtn.textContent = '松开发送';
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('当前浏览器不支持麦克风访问，请使用 Chrome、Safari 或 Edge 浏览器，并确保使用 HTTPS 连接。');
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+                mediaRecorder.start();
+            } catch (error) {
+                alert('无法访问麦克风：' + error.message);
+                recordBtn.classList.remove('recording');
+                recordBtn.textContent = '按住说话';
+            }
+        }
+
+        function stopRecording() {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+            
+            recordBtn.classList.remove('recording');
+            recordBtn.textContent = '按住说话';
+            
+            mediaRecorder.stop();
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const formData = new FormData();
+                formData.append('audio_file', audioBlob, 'recording.webm');
+
+                const loading = document.getElementById('loading');
+                loading.style.display = 'flex';
+
+                try {
+                    const response = await fetch('http://localhost:8079/upload_audio', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('上传失败');
+                    }
+
+                    const data = await response.json();
+                    const recognizedText = data.text;
+
+                    if (recognizedText.trim()) {
+                        // 如果在语音模式，直接发送识别的文字
+                        // 把识别到的文字填到输入框并发送
+                        userInput.value = recognizedText;
+                        sendMessage();
+                    } else {
+                        alert('没有识别到语音内容');
+                    }
+
+                } catch (error) {
+                    alert('语音识别失败：' + error.message);
+                } finally {
+                    loading.style.display = 'none';
+                    
+                    // 关闭录音的媒体流
+                    if (mediaRecorder && mediaRecorder.stream) {
+                        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    }
+                }
+            };
+        }
+
+        // 文件上传功能（作为备选）
+        voiceButton.addEventListener('click', function() {
+            if (!isVoiceMode) {
+                document.getElementById('audioUpload').click();
+            }
+        });
+
+        function handleAudioUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                uploadAudio(file);
+            }
         }
 
         async function uploadAudio(file) {
@@ -175,9 +310,7 @@
 
                 if (recognizedText.trim()) {
                     // 把识别到的文字填到输入框
-                    const userInput = document.getElementById('userInput');
                     userInput.value = recognizedText;
-
                     // 自动调用发送消息函数
                     sendMessage();
                 } else {
@@ -190,13 +323,11 @@
                 loading.style.display = 'none';
             }
         }
-
-        function handleAudioUpload(input) {
-            const file = input.files[0];
-            if (file) {
-                uploadAudio(file);
-            }
-        }
+        
+        // 初始化，默认隐藏"按住说话"按钮
+        window.addEventListener('DOMContentLoaded', () => {
+            recordBtn.style.display = 'none';
+        });
     </script>
 </body>
 </html>
