@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>该次签到情况详情</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      padding: 20px;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 80px);
+      overflow: hidden;
+    }
+
+    .chart-area {
+      flex-basis: 60%;
+      padding: 30px;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+    }
+
+    .analysis-area {
+      flex-basis: 40%;
+      display: flex;
+      flex-direction: column;
+      padding: 30px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+
+    .analysis-area h3 {
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .analysis-area h3 i {
+      margin-right: 10px;
+      color: #007BFF;
+    }
+
+    #analysisResult {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>该次签到情况详情</h2>
+  <div class="container">
+    <div class="chart-area">
+      <canvas id="doughnutChart"></canvas>
+    </div>
+    <div class="analysis-area">
+      <h3><i class="fas fa-robot"></i>SmartEdu 分析助手</h3>
+      <div id="analysisResult"><em>正在生成分析...</em></div>
+      <div class="buttons">
+        <button id="btn-md" disabled style="opacity: 0.5;" onclick="downloadMarkdown()">下载 Markdown</button>
+        <button id="btn-refresh" onclick="regenerateAIAnalysis()">重新生成分析</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let latestMarkdown = '';
+    const params = new URLSearchParams(window.location.search);
+    const classId = params.get('class_id');
+    const startTime = params.get('start_time');
+
+    if (!classId || !startTime) {
+      document.body.innerHTML = '<p style="color:red;padding:20px;">缺少 class_id 或 start_time 参数</p>';
+      throw new Error('Missing parameters');
+    }
+
+    fetch('http://127.0.0.1:5010/check/single_startTime_state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ class_id: classId, start_time: startTime })
+    })
+    .then(res => res.json())
+    .then(data => {
+      renderDoughnutChart(data);
+      requestAIAnalysis(data);
+    });
+
+    function renderDoughnutChart(data) {
+      const ctx = document.getElementById('doughnutChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['准时', '迟到', '请假', '缺勤'],
+          datasets: [{
+            data: [
+              data.in_time_count,
+              data.late_count,
+              data.request_leave_count,
+              data.absent_count
+            ],
+            backgroundColor: [
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(255, 159, 64, 0.8)',
+              'rgba(255, 205, 86, 0.8)',
+              'rgba(255, 99, 132, 0.8)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const labels = ['in_time_ratio', 'late_ratio', 'request_leave_ratio', 'absent_ratio'];
+                  const key = labels[context.dataIndex];
+                  return `${context.label}: ${data[key]} (${context.raw}人次)`;
+                }
+              }
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    function requestAIAnalysis(data, useCache = true) {
+      const btnDownload = document.getElementById('btn-md');
+      const btnRefresh = document.getElementById('btn-refresh');
+      const analysisDiv = document.getElementById('analysisResult');
+      const cacheKey = `ai_analysis_class_${classId}_start_${startTime}`;
+
+      if (useCache) {
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          latestMarkdown = cached;
+          analysisDiv.innerHTML = marked.parse(cached);
+          btnDownload.disabled = false;
+          btnDownload.style.opacity = 1;
+          return;
+        }
+      }
+
+      btnDownload.disabled = true;
+      btnDownload.style.opacity = 0.5;
+      btnRefresh.disabled = true;
+      btnRefresh.innerText = '生成中...';
+      analysisDiv.innerHTML = '<em>正在生成分析...</em>';
+
+      fetch('http://127.0.0.1:5011/analysis/4', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: JSON.stringify(data),
+          temperature: 0.5,
+          max_tokens: 600
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        latestMarkdown = json.response;
+        analysisDiv.innerHTML = marked.parse(json.response);
+        sessionStorage.setItem(cacheKey, json.response);
+        btnDownload.disabled = false;
+        btnDownload.style.opacity = 1;
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = '重新生成分析';
+      })
+      .catch(err => {
+        analysisDiv.innerHTML = `<p style="color:red;">分析失败: ${err.message}</p>`;
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = '重新生成分析';
+      });
+    }
+
+    function regenerateAIAnalysis() {
+      requestAIAnalysis(globalData, false); // 忽略缓存
+    }
+
+    function downloadMarkdown() {
+      const blob = new Blob([latestMarkdown], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '该次签到情况详情.md';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

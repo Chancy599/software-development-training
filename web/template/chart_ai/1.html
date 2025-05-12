@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>各班级签到情况分析</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      padding: 20px;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 80px);
+      overflow: hidden;
+    }
+
+    .chart-area {
+      flex-basis: 60%;
+      padding: 30px;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+    }
+
+    .analysis-area {
+      flex-basis: 40%;
+      display: flex;
+      flex-direction: column;
+      padding: 30px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+
+    .analysis-area h3 {
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .analysis-area h3 i {
+      margin-right: 10px;
+      color: #007BFF;
+    }
+
+    #analysisResult {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>各班级签到情况分析</h2>
+  <div class="container">
+    <div class="chart-area">
+      <canvas id="barChart"></canvas>
+    </div>
+    <div class="analysis-area">
+      <h3><i class="fas fa-robot"></i>SmartEdu 分析助手</h3>
+      <div id="analysisResult"><em>正在生成分析...</em></div>
+      <div class="buttons">
+        <button id="btn-md" disabled style="opacity: 0.5;" onclick="downloadMarkdown()">下载 Markdown</button>
+        <button id="btn-refresh" onclick="regenerateAIAnalysis()">重新生成分析</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let globalData = null;
+    let latestMarkdown = '';
+    const params = new URLSearchParams(window.location.search);
+    const cacheKey = `ai_analysis_class_${params.get('class_id')}`;
+
+    fetch('http://127.0.0.1:5010/check/all_class_state')
+      .then(res => res.json())
+      .then(data => {
+        globalData = data;
+        renderChart(data);
+        requestAIAnalysis(data);
+      });
+
+    function renderChart(data) {
+      const labels = data.map(item => item.class_name);
+      const rates = data.map(item => parseFloat(item.in_time_rate.replace('%', '')));
+
+      const ctx = document.getElementById('barChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '准时率 (%)',
+            data: rates,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          onClick: (evt, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              const clickedItem = data[index];
+              const classId = clickedItem.class_id;
+              window.location.href = `2.html?class_id=${classId}`;
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: '准时率 (%)' }
+            },
+            y: {
+              title: { display: true, text: '班级' }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: context => {
+                  const i = context.dataIndex;
+                  const item = data[i];
+                  return [
+                    `准时率: ${item.in_time_rate}`,
+                    `总签到人次: ${item.total_count}`,
+                    `准时签到人次: ${item.in_time_count}`
+                  ];
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function requestAIAnalysis(data, useCache = true) {
+      const analysisDiv = document.getElementById('analysisResult');
+      const btnDownload = document.getElementById('btn-md');
+      const btnRefresh = document.getElementById('btn-refresh');
+
+      // 使用缓存机制
+      if (useCache) {
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          latestMarkdown = cached;
+          analysisDiv.innerHTML = marked.parse(cached);
+          btnDownload.disabled = false;
+          btnDownload.style.opacity = 1;
+          return;
+        }
+      }
+
+      // 无缓存或强制刷新时
+      btnDownload.disabled = true;
+      btnDownload.style.opacity = 0.5;
+      btnRefresh.disabled = true;
+      btnRefresh.innerText = '生成中...';
+      analysisDiv.innerHTML = '<em>正在生成分析...</em>';
+
+      fetch('http://127.0.0.1:5011/analysis/1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: JSON.stringify(data),
+          temperature: 0.5,
+          max_tokens: 800
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        latestMarkdown = json.response;
+        analysisDiv.innerHTML = marked.parse(json.response);
+        sessionStorage.setItem(cacheKey, json.response);
+        btnDownload.disabled = false;
+        btnDownload.style.opacity = 1;
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = '重新生成分析';
+      })
+      .catch(err => {
+        analysisDiv.innerHTML = `<p style="color:red;">分析失败: ${err.message}</p>`;
+        btnRefresh.disabled = false;
+        btnRefresh.innerText = '重新生成分析';
+      });
+    }
+
+    function regenerateAIAnalysis() {
+      requestAIAnalysis(globalData, false); // 忽略缓存，重新生成分析
+    }
+
+    function downloadMarkdown() {
+      const blob = new Blob([latestMarkdown], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '各班级签到情况分析.md';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
