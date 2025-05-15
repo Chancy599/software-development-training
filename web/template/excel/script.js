@@ -53,7 +53,7 @@ async function submitLogin() {
   const payload = { id, password };
 
   try {
-    const response = await fetch("http://localhost:5011/login", {
+    const response = await fetch("http://localhost:5013/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -550,7 +550,7 @@ function logout() {
   // 显示登录按钮，隐藏头像
   document.getElementById('loginButton').style.display = 'block';
   document.getElementById('userAvatar').style.display = 'none';
-
+  localStorage.removeItem('user');
   // 可加：清除本地存储/状态，跳转页面等
   alert('已退出登录');
 	  // 刷新页面
@@ -560,7 +560,7 @@ function logout() {
 window.onload = function () {
   const user = localStorage.getItem('user');
   if (user) {
-    loginSuccess(); // 自动显示头像
-	const currentUserId = localStorage.getItem('user');
+    currentUserId = user; // ✅ 正确赋值
+    loginSuccess();       // ✅ 调用无参数版本
   }
 };
