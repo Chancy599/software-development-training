@@ -279,7 +279,7 @@
     <div class="block" style="background: url(block0.png) center; background-size: cover; background-repeat: no-repeat;">
     </div>
     <div class="navigation-pill-list">
-      <div class="navigation-pill" onclick="window.open('3.html', '_self')">
+      <div class="navigation-pill" onclick="window.open('../home/index.html', '_self')">
         <div class="title">主页</div>
       </div>
     </div>
@@ -410,7 +410,12 @@
       btnDownload.style.opacity = 0.5;
       btnRefresh.disabled = true;
       btnRefresh.innerText = '生成中...';
-      analysisDiv.innerHTML = '<em>正在生成分析...</em>';
+     analysisDiv.innerHTML = `
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>正在生成分析...</p>
+        </div>
+      `;
 
       fetch('http://127.0.0.1:5011/analysis/5', {
         method: 'POST',

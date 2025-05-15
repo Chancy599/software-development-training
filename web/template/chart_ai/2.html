@@ -448,7 +448,12 @@
       btnDownload.style.opacity = 0.5;
       btnRefresh.disabled = true;
       btnRefresh.innerText = '生成中...';
-      analysisDiv.innerHTML = '<em>正在生成分析...</em>';
+      analysisDiv.innerHTML = `
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>正在生成分析...</p>
+        </div>
+      `;
 
       fetch('http://127.0.0.1:5011/analysis/2', {
         method: 'POST',
