@@ -117,20 +117,12 @@ export default {
 
                     uni.hideLoading();
 
-                    uni.showModal({
-                        title: '删除成功',
-                        content: `已删除班级 ${result.deletedClassId}\n删除成员: ${result.membersDeleted}人\n删除签到记录: ${result.checkinRecordsDeleted}条`,
-                        showCancel: false,
-                        success: () => {
-                            const index = this.$globalData.manage_information.indexOf(this.classid);
-                            if (index !== -1) {
-                                this.$globalData.manage_information.splice(index, 1);
-                                this.$globalData.manageInfo_name.splice(index, 1);
-                            }
-                            this.selectedName = '';
-                            this.classid = '';
-                        }
-                    });
+					uni.showToast({ 
+						title: '删除成功', 
+						icon: 'success', 
+						duration: 1000,
+						mask: true
+					});
                 } else {
                     throw new Error('返回数据格式不正确');
                 }

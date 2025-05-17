@@ -10,7 +10,7 @@
 			<view class="spacer"></view>
 			
 			<text class="label">签到方式：</text>
-			<text>{{ item.method }}</text>
+			<text>{{ stateMap[item.method] }}</text>
 			<view class="spacer"></view>
 
 			<!-- 按钮区域 -->
@@ -30,7 +30,13 @@
 export default {
 	data() {
 		return {
-			uncheckedList: []
+			uncheckedList: [],
+			stateMap: {
+				IN_TIME: '准时',
+				LATE: '迟到',
+				ABSENT: '缺席',
+				CREQUEST_LEAVE: '请假'
+			}
 		}
 	},
 	onShow() {

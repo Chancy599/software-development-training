@@ -92,7 +92,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: common_vendor.t(item.startTime),
         b: common_vendor.t(item.validDuration),
         c: common_vendor.t(item.actualTime || "未签到"),
-        d: common_vendor.t($data.stateMap[item.state] || item.state),
+        d: common_vendor.t($data.stateMap[item.state]),
         e: index
       };
     })

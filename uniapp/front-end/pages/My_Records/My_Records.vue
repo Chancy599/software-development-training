@@ -25,7 +25,7 @@
 				<view>开始时间：{{ item.startTime }}</view>
 				<view>有效时长：{{ item.validDuration }}分钟</view>
 				<view>实际签到时间：{{ item.actualTime || '未签到' }}</view>
-				<view>签到状态：{{ stateMap[item.state] || item.state }}</view>
+				<view>签到状态：{{ stateMap[item.state] }}</view>
 			</view>
 		</view>
 

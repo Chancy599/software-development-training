@@ -23,7 +23,7 @@ const _sfc_main = {
     validateSelection() {
       if (!this.selectedName || !this.duration) {
         common_vendor.index.showToast({
-          title: "请先选择班级并设置时长",
+          title: "请先选择组织并设置时长",
           icon: "none"
         });
         return false;
@@ -275,7 +275,7 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.t($data.selectedName || "请点击选择班级"),
+    a: common_vendor.t($data.selectedName || "请点击选择组织"),
     b: this.$globalData.manageInfo_name,
     c: common_vendor.o((...args) => $options.onPickerChange && $options.onPickerChange(...args)),
     d: common_vendor.o([($event) => $data.duration = $event.detail.value, (...args) => _ctx.validateDuration && _ctx.validateDuration(...args)]),

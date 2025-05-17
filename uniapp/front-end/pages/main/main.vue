@@ -18,7 +18,7 @@
             </view>
             <view class="menu-item" @click="handleMenuItemClick('mySettings')">
                 <image class="menu-icon" src="/static/Function/mySettings.png"></image>
-                <text class="menu-text">我的设置</text>
+                <text class="menu-text">我的信息</text>
             </view>
         </view>
         <view class="menu-row">

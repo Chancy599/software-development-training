@@ -72,28 +72,18 @@ const _sfc_main = {
             await this.deleteMembersBelong(result.deletedClassMemberIds);
           }
           common_vendor.index.hideLoading();
-          common_vendor.index.showModal({
+          common_vendor.index.showToast({
             title: "删除成功",
-            content: `已删除班级 ${result.deletedClassId}
-删除成员: ${result.membersDeleted}人
-删除签到记录: ${result.checkinRecordsDeleted}条`,
-            showCancel: false,
-            success: () => {
-              const index = this.$globalData.manage_information.indexOf(this.classid);
-              if (index !== -1) {
-                this.$globalData.manage_information.splice(index, 1);
-                this.$globalData.manageInfo_name.splice(index, 1);
-              }
-              this.selectedName = "";
-              this.classid = "";
-            }
+            icon: "success",
+            duration: 1e3,
+            mask: true
           });
         } else {
           throw new Error("返回数据格式不正确");
         }
       } catch (err) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:139", "删除失败:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:131", "删除失败:", err);
         common_vendor.index.showModal({
           title: "删除失败",
           content: err.message || "网络异常，请稍后重试",
@@ -105,14 +95,14 @@ const _sfc_main = {
       try {
         const deletePromises = memberIds.map(
           (id) => this.deleteBelong(id).catch((e) => {
-            common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:151", `删除成员 ${id} 归属记录失败:`, e);
+            common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:143", `删除成员 ${id} 归属记录失败:`, e);
             return null;
           })
         );
         await Promise.all(deletePromises);
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:156", "所有成员归属记录删除完成");
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:148", "所有成员归属记录删除完成");
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:158", "删除成员归属记录时出错:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:150", "删除成员归属记录时出错:", err);
         throw err;
       }
     },
@@ -129,9 +119,9 @@ const _sfc_main = {
           },
           method: "DELETE"
         });
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:175", "管理员归属删除成功");
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:167", "管理员归属删除成功");
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:177", "管理员归属删除失败:", err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:169", "管理员归属删除失败:", err);
         throw err;
       }
     },
@@ -148,9 +138,9 @@ const _sfc_main = {
           },
           method: "DELETE"
         });
-        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:194", `学生 ${id} 归属删除成功`);
+        common_vendor.index.__f__("log", "at pages/OrgManage/OrgManage.vue:186", `学生 ${id} 归属删除成功`);
       } catch (err) {
-        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:196", `学生 ${id} 归属删除失败:`, err);
+        common_vendor.index.__f__("error", "at pages/OrgManage/OrgManage.vue:188", `学生 ${id} 归属删除失败:`, err);
         throw err;
       }
     }

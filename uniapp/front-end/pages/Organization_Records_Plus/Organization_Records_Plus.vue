@@ -37,7 +37,7 @@
 				records: [],
 				queried: false,
 				stateMap: {
-					IN_TIME: '刷脸签到',
+					IN_TIME: '准时',
 					LATE: '迟到',
 					ABSENT: '缺席',
 					CREQUEST_LEAVE: '请假'

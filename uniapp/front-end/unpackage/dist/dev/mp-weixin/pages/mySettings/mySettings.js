@@ -7,7 +7,7 @@ const _sfc_main = {
       userData: this.initUserData()
     };
   },
-  created() {
+  onShow() {
     this.syncGlobalData();
   },
   methods: {

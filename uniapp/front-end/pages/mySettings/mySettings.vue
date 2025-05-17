@@ -44,7 +44,7 @@ export default {
             userData: this.initUserData()
         };
     },
-    created() {
+    onShow() {
         this.syncGlobalData();
     },
     methods: {

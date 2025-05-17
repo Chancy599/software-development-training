@@ -2,10 +2,10 @@
     <view class="container">
         <!-- 选择班级卡片 -->
         <view class="card">
-            <view class="card-title">选择签到班级</view>
+            <view class="card-title">选择签到组织</view>
             <picker :range="this.$globalData.manageInfo_name" @change="onPickerChange">
                 <view class="picker">
-                    {{ selectedName || '请点击选择班级' }}
+                    {{ selectedName || '请点击选择组织' }}
                 </view>
             </picker>
         </view>
@@ -93,7 +93,7 @@ export default {
         validateSelection() {
             if (!this.selectedName || !this.duration) {
                 uni.showToast({
-                    title: '请先选择班级并设置时长',
+                    title: '请先选择组织并设置时长',
                     icon: 'none'
                 });
                 return false;
@@ -439,7 +439,7 @@ export default {
 .auto-link {
     margin: 20rpx 0 50rpx;
     color: #007aff; /* 使用蓝色，常见于链接 */
-    font-size: 28rpx; /* 适中的字体大小 */
+    font-size: 36rpx; /* 适中的字体大小 */
     text-align: right; /* 右对齐 */
     width: 100%;
     cursor: pointer; /* 鼠标悬停时变为手型 */
