@@ -32,10 +32,10 @@ export default {
 		return {
 			uncheckedList: [],
 			stateMap: {
-				IN_TIME: '准时',
-				LATE: '迟到',
-				ABSENT: '缺席',
-				CREQUEST_LEAVE: '请假'
+				GPS: '定位签到',
+				CIPHER: '暗号签到',
+				QRCODE: '二维码签到',
+				FACE_SCAN: '刷脸签到'
 			}
 		}
 	},
