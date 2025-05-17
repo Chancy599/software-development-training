@@ -25,7 +25,7 @@ public interface UserMapper {
             "SUM(CASE WHEN cr.state = 'ABSENT' THEN 1 ELSE 0 END) AS absent, " +
             "SUM(CASE WHEN cr.state = 'REQUEST_LEAVE' THEN 1 ELSE 0 END) AS request_LEAVE " +
             "FROM check_in_list.class_member cm " +
-            "LEFT JOIN check_in_record cr ON cm.user_id = cr.user_id " +
+            "LEFT JOIN check_in_record cr ON cm.user_id = cr.user_id AND cm.class_id = cr.class_id " +  // 添加班级ID关联条件
             "JOIN users_information.users_information u ON cm.user_id = u.id " +
             "WHERE cm.class_id = #{classId} AND cm.role = 'MEMBER' " +
             "GROUP BY cm.user_id, u.name")
