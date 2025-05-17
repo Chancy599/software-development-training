@@ -8,15 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Added Navigation Header -->
+    <div class="header">
+        <div class="block" style="background: url(block0.png) center; background-size: cover; background-repeat: no-repeat;">
+        </div>
+        <div class="navigation-pill-list">
+            <div class="navigation-pill" onclick="window.open('../home/index.html', '_self')">
+                <div class="title">主页</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="chat-container">
             <div class="chat-header">
-  <h1>
-   
-    勤云慧管
-  </h1>
-  <p>AI赋能，助您快速完成管理操作</p>
-</div>
+                <h1>
+                    勤云慧管
+                </h1>
+                <p>AI赋能，助您快速完成管理操作</p>
+            </div>
             
             <div class="chat-messages" id="chatMessages">
                 <div class="message ai-message">
@@ -128,7 +138,7 @@
             
             try {
                 // 发送请求到API
-                const response = await fetch('http://localhost:8080/chat', {
+                const response = await fetch('http://localhost:5015/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -240,7 +250,7 @@
                 loading.style.display = 'flex';
 
                 try {
-                    const response = await fetch('http://localhost:8079/upload_audio', {
+                    const response = await fetch('http://localhost:5014/upload_audio', {
                         method: 'POST',
                         body: formData
                     });
@@ -296,7 +306,7 @@
             loading.style.display = 'flex';
 
             try {
-                const response = await fetch('http://localhost:8079/upload_audio', {
+                const response = await fetch('http://localhost:5014/upload_audio', {
                     method: 'POST',
                     body: formData
                 });
