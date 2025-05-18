@@ -9,18 +9,28 @@ public class UserRegisterBody {
     private String id;
     private String name;
     private String password;
+    private String key;
     private String gender;
     private List<String> belong_information;
     // private List<String> belong_information;
     private String contact_information;
 
-    public UserRegisterBody(String id, String name, String password, String gender,
+    public UserRegisterBody(String id, String name, String password, String key,String gender,
                              String contact_information) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.key=key;
         this.gender = gender;
         this.contact_information = contact_information;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getId() {

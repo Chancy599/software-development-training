@@ -3,6 +3,7 @@ classtap\userinfo\users_information\Pojo\users_information.class
 classtap\userinfo\config\users_information.class
 classtap\userinfo\Service\impl\UserServiceImpl$1.class
 classtap\userinfo\users_information\Pojo\UserRegisterBody.class
+classtap\userinfo\Service\AESUtil.class
 classtap\userinfo\config\check_in_list.class
 classtap\userinfo\check_in_list\Mapper\UserMapper2.class
 classtap\userinfo\UserInfoApplication.class
@@ -12,6 +13,7 @@ classtap\userinfo\users_information\Pojo\UserLoginBody$Gender.class
 classtap\userinfo\Service\impl\UserServiceImpl.class
 classtap\userinfo\users_information\Pojo\users_information$Gender.class
 classtap\userinfo\controller\UserController.class
+classtap\userinfo\Service\SecurityUtils.class
 classtap\userinfo\users_information\Pojo\UserLoginBody.class
 classtap\userinfo\users_information\Pojo\UserRegisterBody$Gender.class
 classtap\userinfo\users_information\Pojo\UserInfo$Gender.class

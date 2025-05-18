@@ -55,6 +55,16 @@ export default {
         };
     },
     methods: {
+
+        function simpleEncrypt(password) {
+            let reversed = password.split('').reverse().join(''); // 反转
+            let shifted = '';
+            for (let i = 0; i < reversed.length; i++) {
+            shifted += String.fromCharCode(reversed.charCodeAt(i) + 3); // 偏移
+            }
+            return btoa(shifted); // base64 编码
+        }
+
         handleGenderChange(event) {
             this.genderIndex = event.detail.value;
         },
@@ -106,7 +116,7 @@ export default {
 			}
 
 			const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
-
+            password = simpleEncrypt(password);
 			wx.cloud.callContainer({
 				config: {
 					env: 'prod-7glwxii4e6eb93d8'

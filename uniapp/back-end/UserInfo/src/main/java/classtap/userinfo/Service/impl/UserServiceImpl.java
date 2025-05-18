@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -21,8 +22,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper2 mapper2;
 
-    public boolean register(String id, String name, String password, String gender, String contact_information){
+    public static String simpleDecrypt(String encoded) {
+        byte[] decodedBytes = Base64.getDecoder().decode(encoded);
+        String shifted = new String(decodedBytes);
 
+        StringBuilder original = new StringBuilder();
+        for (int i = 0; i < shifted.length(); i++) {
+            original.append((char) (shifted.charAt(i) - 3)); // 偏移还原
+        }
+        return original.reverse().toString(); // 反转还原
+    }
+
+    public boolean register(String id, String name, String password, String gender, String contact_information){
+        password=simpleDecrypt(password);
+        System.out.println(password);
         if(mapper.SameID(id)==0) {
             return mapper.register(id, name, password, gender, contact_information);
         }
@@ -30,6 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean login(String id, String password){
+        password=simpleDecrypt(password);
         return password.equals(mapper.getPassword(id));
     }
 
@@ -50,9 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteManageBelong(String id, String targetBelong) {
         return mapper.deleteManageBelong(id, targetBelong);
-    }
-
-    ;
+    };
 
 
     public UserInfo getInfo(String id){
