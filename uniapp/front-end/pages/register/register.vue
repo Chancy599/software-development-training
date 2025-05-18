@@ -41,6 +41,7 @@
         </view>
     </view>
 </template>
+
 <script>
 export default {
     data() {
@@ -55,19 +56,48 @@ export default {
         };
     },
     methods: {
-
-        function simpleEncrypt(password) {
-            let reversed = password.split('').reverse().join(''); // 反转
+        simpleEncrypt(password) {
+            let reversed = password.split('').reverse().join('');
             let shifted = '';
             for (let i = 0; i < reversed.length; i++) {
-            shifted += String.fromCharCode(reversed.charCodeAt(i) + 3); // 偏移
+                shifted += String.fromCharCode(reversed.charCodeAt(i) + 3);
             }
-            return btoa(shifted); // base64 编码
-        }
+            return this.base64Encode(shifted);
+        },
+
+        base64Encode(str) {
+            const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            let result = '';
+            let i = 0;
+            while (i < str.length) {
+                const c1 = str.charCodeAt(i++) & 0xff;
+                if (i === str.length) {
+                    result += base64Chars.charAt(c1 >> 2);
+                    result += base64Chars.charAt((c1 & 0x3) << 4);
+                    result += "==";
+                    break;
+                }
+                const c2 = str.charCodeAt(i++);
+                if (i === str.length) {
+                    result += base64Chars.charAt(c1 >> 2);
+                    result += base64Chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                    result += base64Chars.charAt((c2 & 0xF) << 2);
+                    result += "=";
+                    break;
+                }
+                const c3 = str.charCodeAt(i++);
+                result += base64Chars.charAt(c1 >> 2);
+                result += base64Chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                result += base64Chars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+                result += base64Chars.charAt(c3 & 0x3F);
+            }
+            return result;
+        },
 
         handleGenderChange(event) {
             this.genderIndex = event.detail.value;
         },
+
         takePhoto() {
             const { username } = this;
             if (!username) {
@@ -100,61 +130,63 @@ export default {
                 }
             });
         },
-		handleRegister() {
-			const { username, realName, password, genderIndex, contact, photoUrl } = this;
 
-			// 校验是否填写完整
-			if (!username || !realName || !password || !contact) {
-				uni.showToast({ title: '请填写完整信息', icon: 'none' });
-				return;
-			}
+        handleRegister() {
+            const { username, realName, password, genderIndex, contact, photoUrl } = this;
 
-			// 新增校验：必须上传照片
-			if (!photoUrl) {
-				uni.showToast({ title: '请拍照上传人脸', icon: 'none' });
-				return;
-			}
+            if (!username || !realName || !password || !contact) {
+                uni.showToast({ title: '请填写完整信息', icon: 'none' });
+                return;
+            }
 
-			const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
-            password = simpleEncrypt(password);
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8'
-				},
-				path: `/register`,
-				header: {
-					'X-WX-SERVICE': 'userinfo',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				data: {
-					id: username,
-					name: realName,
-					password: password,
-					gender: gender,
-					contact_information: contact
-				},
-				success: (res) => {
-					console.log('后端返回数据:', res);
-					if (res.data === true) {
-						uni.showToast({ title: '注册成功', icon: 'success' });
-						uni.navigateTo({ url: '/pages/login/login' });
-					} else {
-						uni.showToast({ title: '账号已存在', icon: 'none', duration: 1000 });
-					}
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
-				}
-			});
-		},
+            if (!photoUrl) {
+                uni.showToast({ title: '请拍照上传人脸', icon: 'none' });
+                return;
+            }
+
+            const gender = genderIndex === 0 ? 'MALE' : 'FEMALE';
+            const encryptedPassword = this.simpleEncrypt(password);
+
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/register`,
+                header: {
+                    'X-WX-SERVICE': 'userinfo',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                data: {
+                    id: username,
+                    name: realName,
+                    password: encryptedPassword,
+                    gender: gender,
+                    contact_information: contact
+                },
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                    if (res.data === true) {
+                        uni.showToast({ title: '注册成功', icon: 'success' });
+                        uni.navigateTo({ url: '/pages/login/login' });
+                    } else {
+                        uni.showToast({ title: '账号已存在', icon: 'none', duration: 1000 });
+                    }
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({ title: '网络异常，请稍后重试', icon: 'none', duration: 1000 });
+                }
+            });
+        },
+
         handleLogin() {
             uni.navigateTo({ url: '/pages/login/login' });
         }
     }
 };
 </script>
+
 
 <style>
 /* 全局容器 */

@@ -14,6 +14,42 @@ const _sfc_main = {
     };
   },
   methods: {
+    simpleEncrypt(password) {
+      let reversed = password.split("").reverse().join("");
+      let shifted = "";
+      for (let i = 0; i < reversed.length; i++) {
+        shifted += String.fromCharCode(reversed.charCodeAt(i) + 3);
+      }
+      return this.base64Encode(shifted);
+    },
+    base64Encode(str) {
+      const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      let result = "";
+      let i = 0;
+      while (i < str.length) {
+        const c1 = str.charCodeAt(i++) & 255;
+        if (i === str.length) {
+          result += base64Chars.charAt(c1 >> 2);
+          result += base64Chars.charAt((c1 & 3) << 4);
+          result += "==";
+          break;
+        }
+        const c2 = str.charCodeAt(i++);
+        if (i === str.length) {
+          result += base64Chars.charAt(c1 >> 2);
+          result += base64Chars.charAt((c1 & 3) << 4 | (c2 & 240) >> 4);
+          result += base64Chars.charAt((c2 & 15) << 2);
+          result += "=";
+          break;
+        }
+        const c3 = str.charCodeAt(i++);
+        result += base64Chars.charAt(c1 >> 2);
+        result += base64Chars.charAt((c1 & 3) << 4 | (c2 & 240) >> 4);
+        result += base64Chars.charAt((c2 & 15) << 2 | (c3 & 192) >> 6);
+        result += base64Chars.charAt(c3 & 63);
+      }
+      return result;
+    },
     handleGenderChange(event) {
       this.genderIndex = event.detail.value;
     },
@@ -33,18 +69,18 @@ const _sfc_main = {
             cloudPath: fileName,
             filePath: tempFilePath,
             success: (res) => {
-              common_vendor.index.__f__("log", "at pages/register/register.vue:77", "上传成功:", res.fileID);
+              common_vendor.index.__f__("log", "at pages/register/register.vue:117", "上传成功:", res.fileID);
               this.photoUrl = res.fileID;
               common_vendor.index.showToast({ title: "照片上传成功", icon: "success" });
             },
             fail: (err) => {
-              common_vendor.index.__f__("error", "at pages/register/register.vue:82", "上传失败:", err);
+              common_vendor.index.__f__("error", "at pages/register/register.vue:122", "上传失败:", err);
               common_vendor.index.showToast({ title: "上传失败，请重试", icon: "none" });
             }
           });
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/register/register.vue:88", "拍照失败:", err);
+          common_vendor.index.__f__("error", "at pages/register/register.vue:128", "拍照失败:", err);
           common_vendor.index.showToast({ title: "拍照失败，请重试", icon: "none" });
         }
       });
@@ -60,6 +96,7 @@ const _sfc_main = {
         return;
       }
       const gender = genderIndex === 0 ? "MALE" : "FEMALE";
+      const encryptedPassword = this.simpleEncrypt(password);
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
@@ -73,12 +110,12 @@ const _sfc_main = {
         data: {
           id: username,
           name: realName,
-          password,
+          password: encryptedPassword,
           gender,
           contact_information: contact
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/register/register.vue:128", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/register/register.vue:168", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({ title: "注册成功", icon: "success" });
             common_vendor.index.navigateTo({ url: "/pages/login/login" });
@@ -87,7 +124,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/register/register.vue:137", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/register/register.vue:177", "请求失败:", err);
           common_vendor.index.showToast({ title: "网络异常，请稍后重试", icon: "none", duration: 1e3 });
         }
       });

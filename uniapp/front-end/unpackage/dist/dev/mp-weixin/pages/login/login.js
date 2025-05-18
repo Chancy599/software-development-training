@@ -11,6 +11,42 @@ const _sfc_main = {
     };
   },
   methods: {
+    simpleEncrypt(password) {
+      let reversed = password.split("").reverse().join("");
+      let shifted = "";
+      for (let i = 0; i < reversed.length; i++) {
+        shifted += String.fromCharCode(reversed.charCodeAt(i) + 3);
+      }
+      return this.base64Encode(shifted);
+    },
+    base64Encode(str) {
+      const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      let result = "";
+      let i = 0;
+      while (i < str.length) {
+        const c1 = str.charCodeAt(i++) & 255;
+        if (i === str.length) {
+          result += base64Chars.charAt(c1 >> 2);
+          result += base64Chars.charAt((c1 & 3) << 4);
+          result += "==";
+          break;
+        }
+        const c2 = str.charCodeAt(i++);
+        if (i === str.length) {
+          result += base64Chars.charAt(c1 >> 2);
+          result += base64Chars.charAt((c1 & 3) << 4 | (c2 & 240) >> 4);
+          result += base64Chars.charAt((c2 & 15) << 2);
+          result += "=";
+          break;
+        }
+        const c3 = str.charCodeAt(i++);
+        result += base64Chars.charAt(c1 >> 2);
+        result += base64Chars.charAt((c1 & 3) << 4 | (c2 & 240) >> 4);
+        result += base64Chars.charAt((c2 & 15) << 2 | (c3 & 192) >> 6);
+        result += base64Chars.charAt(c3 & 63);
+      }
+      return result;
+    },
     handleLogin() {
       if (this.isLoggingIn)
         return;
@@ -24,10 +60,11 @@ const _sfc_main = {
         return;
       }
       this.isLoggingIn = true;
+      const encryptedPassword = this.simpleEncrypt(password);
+      common_vendor.index.__f__("log", "at pages/login/login.vue:116", "发送给后端的密码:", encryptedPassword);
       common_vendor.wx$1.cloud.callContainer({
         config: {
           env: "prod-7glwxii4e6eb93d8"
-          // 云托管环境ID
         },
         path: `/login`,
         header: {
@@ -37,10 +74,10 @@ const _sfc_main = {
         method: "POST",
         data: {
           id: username,
-          password
+          password: encryptedPassword
         },
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:78", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:133", "后端返回数据:", res);
           if (res.data === true) {
             common_vendor.index.showToast({
               title: "登录成功",
@@ -67,7 +104,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:112", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:162", "请求失败:", err);
           common_vendor.index.showToast({
             title: "网络异常，请稍后重试",
             icon: "none",
@@ -80,7 +117,6 @@ const _sfc_main = {
         }
       });
     },
-    // 获取用户信息
     fetchUserInfo() {
       const username = this.$globalData.username;
       common_vendor.wx$1.cloud.callContainer({
@@ -94,7 +130,7 @@ const _sfc_main = {
         },
         method: "GET",
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/login/login.vue:141", "后端返回数据:", res);
+          common_vendor.index.__f__("log", "at pages/login/login.vue:190", "后端返回数据:", res);
           if (res.data) {
             this.$globalData.name = res.data.name || "";
             this.$globalData.gender = res.data.gender || "";
@@ -112,7 +148,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/login/login.vue:160", "请求失败:", err);
+          common_vendor.index.__f__("error", "at pages/login/login.vue:208", "请求失败:", err);
           common_vendor.index.showToast({
             title: "网络异常，请稍后重试",
             icon: "none",
@@ -122,7 +158,6 @@ const _sfc_main = {
         }
       });
     },
-    // 注册链接
     handleRegister() {
       common_vendor.index.navigateTo({
         url: "/pages/register/register",

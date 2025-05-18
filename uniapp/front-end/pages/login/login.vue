@@ -1,205 +1,229 @@
 <template>
-  <view class="content">
-    <!-- 顶部标题 -->
-    <view class="header">
-      <text class="header-title">{{ title }}</text>
-      <view class="header-line"></view>
+    <view class="content">
+        <!-- 顶部标题 -->
+        <view class="header">
+            <text class="header-title">{{ title }}</text>
+            <view class="header-line"></view>
+        </view>
+
+        <!-- Logo -->
+        <image class="logo" src="/static/logo.png" mode="aspectFit"></image>
+
+        <!-- 登录表单 -->
+        <view class="login-form">
+            <view class="input-container">
+                <input
+                    class="input"
+                    type="text"
+                    v-model="username"
+                    placeholder="请输入账号"
+                />
+            </view>
+
+            <view class="input-container">
+                <input
+                    class="input"
+                    type="password"
+                    v-model="password"
+                    placeholder="请输入密码"
+                />
+            </view>
+
+            <!-- 注册链接 -->
+            <view class="register-link" @click="handleRegister">
+                <text>尚未注册？点击这里</text>
+            </view>
+
+            <button
+                class="login-btn"
+                :disabled="isLoggingIn"
+                @click="handleLogin"
+                :class="{ 'btn-active': !isLoggingIn }"
+            >
+                {{ isLoggingIn ? "登录中..." : "登录" }}
+                <view class="btn-loading" v-if="isLoggingIn"></view>
+            </button>
+        </view>
     </view>
-
-    <!-- Logo -->
-    <image class="logo" src="/static/logo.png" mode="aspectFit"></image>
-
-    <!-- 登录表单 -->
-    <view class="login-form">
-      <view class="input-container">
-        <input
-          class="input"
-          type="text"
-          v-model="username"
-          placeholder="请输入账号"
-        />
-      </view>
-
-      <view class="input-container">
-        <input
-          class="input"
-          type="password"
-          v-model="password"
-          placeholder="请输入密码"
-        />
-      </view>
-
-      <!-- 注册链接 -->
-      <view class="register-link" @click="handleRegister">
-        <text>尚未注册？点击这里</text>
-      </view>
-
-      <button
-        class="login-btn"
-        :disabled="isLoggingIn"
-        @click="handleLogin"
-        :class="{ 'btn-active': !isLoggingIn }"
-      >
-        {{ isLoggingIn ? "登录中..." : "登录" }}
-        <view class="btn-loading" v-if="isLoggingIn"></view>
-      </button>
-    </view>
-  </view>
 </template>
 
 <script>
 export default {
-	data() {
-		return {
-			title: '欢迎登录',
-			username: '',
-			password: '',
-			isLoggingIn: false
-		};
-	},
-	methods: {
-		function simpleEncrypt(password) {
-			let reversed = password.split('').reverse().join(''); // 反转
-			let shifted = '';
-			for (let i = 0; i < reversed.length; i++) {
-				shifted += String.fromCharCode(reversed.charCodeAt(i) + 3); // 偏移
-			}
-			return btoa(shifted); // base64 编码
-		}
-		handleLogin() {
-			if (this.isLoggingIn) return;
+    data() {
+        return {
+            title: '欢迎登录',
+            username: '',
+            password: '',
+            isLoggingIn: false
+        };
+    },
+    methods: {
+        simpleEncrypt(password) {
+            let reversed = password.split('').reverse().join('');
+            let shifted = '';
+            for (let i = 0; i < reversed.length; i++) {
+                shifted += String.fromCharCode(reversed.charCodeAt(i) + 3);
+            }
+            // Base64 编码替代 btoa
+            return this.base64Encode(shifted);
+        },
 
-			const { username, password } = this;
+        base64Encode(str) {
+            const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            let result = '';
+            let i = 0;
+            while (i < str.length) {
+                const c1 = str.charCodeAt(i++) & 0xff;
+                if (i === str.length) {
+                    result += base64Chars.charAt(c1 >> 2);
+                    result += base64Chars.charAt((c1 & 0x3) << 4);
+                    result += "==";
+                    break;
+                }
+                const c2 = str.charCodeAt(i++);
+                if (i === str.length) {
+                    result += base64Chars.charAt(c1 >> 2);
+                    result += base64Chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                    result += base64Chars.charAt((c2 & 0xF) << 2);
+                    result += "=";
+                    break;
+                }
+                const c3 = str.charCodeAt(i++);
+                result += base64Chars.charAt(c1 >> 2);
+                result += base64Chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                result += base64Chars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+                result += base64Chars.charAt(c3 & 0x3F);
+            }
+            return result;
+        },
 
-			if (!username || !password) {
-				uni.showToast({
-					title: '请输入账号和密码',
-					icon: 'none',
-					position: 'top'
-				});
-				return;
-			}
+        handleLogin() {
+            if (this.isLoggingIn) return;
 
-			this.isLoggingIn = true;
-			password = simpleEncrypt(password);
-			// 调用微信云托管接口，使用 POST 请求
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8' // 云托管环境ID
-				},
-				path: `/login`,
-				header: {
-					'X-WX-SERVICE': 'userinfo',
-					'content-type': 'application/json'
-				},
-				method: 'POST',
-				data: {
-					id: username,
-					password: password
-				},
-				success: (res) => {
-					console.log('后端返回数据:', res);
+            const { username, password } = this;
 
-					if (res.data === true) {
-						uni.showToast({
-							title: '登录成功',
-							icon: 'success',
-							duration: 1000,
-							mask: true
-						});
+            if (!username || !password) {
+                uni.showToast({
+                    title: '请输入账号和密码',
+                    icon: 'none',
+                    position: 'top'
+                });
+                return;
+            }
 
-						// 存入全局变量
-						this.$globalData.username = username;
+            this.isLoggingIn = true;
+            const encryptedPassword = this.simpleEncrypt(password);
+            console.log("发送给后端的密码:", encryptedPassword);
 
-						// 设置全局变量
-						this.fetchUserInfo();
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/login`,
+                header: {
+                    'X-WX-SERVICE': 'userinfo',
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                data: {
+                    id: username,
+                    password: encryptedPassword
+                },
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                    if (res.data === true) {
+                        uni.showToast({
+                            title: '登录成功',
+                            icon: 'success',
+                            duration: 1000,
+                            mask: true
+                        });
 
-						// 跳转主页面
-						setTimeout(() => {
-							uni.navigateTo({
-								url: '/pages/main/main',
-								animationType: 'slide-in-right',
-								animationDuration: 300
-							});
-						}, 1000);
-					} else {
-						uni.showToast({
-							title: '账号或密码错误',
-							icon: 'none',
-							duration: 1500,
-							position: 'top'
-						});
-					}
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({
-						title: '网络异常，请稍后重试',
-						icon: 'none',
-						duration: 1500,
-						position: 'top'
-					});
-				},
-				complete: () => {
-					this.isLoggingIn = false;
-				}
-			});
-		},
+                        this.$globalData.username = username;
+                        this.fetchUserInfo();
 
-		// 获取用户信息
-		fetchUserInfo() {
-			const username = this.$globalData.username;
+                        setTimeout(() => {
+                            uni.navigateTo({
+                                url: '/pages/main/main',
+                                animationType: 'slide-in-right',
+                                animationDuration: 300
+                            });
+                        }, 1000);
+                    } else {
+                        uni.showToast({
+                            title: '账号或密码错误',
+                            icon: 'none',
+                            duration: 1500,
+                            position: 'top'
+                        });
+                    }
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({
+                        title: '网络异常，请稍后重试',
+                        icon: 'none',
+                        duration: 1500,
+                        position: 'top'
+                    });
+                },
+                complete: () => {
+                    this.isLoggingIn = false;
+                }
+            });
+        },
 
-			wx.cloud.callContainer({
-				config: {
-					env: 'prod-7glwxii4e6eb93d8'
-				},
-				path: `/getInfo?id=${encodeURIComponent(username)}`,
-				header: {
-					'X-WX-SERVICE': 'userinfo',
-					'content-type': 'application/json'
-				},
-				method: 'GET',
-				success: (res) => {
-					console.log('后端返回数据:', res);
-					if (res.data) {
-						// 设置全局变量
-						this.$globalData.name = res.data.name || '';
-						this.$globalData.gender = res.data.gender || '';
-						this.$globalData.contact_information = res.data.contact_information || '';
-						this.$globalData.belong_information = res.data.belong_information || [];
-						this.$globalData.manage_information = res.data.manage_information || [];
-						this.$globalData.belongInfo_name = res.data.belongInfo_name || [];
-						this.$globalData.manageInfo_name = res.data.manageInfo_name || [];
-					} else {
-						uni.showToast({
-							title: '获取用户信息失败',
-							icon: 'none',
-							position: 'top'
-						});
-					}
-				},
-				fail: (err) => {
-					console.error('请求失败:', err);
-					uni.showToast({
-						title: '网络异常，请稍后重试',
-						icon: 'none',
-						duration: 1500,
-						position: 'top'
-					});
-				}
-			});
-		},
+        fetchUserInfo() {
+            const username = this.$globalData.username;
 
-		// 注册链接
-		handleRegister() {
-			uni.navigateTo({
-				url: '/pages/register/register',
-				animationType: 'slide-in-right',
-				animationDuration: 300
-			});
-		}
-	}
+            wx.cloud.callContainer({
+                config: {
+                    env: 'prod-7glwxii4e6eb93d8'
+                },
+                path: `/getInfo?id=${encodeURIComponent(username)}`,
+                header: {
+                    'X-WX-SERVICE': 'userinfo',
+                    'content-type': 'application/json'
+                },
+                method: 'GET',
+                success: (res) => {
+                    console.log('后端返回数据:', res);
+                    if (res.data) {
+                        this.$globalData.name = res.data.name || '';
+                        this.$globalData.gender = res.data.gender || '';
+                        this.$globalData.contact_information = res.data.contact_information || '';
+                        this.$globalData.belong_information = res.data.belong_information || [];
+                        this.$globalData.manage_information = res.data.manage_information || [];
+                        this.$globalData.belongInfo_name = res.data.belongInfo_name || [];
+                        this.$globalData.manageInfo_name = res.data.manageInfo_name || [];
+                    } else {
+                        uni.showToast({
+                            title: '获取用户信息失败',
+                            icon: 'none',
+                            position: 'top'
+                        });
+                    }
+                },
+                fail: (err) => {
+                    console.error('请求失败:', err);
+                    uni.showToast({
+                        title: '网络异常，请稍后重试',
+                        icon: 'none',
+                        duration: 1500,
+                        position: 'top'
+                    });
+                }
+            });
+        },
+
+        handleRegister() {
+            uni.navigateTo({
+                url: '/pages/register/register',
+                animationType: 'slide-in-right',
+                animationDuration: 300
+            });
+        }
+    }
 };
 </script>
 
