@@ -1,8 +1,6 @@
-import requests
 import mysql.connector
 from datetime import datetime, timezone
-from flask import Flask, jsonify, request, abort
-import json
+from flask import Flask, request
 app = Flask(__name__)
 
 

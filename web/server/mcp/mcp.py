@@ -1,20 +1,13 @@
-from fastapi import FastAPI, Request
-from flask import Flask, jsonify, request, abort
+from flask import Flask, request
 from flask_cors import CORS
-#from tools.tool_hello import router as hello_router
-import httpx
 import json
 import requests
 from openai import OpenAI
-import whisper
-import os
-from opencc import OpenCC
+
 
 app = Flask(__name__)
 CORS(app)
 #app.include_router(hello_router)
-model = whisper.load_model("base", device="cpu")  # 程序启动时只加载一次，后面调用很快
-cc = OpenCC('t2s')  # 't2s' 表示繁体转简体
 GAODE_Key = "932ef7b6d2faa6db82c3b63d4fd4652c"
 DEEKEEK_API_URL = "https://api.deepseek.com/chat/completions"  # 你自己的 deekseek 大模型接口
 DEEKEEK_API_KEY = "sk-aa7f01e252d443b09f63a0518c0dbc7f"  # 如果有的话
@@ -137,25 +130,6 @@ def main(last_msg):
     message = send_messages(messages)
     print(message.content)
 
-
-@app.route('/upload_audio', methods=['POST'])
-def upload_audio():
-    if 'audio_file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-        # 确保 uploads 目录存在
-    file = request.files['audio_file']
-    upload_dir = './uploads'
-    os.makedirs(upload_dir, exist_ok=True)
-    filepath = os.path.join(upload_dir, file.filename)
-    file.save(filepath)
-    result = model.transcribe(filepath,language="zh")
-    text = result['text']
-    simplified_text = cc.convert(result['text'])
-    print(simplified_text)
-    simplified_text=simplified_text.replace("案号","暗号")
-    simplified_text=simplified_text.replace("签道","签到")
-    simplified_text=simplified_text.replace("般","班")
-    return jsonify({'text': simplified_text})
 
 if __name__ == '__main__':
      app.run(host='0.0.0.0', debug=True, port=5015)
