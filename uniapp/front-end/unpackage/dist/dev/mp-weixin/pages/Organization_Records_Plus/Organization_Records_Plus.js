@@ -15,7 +15,7 @@ const _sfc_main = {
         IN_TIME: "准时",
         LATE: "迟到",
         ABSENT: "缺席",
-        CREQUEST_LEAVE: "请假"
+        REQUEST_LEAVE: "请假"
       }
     };
   },

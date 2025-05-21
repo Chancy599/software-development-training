@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<!-- 选择班级 -->
+		<!-- 选择组织 -->
 		<picker :range="this.$globalData.belongInfo_name" @change="onPickerChange">
 			<view class="picker">
-				选择班级：{{ selectedName || '请选择' }}
+				选择组织：{{ selectedName || '请选择' }}
 			</view>
 		</picker>
 
@@ -46,10 +46,10 @@ export default {
 			absent: 0,
 			request_LEAVE: 0,
 			stateMap: {
-				'ON_TIME': '准时',
+				'IN_TIME': '准时',
 				'LATE': '迟到',
 				'ABSENT': '未到',
-				'LEAVE': '请假'
+				'REQUEST_LEAVE': '请假'
 			}
 		};
 	},

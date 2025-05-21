@@ -12,10 +12,10 @@ const _sfc_main = {
       absent: 0,
       request_LEAVE: 0,
       stateMap: {
-        "ON_TIME": "准时",
+        "IN_TIME": "准时",
         "LATE": "迟到",
         "ABSENT": "未到",
-        "LEAVE": "请假"
+        "REQUEST_LEAVE": "请假"
       }
     };
   },
