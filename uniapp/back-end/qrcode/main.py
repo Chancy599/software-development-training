@@ -12,9 +12,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 app = Flask(__name__)
 
 # 微信小程序配置
-APP_ID = "wx2492d91b878e5ccc"  # 你的 AppID
-APP_SECRET = "b16713acd97853660f83d7d009034b59"  # 你的 AppSecret
-ENV_ID = "prod-7glwxii4e6eb93d8"  # 你的微信云托管环境 ID
+APP_ID = ""  # 你的 AppID
+APP_SECRET = ""  # 你的 AppSecret
+ENV_ID = ""  # 你的微信云托管环境 ID
 
 def get_access_token():
     """获取微信小程序的 access_token"""
